@@ -37,7 +37,6 @@ from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
 
 load_opus_lib()
 
-
 class SkipState:
     def __init__(self):
         self.skippers = set()
@@ -61,7 +60,6 @@ class Response:
         self.content = content
         self.reply = reply
         self.delete_after = delete_after
-
 
 class MusicBot(discord.Client):
     def __init__(self, config_file=ConfigDefaults.options_file, perms_file=PermissionsDefaults.perms_file):
@@ -719,6 +717,17 @@ class MusicBot(discord.Client):
         print()
         # t-t-th-th-that's all folks!
 
+
+    def add_to_autoplaylist(self, song_url):
+        # RIP unweighted attempts. Gone but not forgotten
+        if song_url not in self.autoplaylist:
+        	self.autoplaylist.append(song_url)
+        	write_file(self.config.auto_playlist_file, self.autoplaylist)
+        else:
+        	print(song_url)
+        	for each in self.autoplaylist:
+        		print(each)
+
     async def cmd_help(self, command=None):
         """
         Usage:
@@ -1063,9 +1072,7 @@ class MusicBot(discord.Client):
             reply_text = "Enqueued **%s** to be played. Position in queue: %s"
             btext = entry.title
 
-            # RIP unweighted attempts. Gone but not forgotten
-            self.autoplaylist.append(song_url)
-            write_file(self.config.auto_playlist_file, self.autoplaylist)
+            self.add_to_autoplaylist(song_url)
 
         if position == 1 and player.is_stopped:
             position = 'Up next!'
