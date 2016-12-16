@@ -719,14 +719,11 @@ class MusicBot(discord.Client):
 
 
     def add_to_autoplaylist(self, song_url):
-        # RIP unweighted attempts. Gone but not forgotten
         if song_url not in self.autoplaylist:
         	self.autoplaylist.append(song_url)
         	write_file(self.config.auto_playlist_file, self.autoplaylist)
         else:
-        	print(song_url)
-        	for each in self.autoplaylist:
-        		print(each)
+        	print("Song already added", song_url)
 
     async def cmd_help(self, command=None):
         """
@@ -1494,6 +1491,7 @@ class MusicBot(discord.Client):
 
         if skips_remaining <= 0:
             player.skip()  # check autopause stuff here
+            
             return Response(
                 'your skip for **{}** was acknowledged.'
                 '\nThe vote to skip has been passed.{}'.format(
@@ -1879,6 +1877,8 @@ class MusicBot(discord.Client):
                 player.playlist.promote_last()
             if player.is_playing:
                 player.skip()
+
+            self.add_to_autoplaylist(song_url)
 
         # return Response(reply_text, delete_after=30)
 
