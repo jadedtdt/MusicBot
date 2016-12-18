@@ -422,14 +422,16 @@ class MusicBot(discord.Client):
 
                 # make sure we're not splitting with a delimeter that doesn't exist
                 if "," in tuple_song_author:
-            	    # create tuple(url, quthor)
+            	    # create tuple(url, author)
                     tuple_song_author = tuple_song_author.split(",")
                 else:
-                    print(tuple_song_author, " No delimiter to split with.")
+                    print(tuple_song_author)
+                    print("No delimiter to split with.")
 
                 # FIXME if songs start to corrupt, make sure it's not stripping parts of the URL!
-                song_url = tuple_song_author[0].replace("'", "").replace("(", "")
-                author = tuple_song_author[1].replace("'", "").replace(")", "").replace(" ", "")
+                (song_url, author) = tuple_song_author
+                song_url = song_url.replace("'", "").replace("(", "")
+                author = author.replace("'", "").replace(")", "").replace(" ", "")
 
                 if self._get_user(author, voice=True):
                     print("USER IN CHANNEL!")
@@ -437,6 +439,7 @@ class MusicBot(discord.Client):
                     print(self._get_user(author, voice=True))
                 else:
                     print("USER NOT IN CHANNEL!")
+                    print(author)
                     continue
 
                 try:
