@@ -90,7 +90,7 @@ class Playlist(EventEmitter):
 
             Returns the position it was in the queue.
 
-            :param search_text: A string containing all or part of the song name.
+            :param position: A string of either "last" or "end" or the position number in the queue
         """
 
         # Check for popping from empty queue
@@ -283,7 +283,7 @@ class Playlist(EventEmitter):
 
     async def async_process_sc_bc_playlist(self, playlist_url, **meta):
         """
-            Processes soundcloud set and bancdamp album links from `playlist_url` in a questionable, async fashion.
+            Processes soundcloud set and bandcamp album links from `playlist_url` in a questionable, async fashion.
 
             :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
             :param meta: Any additional metadata to add to the playlist entry

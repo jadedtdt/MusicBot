@@ -62,6 +62,7 @@ class Response:
         self.delete_after = delete_after
 
 class MusicBot(discord.Client):
+
     def __init__(self, config_file=ConfigDefaults.options_file, perms_file=PermissionsDefaults.perms_file):
         self.players = {}
         self.the_voice_clients = {}
@@ -110,15 +111,18 @@ class MusicBot(discord.Client):
     def _fixg(x, dp=2):
         return ('{:.%sf}' % dp).format(x).rstrip('0').rstrip('.')
 
-    def _get_owner(self, voice=False):
+    def _get_user(self, user_id, voice=False):
         if voice:
             for server in self.servers:
                 for channel in server.channels:
                     for m in channel.voice_members:
-                        if m.id == self.config.owner_id:
+                        if m.id == user_id:
                             return m
         else:
-            return discord.utils.find(lambda m: m.id == self.config.owner_id, self.get_all_members())
+            return discord.utils.find(lambda m: m.id == user_id, self.get_all_members())
+
+    def _get_owner(self, voice=False):
+    	return self._get_user(self.config.owner_id, voice)
 
     def _delete_old_audiocache(self, path=AUDIO_CACHE_PATH):
         try:
@@ -413,8 +417,33 @@ class MusicBot(discord.Client):
     async def on_player_finished_playing(self, player, **_):
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
             while self.autoplaylist:
-                song_url = choice(self.autoplaylist)
-                info = await self.downloader.safe_extract_info(player.playlist.loop, song_url, download=False, process=False)
+
+                tuple_song_author = choice(self.autoplaylist)
+
+                # make sure we're not splitting with a delimeter that doesn't exist
+                if "," in tuple_song_author:
+            	    # create tuple(url, quthor)
+                    tuple_song_author = tuple_song_author.split(",")
+                else:
+                    print(tuple_song_author, " No delimiter to split with.")
+
+                # FIXME if songs start to corrupt, make sure it's not stripping parts of the URL!
+                song_url = tuple_song_author[0].replace("'", "").replace("(", "")
+                author = tuple_song_author[1].replace("'", "").replace(")", "").replace(" ", "")
+
+                if self._get_user(author, voice=True):
+                    print("USER IN CHANNEL!")
+                    print(author)
+                    print(self._get_user(author, voice=True))
+                else:
+                    print("USER NOT IN CHANNEL!")
+                    continue
+
+                try:
+                    info = await self.downloader.safe_extract_info(player.playlist.loop, song_url, download=False, process=False)
+                except exceptions.ExtractionError as e:
+                    self.safe_print("[Error] Stripping created a corrupted song URL. Re-think sanitizing this way!")
+                    continue
 
                 if not info:
                     self.autoplaylist.remove(song_url)
@@ -717,10 +746,15 @@ class MusicBot(discord.Client):
         print()
         # t-t-th-th-that's all folks!
 
-
-    def add_to_autoplaylist(self, song_url):
+    def add_to_autoplaylist(self, song_url, author=None):
         if song_url not in self.autoplaylist:
-        	self.autoplaylist.append(song_url)
+
+        	# Gene's ID
+        	# author = 181268300301336576
+
+        	str_to_write = song_url, author
+
+        	self.autoplaylist.append(str_to_write)
         	write_file(self.config.auto_playlist_file, self.autoplaylist)
         else:
         	print("Song already added", song_url)
@@ -902,7 +936,7 @@ class MusicBot(discord.Client):
         Adds the song to the playlist.  If a link is not provided, the first
         result from a youtube search is added to the queue.
         """
-
+        
         song_url = song_url.strip('<>')
 
         if permissions.max_songs and player.playlist.count_for_user(author) >= permissions.max_songs:
@@ -1069,7 +1103,7 @@ class MusicBot(discord.Client):
             reply_text = "Enqueued **%s** to be played. Position in queue: %s"
             btext = entry.title
 
-            self.add_to_autoplaylist(song_url)
+            self.add_to_autoplaylist(song_url, author.id)
 
         if position == 1 and player.is_stopped:
             position = 'Up next!'
@@ -1491,7 +1525,7 @@ class MusicBot(discord.Client):
 
         if skips_remaining <= 0:
             player.skip()  # check autopause stuff here
-            
+
             return Response(
                 'your skip for **{}** was acknowledged.'
                 '\nThe vote to skip has been passed.{}'.format(
@@ -1878,7 +1912,7 @@ class MusicBot(discord.Client):
             if player.is_playing:
                 player.skip()
 
-            self.add_to_autoplaylist(song_url)
+            self.add_to_autoplaylist(song_url, author.id)
 
         # return Response(reply_text, delete_after=30)
 
