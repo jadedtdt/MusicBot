@@ -81,9 +81,51 @@ class MusicBot(discord.Client):
         self.init_ok = False
         self.cached_client_id = None
 
+        # it's a dictionary of lists where the keys are the IDs and the value is a list of their songs
+        #
+        # ex.
+        # {
+        #     1234 -> [ https://www.youtube.com/watch?v=FCbWLSZrZfw, https://www.youtube.com/watch?v=UcHJtgljXEo ]
+        #     9087 -> [ https://www.youtube.com/watch?v=3lDqMx4rmFU ] 
+        # }
+        #
+        self.dict_of_apls = {}
+
         if not self.autoplaylist:
             print("Warning: Autoplaylist is empty, disabling.")
             self.config.auto_playlist = False
+        else:
+        	# initializes APLs for each user
+            for each_song in self.autoplaylist:
+
+                print(self.sanitize_string(each_song))
+                tuple_song_authors = self.sanitize_string(each_song)
+
+                # make sure we're not splitting with a delimeter that doesn't exist
+                if ", " in tuple_song_authors:
+                    # create tuple(url, author)
+                    tuple_song_authors = tuple_song_authors.split(", ")
+                else:
+                    #print(tuple_song_authors)
+                    #print("No delimiter to split with. Assigning to MusicBot")
+                    #self.assign_to_music_bot()
+                    #break
+                    continue
+
+                # FIXME if songs start to corrupt, make sure it's not stripping parts of the URL!
+                song_url, authors = tuple_song_authors
+
+                # for multiple likers, just iterate over comma separated authors
+
+                print(song_url)
+                print(authors)
+
+                authors = authors.split("; ")
+
+                for each_author in authors:
+                	self._add_to_autoplaylist(song_url, each_author)
+
+                print(self.dict_of_apls)
 
         # TODO: Do these properly
         ssd_defaults = {'last_np_msg': None, 'auto_paused': False}
@@ -92,6 +134,21 @@ class MusicBot(discord.Client):
         super().__init__()
         self.aiosession = aiohttp.ClientSession(loop=self.loop)
         self.http.user_agent += ' MusicBot/%s' % BOTVERSION
+
+    def sanitize_string(self, string):
+    	return str(string).replace("(", "").replace(")", "").replace("'", "").replace("[", "").replace("]", "")
+
+    def assign_to_music_bot(self):
+        i = 0
+        for each_line in self.autoplaylist:
+            # make sure we're not splitting with a delimeter that doesn't exist
+            if ", " not in each_line:
+                string = self.autoplaylist[i], str(self.user.id)
+                self.autoplaylist[i] = self.sanitize_string(string)
+
+            i += 1
+
+        write_file(self.config.auto_playlist_file, self.autoplaylist)
 
     # TODO: Add some sort of `denied` argument for a message to send when someone else tries to use it
     def owner_only(func):
@@ -118,6 +175,16 @@ class MusicBot(discord.Client):
                     for m in channel.voice_members:
                         if m.id == user_id:
                             return m
+        else:
+            return discord.utils.find(lambda m: m.id == user_id, self.get_all_members())
+
+    def _get_channel(self, user_id, voice=False):
+        if voice:
+            for server in self.servers:
+                for channel in server.channels:
+                    for m in channel.voice_members:
+                        if m.id == user_id:
+                            return channel
         else:
             return discord.utils.find(lambda m: m.id == user_id, self.get_all_members())
 
@@ -418,28 +485,37 @@ class MusicBot(discord.Client):
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
             while self.autoplaylist:
 
-                tuple_song_author = choice(self.autoplaylist)
+                author = choice(list(self.dict_of_apls.keys()))
+                print(author)
+                
+                #old way of getting a random song
+                #tuple_song_author = self.sanitize_string(choice(self.autoplaylist))
 
                 # make sure we're not splitting with a delimeter that doesn't exist
-                if "," in tuple_song_author:
-            	    # create tuple(url, author)
-                    tuple_song_author = tuple_song_author.split(",")
+                #if ", " in tuple_song_author:
+                #    # create tuple(url, author)
+                #    tuple_song_author = tuple_song_author.split(", ")
+                #else:
+                #    print(tuple_song_author)
+                #    print("No delimiter to split with.")
+
+                song_url = ""
+
+                if len(self.dict_of_apls[author]) == 0:
+                	print("USER HAS NO SONGS IN APL")
+                	continue
                 else:
-                    print(tuple_song_author)
-                    print("No delimiter to split with.")
+                    song_url = choice(self.dict_of_apls[author])
+                    print(song_url)
 
-                # FIXME if songs start to corrupt, make sure it's not stripping parts of the URL!
-                (song_url, author) = tuple_song_author
-                song_url = song_url.replace("'", "").replace("(", "")
-                author = author.replace("'", "").replace(")", "").replace(" ", "")
-
-                if self._get_user(author, voice=True):
+                if self._get_user(author, voice=True) and (self._get_channel(author, voice=True) == self._get_channel(self.user.id, voice=True)):
                     print("USER IN CHANNEL!")
                     print(author)
                     print(self._get_user(author, voice=True))
                 else:
                     print("USER NOT IN CHANNEL!")
                     print(author)
+                    print(self._get_user(author, voice=True))
                     continue
 
                 try:
@@ -749,18 +825,145 @@ class MusicBot(discord.Client):
         print()
         # t-t-th-th-that's all folks!
 
+    def get_likers(self, song_url):
+        likers = []
+
+        for each_user in self.dict_of_apls.keys():
+            if song_url in self.dict_of_apls[each_user]:
+                likers.append(each_user)
+
+        return self._get_likers(likers)
+
+    # takes a list of ids, returns a list of usernames
+    def _get_likers(self, likers):
+
+        names = []
+        for each_id in likers:
+            names.append(self._get_user(each_id))
+
+        return names
+
     def add_to_autoplaylist(self, song_url, author=None):
-        if song_url not in self.autoplaylist:
 
-        	# Gene's ID
-        	# author = 181268300301336576
+        if author == None:
+            print("No Author... Don't know who to add to")
 
-        	str_to_write = song_url, author
+        # find the url and get the whole line
+        line_index = self.find_song(song_url)
+        song_line = None
+        if line_index != None:
+            song_line = self.autoplaylist[line_index]
 
-        	self.autoplaylist.append(str_to_write)
-        	write_file(self.config.auto_playlist_file, self.autoplaylist)
+        # if not on anyone's list, let's add it to someone's
+        if song_line == None:
+
+            str_to_write = song_url, author
+            self.autoplaylist.append(self.sanitize_string(str_to_write))
+        # otherwise we just want to add this liker to the list
         else:
-        	print("Song already added", song_url)
+            if author in song_line:
+                print("Song already added", song_url)
+                return False
+            else:
+                # appends current author to the end of the likers list
+                str_to_write = song_line + "; " + author
+
+            # finds where in the file this line is and updates it (same as )
+            index = self.autoplaylist.index(song_line)
+            if index != None:
+                self.autoplaylist[index] = self.sanitize_string(str_to_write)
+
+        write_file(self.config.auto_playlist_file, self.autoplaylist)
+
+        self._add_to_autoplaylist(song_url, author)
+        return True
+
+    def _add_to_autoplaylist(self, song_url, author=None):
+        if author == None:
+            print("No Author in _add_to_autoplaylist")
+
+        print("HELLO THERE!!!!")
+        print(author)
+
+        # initializes list for a new user
+        if self.dict_of_apls.get(author, None) == None:
+            self.dict_of_apls[author] = []
+
+        self.dict_of_apls[author].append(song_url)
+
+    def remove_from_autoplaylist(self, song_url, author=None):
+
+        if author == None:
+            print("No Author... Don't know who to remove from")
+
+        # find the url and get the whole line
+        line_index = self.find_song(song_url)
+        song_line = None
+        if line_index != None:
+            song_line = self.autoplaylist[line_index]
+
+        if song_line != None:
+
+            print("LINE OF SONG")
+            print(song_line)
+            (url, likers) = song_line.split(", ")
+            likers = likers.split("; ")
+
+            if author not in likers:
+            	return False
+
+            if len(likers) > 1:
+                print(url)
+                print(likers)
+                print(author)
+                print("*********")
+                likers.remove(author)
+                new_line = url, self.sanitize_string(str(likers))
+
+                if line_index != None:
+                    print("LINE_INDEX")
+                    print(self.sanitize_string(new_line))
+                    self.autoplaylist[line_index] = self.sanitize_string(new_line)
+
+            else:
+                self.autoplaylist.remove(song_line)
+
+            print("LINE")
+            print(song_line)
+            print("APL")
+            print(self.autoplaylist)
+            write_file(self.config.auto_playlist_file, self.autoplaylist)
+
+        else:
+            print("Can't remove a song that's not in the auto playlist")
+            return False
+
+        self._remove_from_autoplaylist(song_url, author)
+        return True
+
+    def _remove_from_autoplaylist(self, song_url, author=None):
+        if author == None:
+            print("No Author in _remove_from_autoplaylist")
+
+        # initializes list for a new user
+        if self.dict_of_apls.get(author, None) == None:
+            self.dict_of_apls[author] = []
+        else:
+        	print("SHOULD BE HERE")
+
+        if song_url in self.dict_of_apls[author]:
+            self.dict_of_apls[author].remove(song_url)
+        else:
+        	print("The song isn't in here?")
+        	print(self.dict_of_apls[author])
+        	print(self.dict_of_apls)
+
+    # finds the first instance a song URL is found and returns the index
+    def find_song(self, song_url):
+        for each_line in self.autoplaylist:
+            if song_url in each_line:
+                return self.autoplaylist.index(each_line)
+        return None
 
     async def cmd_help(self, command=None):
         """
@@ -883,6 +1086,81 @@ class MusicBot(discord.Client):
 
         except:
             raise exceptions.CommandError('Invalid URL provided:\n{}\n'.format(server_link), expire_in=30)
+
+    async def cmd_mylist(self, player, channel, author, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}mylist
+
+        View the songs in your personal autoplaylist. 
+        """
+
+        if author.id in list(self.dict_of_apls.keys()):
+
+            reply_text = "Your auto play list consists of the following:\n"
+
+            i = 1
+            for each_link in self.dict_of_apls[author.id]:
+                reply_text += "%d. %s\n"
+                reply_text %= (i, each_link)
+                i += 1
+
+        else:
+            reply_text = "Your auto play list is empty."
+
+        return Response(reply_text, delete_after=30)
+
+    async def cmd_like(self, player, channel, author, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}like
+
+        Adds the current song to your autoplaylist. 
+        """
+
+        print("CMD_LIKE ", str(author.id))
+        print(self.dict_of_apls)
+
+
+        if self.add_to_autoplaylist(player.current_entry.url, author.id):
+            reply_text = "**%s**, the song **%s** has been added to your auto play list."
+            user = str(author)[:-5]
+            song_name = player.current_entry.title
+        else:
+            reply_text = "**%s**, this song **%s** is already added to your auto play list."
+            user = str(author)[:-5]
+            song_name = player.current_entry.title
+
+        print(self.dict_of_apls)
+
+        reply_text %= (user, song_name)
+
+        return Response(reply_text, delete_after=30)
+
+    async def cmd_dislike(self, player, channel, author, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}dislike
+
+        Removes the current song from your autoplaylist. 
+        """
+
+        reply_text = ""
+        user = ""
+        song_name = ""
+
+        if self.remove_from_autoplaylist(player.current_entry.url, author.id):
+            reply_text = "**%s**, the song **%s** has been removed from your auto play list."
+            user = str(author)[:-5]
+            song_name = player.current_entry.title
+        else:
+            reply_text = "**%s**, the song **%s** wasn't in your auto play list."
+            user = str(author)[:-5]
+            song_name = player.current_entry.title
+
+        reply_text %= (user, song_name)
+
+        return Response(reply_text, delete_after=30)
 
     async def cmd_remove(self, player, channel, author, permissions, position):
         """
@@ -1355,6 +1633,7 @@ class MusicBot(discord.Client):
 
         Displays the current song in chat.
         """
+        self.assign_to_music_bot()
 
         if player.current_entry:
             if self.server_specific_data[server]['last_np_msg']:
@@ -1369,7 +1648,18 @@ class MusicBot(discord.Client):
                 np_text = "Now Playing: **%s** added by **%s** %s\n" % (
                     player.current_entry.title, player.current_entry.meta['author'].name, prog_str)
             else:
-                np_text = "Now Playing: **%s** %s\n" % (player.current_entry.title, prog_str)
+                # AutoPlayList playing
+
+                likers = ""
+                for each_user in self.get_likers(player.current_entry.url):
+                	# strip off the unique identifiers 
+                	# I'm not using the meta data since technically it has no author so I wrote a get_likers function
+                	likers = likers + str(each_user)[:-5] + ", "
+
+                # slice off last " ,""
+                likers = likers[:-2]
+
+                np_text = "Now Playing: **%s** from the AutoPlayList. %s\nLiked by: %s" % (player.current_entry.title, prog_str, likers)
 
             self.server_specific_data[server]['last_np_msg'] = await self.safe_send_message(channel, np_text)
             await self._manual_delete_check(message)
