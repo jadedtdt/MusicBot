@@ -94,7 +94,6 @@ https://www.youtube.com/watch?v=AAbokV76tkU, 142099539963150336
 https://www.youtube.com/watch?v=mT69OmMhf84, 142099539963150336
 https://www.youtube.com/watch?v=x6dKAPD267U, 181268300301336576
 https://www.youtube.com/watch?v=mlmpVkhV0X4, 181268300301336576; 136665080820400128
-https://www.youtube.com/watch?v=KEXQkrllGbA, 181268300301336576
 https://www.youtube.com/watch?v=fC_q9KPczAg, 212329923568861185
 https://www.youtube.com/watch?v=upkYQqbrjSc, 212329923568861185
 https://www.youtube.com/watch?v=vGxHEhIhm6A, 181268300301336576
@@ -176,7 +175,7 @@ https://soundcloud.com/triuchikun/noragami-aragoto-hey-kids-full, 12715925461126
 https://www.youtube.com/watch?v=zAB5AC9yhY0, 127966571300651008
 https://www.youtube.com/watch?v=lkQE5wuBFeY, 85618365707587584
 https://www.youtube.com/watch?v=ejTgl3cCyDo, 254089547447533569
-https://www.youtube.com/watch?v=nwyjxsOYnys, 254089547447533569
+https://www.youtube.com/watch?v=nwyjxsOYnys, 254089547447533569; 181268300301336576
 https://www.youtube.com/watch?v=KEXQkrllGbA, 254089547447533569
 https://www.youtube.com/watch?v=8x7Uszpj_0w, 181268300301336576
 https://www.youtube.com/watch?v=dhjaJFdcoec, 254089547447533569
@@ -296,7 +295,7 @@ https://www.youtube.com/watch?v=gGtW4AFyLyM, 212329923568861185; 181268300301336
 https://www.youtube.com/watch?v=dqw2WAcv8Tw, 153637062787072001
 https://www.youtube.com/watch?v=M0pYWGjECLE, 153637062787072001
 https://www.youtube.com/watch?v=jJFi4WEDfSI, 212329923568861185
-https://www.youtube.com/watch?v=mE_pme_cK4c&index=14&list=PL51lQnDp7dVkP2-MHJen7JMXjllM0DY8i, 212329923568861185
+https://www.youtube.com/watch?v=mE_pme_cK4c&index=14&list=PL51lQnDp7dVkP2-MHJen7JMXjllM0DY8i, 212329923568861185; 153637062787072001
 https://www.youtube.com/watch?v=73Y_x30uKQg, 212329923568861185
 https://www.youtube.com/watch?v=B1zCN0YhW1s, 153637062787072001
 https://www.youtube.com/watch?v=un82tyFzG7I, 153637062787072001
@@ -367,3 +366,4 @@ https://www.youtube.com/watch?v=Y2V6yjjPbX0&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkN
 https://www.youtube.com/watch?v=6OcVjEzK1Bs&index=21&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ, 136665080820400128
 https://www.youtube.com/watch?v=ZzqIEGRpx0c&index=34&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ, 136665080820400128
 https://www.youtube.com/watch?v=c8VK2Fn3bAo, 138532752038297600
+https://www.youtube.com/watch?v=LehT7Xs48yA, 153637062787072001

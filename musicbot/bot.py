@@ -138,6 +138,10 @@ class MusicBot(discord.Client):
     def sanitize_string(self, string):
     	return str(string).replace("(", "").replace(")", "").replace("'", "").replace("[", "").replace("]", "")
 
+    # replaces commas with semicolons so we can split on semicolons in the 'likers'
+    def parse_string_delimeter(self, string):
+        return str(string).replace(",", ";")
+
     def assign_to_music_bot(self):
         i = 0
         for each_line in self.autoplaylist:
@@ -515,18 +519,18 @@ class MusicBot(discord.Client):
                 	print("USER HAS NO SONGS IN APL")
                 	continue
                 else:
-                    song_url = choice(self.dict_of_apls[author])
-                    print(song_url)
-
-                if self._get_user(author, voice=True) and (self._get_channel(author, voice=True) == self._get_channel(self.user.id, voice=True)):
-                    print("USER IN CHANNEL!")
-                    print(author)
-                    print(self._get_user(author, voice=True))
-                else:
-                    print("USER NOT IN CHANNEL!")
-                    print(author)
-                    print(self._get_user(author, voice=True))
-                    continue
+                    if self._get_user(author, voice=True) and (self._get_channel(author, voice=True) == self._get_channel(self.user.id, voice=True)):
+                        print("USER IN CHANNEL!")
+                        #print(author)
+                        print(self._get_user(author, voice=True))
+                        song_url = choice(self.dict_of_apls[author])
+                        print(song_url)
+                    else:
+                        print("USER NOT IN CHANNEL!")
+                        print(author)
+                        #print(self._get_user(author, voice=True))
+                        print("---")
+                        continue
 
                 try:
                     info = await self.downloader.safe_extract_info(player.playlist.loop, song_url, download=False, process=False)
@@ -550,6 +554,8 @@ class MusicBot(discord.Client):
                 except exceptions.ExtractionError as e:
                     print("Error adding song from autoplaylist:", e)
                     continue
+
+
 
                 break
 
@@ -892,8 +898,8 @@ class MusicBot(discord.Client):
         if author == None:
             print("No Author in _add_to_autoplaylist")
 
-        print("HELLO THERE!!!!")
-        print(author)
+        #print("HELLO THERE!!!!")
+        #print(author)
 
         # initializes list for a new user
         if self.dict_of_apls.get(author, None) == None:
@@ -923,12 +929,13 @@ class MusicBot(discord.Client):
             	return False
 
             if len(likers) > 1:
-                print(url)
+                #print(url)
                 print(likers)
                 print(author)
                 print("*********")
                 likers.remove(author)
-                new_line = url, self.sanitize_string(str(likers))
+                print(str(likers))
+                new_line = url, self.parse_string_delimeter(self.sanitize_string(str(likers)))
 
                 if line_index != None:
                     print("LINE_INDEX")
@@ -941,7 +948,7 @@ class MusicBot(discord.Client):
             print("LINE")
             print(song_line)
             print("APL")
-            print(self.autoplaylist)
+            #print(self.autoplaylist)
             write_file(self.config.auto_playlist_file, self.autoplaylist)
 
         else:
@@ -951,6 +958,7 @@ class MusicBot(discord.Client):
         self._remove_from_autoplaylist(song_url, author)
         return True
 
+    # removes from our dictionary of lists
     def _remove_from_autoplaylist(self, song_url, author=None):
         if author == None:
             print("No Author in _remove_from_autoplaylist")
@@ -958,8 +966,8 @@ class MusicBot(discord.Client):
         # initializes list for a new user
         if self.dict_of_apls.get(author, None) == None:
             self.dict_of_apls[author] = []
-        else:
-        	print("SHOULD BE HERE")
+        #else:
+        #	print("SHOULD BE HERE")
 
         if song_url in self.dict_of_apls[author]:
             self.dict_of_apls[author].remove(song_url)
@@ -1105,20 +1113,24 @@ class MusicBot(discord.Client):
         View the songs in your personal autoplaylist. 
         """
 
+        data = []
+
         if author.id in list(self.dict_of_apls.keys()):
 
-            reply_text = "Your auto play list consists of the following:\n"
-
-            i = 1
             for each_link in self.dict_of_apls[author.id]:
-                reply_text += "%d. %s\n"
-                reply_text %= (i, each_link)
-                i += 1
+                data.append(each_link)
 
         else:
-            reply_text = "Your auto play list is empty."
+            data.append("Your auto play list is empty.")
 
-        return Response(reply_text, delete_after=30)
+        with BytesIO() as sdata:
+            sdata.writelines(d.encode('utf8') + b'\n' for d in data)
+            sdata.seek(0)
+
+            # TODO: Fix naming (Discord20API-ids.txt)
+            await self.send_file(author, sdata, filename='%s-autoplaylist.txt' % (self._get_user(author.id)))
+
+        return Response(":mailbox_with_mail:", delete_after=20)
 
     async def cmd_like(self, player, channel, author, permissions, leftover_args):
         """
