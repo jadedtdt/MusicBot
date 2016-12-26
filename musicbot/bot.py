@@ -150,6 +150,16 @@ class MusicBot(discord.Client):
 
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
+    def remove_duplicates(self):
+        list_found = []
+        for each_line in self.autoplaylist:
+            each_line = self.sanitize_string(each_line)
+            if each_line not in list_found:
+                list_found.append(each_line)
+
+        self.autoplaylist = list_found
+        write_file(self.config.auto_playlist_file, self.autoplaylist)
+
     # TODO: Add some sort of `denied` argument for a message to send when someone else tries to use it
     def owner_only(func):
         @wraps(func)
@@ -1633,7 +1643,9 @@ class MusicBot(discord.Client):
 
         Displays the current song in chat.
         """
-        self.assign_to_music_bot()
+
+        #self.remove_duplicates()
+        #self.assign_to_music_bot()
 
         if player.current_entry:
             if self.server_specific_data[server]['last_np_msg']:
