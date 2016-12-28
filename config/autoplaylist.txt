@@ -26,10 +26,10 @@ https://www.youtube.com/watch?v=HgzGwKwLmgM&list=WL&index=37, 136665080820400128
 https://www.youtube.com/watch?v=UbQgXeY_zi4&index=31&list=WL, 136665080820400128
 https://www.youtube.com/watch?v=LrCHz1gwzTo&list=WL&index=28, 136665080820400128
 https://www.youtube.com/watch?v=qDEgRn0JUxw, 136665080820400128
-https://www.youtube.com/watch?v=3WQeTpnYN2c, 194279933378428938
+https://www.youtube.com/watch?v=3WQeTpnYN2c, 194279933378428938; 153637062787072001
 https://www.youtube.com/watch?v=-OqrcUvrbRY, 127966571300651008; 181268300301336576
 https://www.youtube.com/watch?v=LSgz7Ept79o, 127966571300651008; 181268300301336576
-https://www.youtube.com/watch?v=R03cqGg40GU, 127966571300651008; 136665080820400128; 127159254611263489
+https://www.youtube.com/watch?v=R03cqGg40GU, 127966571300651008; 136665080820400128; 127159254611263489; 153637062787072001
 https://www.youtube.com/watch?v=q-wGMlSuX_c, 127966571300651008
 https://www.youtube.com/watch?v=OK4fJhbRL1g, 127966571300651008
 https://soundcloud.com/peridarren/april-sweatpants, 127966571300651008; 181268300301336576
@@ -57,14 +57,14 @@ https://www.youtube.com/watch?v=g_E1sXYlFQw&list=WL&index=20, 136665080820400128
 https://www.youtube.com/watch?v=GCtQmwJ1WAY&list=WL&index=33, 136665080820400128
 https://www.youtube.com/watch?v=ZZ5LpwO-An4, 136665080820400128
 https://www.youtube.com/watch?v=pB_PoGGEuUo, 136665080820400128
-https://www.youtube.com/watch?v=LC4p4a5TY4s&list=PL_bb-PXLflw-73WGEhdGFPR2AS4ZjO6-S&index=24, 136665080820400128
+https://www.youtube.com/watch?v=LC4p4a5TY4s&list=PL_bb-PXLflw-73WGEhdGFPR2AS4ZjO6-S&index=24, 136665080820400128; 181268300301336576
 https://www.youtube.com/watch?v=ukp1N4hI2Xg, 136665080820400128
 https://www.youtube.com/watch?v=wmKKr8ZzUQ0, 138532752038297600
 https://www.youtube.com/watch?v=aULkeBLUKM0, 136665080820400128
 https://www.youtube.com/watch?v=PT2_F-1esPk, 127966571300651008
 https://www.youtube.com/watch?v=lic0oCDMfwk, 138532752038297600
 https://www.youtube.com/watch?v=tgIqecROs5M, 138532752038297600
-https://www.youtube.com/watch?v=ZUt7GXFweFw, 138532752038297600
+https://www.youtube.com/watch?v=ZUt7GXFweFw, 138532752038297600; 181268300301336576
 https://www.youtube.com/watch?v=Z9eMk051dYg&list=PLFgquLnL59akA2PflFpeQG9L01VFg90wS, 138532752038297600
 https://www.youtube.com/watch?v=eimNpQOxj5k&list=PLjuPtUPYGfgC7-tUQhMfSV220RICycmxm&index=2, 138532752038297600
 https://www.youtube.com/watch?v=hcEN5C-OMDo, 160886196879228928
@@ -134,7 +134,7 @@ https://www.youtube.com/watch?v=sVPooKsLxII, 153637062787072001
 https://www.youtube.com/watch?v=0Dwng8EpUH0, 153637062787072001
 https://www.youtube.com/watch?v=y-jC3H_8Dk4, 212329923568861185
 https://www.youtube.com/watch?v=TIy3n2b7V9k, 212329923568861185
-https://www.youtube.com/watch?v=TkV5709EG5M, 153637062787072001
+https://www.youtube.com/watch?v=TkV5709EG5M, 153637062787072001; 181268300301336576
 https://www.youtube.com/watch?v=p4I7Ak1N2z8, 153637062787072001
 https://www.youtube.com/watch?v=ItxJFWITRxk, 153637062787072001
 https://www.youtube.com/watch?v=I2bBZvSPpOo&list=PLddSkUxmPEC9_beNXJV03PAlTawp2d6d_, 181268300301336576
@@ -162,12 +162,10 @@ https://www.youtube.com/watch?v=9NZNIZWwqxI, 153637062787072001
 https://www.youtube.com/watch?v=W9nWGlLwyA0, 153637062787072001
 https://www.youtube.com/watch?v=3ck6BlHSZj4, 153637062787072001
 https://www.youtube.com/watch?v=8jzDnsjYv9A, 127159254611263489
-https://www.youtube.com/watch?v=PJGpsL_XYQI&list=PL95YynKo5x1bEsvRujjZ1FFlMMsYZ5jv3&index=4, 127159254611263489
 https://www.youtube.com/watch?v=q6EoRBvdVPQ, 127159254611263489; 181268300301336576
 https://www.youtube.com/watch?v=ZNra8eK0K6k, 127159254611263489
 https://www.youtube.com/watch?v=J-bhTre7cZs, 127159254611263489
-https://www.youtube.com/watch?v=u3VFzuUiTGw&list=PL95YynKo5x1Z-pohmuu4vAaarmV0zBmtF&index=16, 127159254611263489
-https://www.youtube.com/watch?v=HdAkYCyCZv8&list=PL95YynKo5x1Z-pohmuu4vAaarmV0zBmtF&index=15, 127159254611263489; 181268300301336576
+https://www.youtube.com/watch?v=HdAkYCyCZv8&list=PL95YynKo5x1Z-pohmuu4vAaarmV0zBmtF&index=15, 181268300301336576
 https://www.youtube.com/watch?v=j0h2u87JwyA, 127159254611263489
 https://www.youtube.com/watch?v=H8LIyi7NWh8, 127159254611263489
 https://soundcloud.com/0shadowsky0/01-dilemma-full-gintama-op-10, 127159254611263489
@@ -180,10 +178,9 @@ https://www.youtube.com/watch?v=KEXQkrllGbA, 254089547447533569
 https://www.youtube.com/watch?v=8x7Uszpj_0w, 181268300301336576
 https://www.youtube.com/watch?v=dhjaJFdcoec, 254089547447533569
 https://www.youtube.com/watch?v=JUDbSL-5GHQ, 254089547447533569
-https://www.youtube.com/watch?v=kTvewPtk7sg, 254089547447533569
+https://www.youtube.com/watch?v=kTvewPtk7sg, 254089547447533569; 181268300301336576
 https://www.youtube.com/watch?v=mlmpVkhV0X4, 254089547447533569
 https://www.youtube.com/watch?v=lw3Or6eqIpI, 254089547447533569
-https://www.youtube.com/watch?v=tD4HCZe-tew, 127159254611263489
 https://www.youtube.com/watch?v=n6jCJZEFIto, 85618365707587584
 https://www.youtube.com/watch?v=EhFHlsEeuVw, 85618365707587584
 https://www.youtube.com/watch?v=fygutp-zA4E, 85618365707587584; 181268300301336576
@@ -353,7 +350,7 @@ https://www.youtube.com/watch?v=kPBzTxZQG5Q, 261534837607890946
 https://soundcloud.com/yukihimes/noragami-opening-full-goya-no, 127159254611263489
 https://www.youtube.com/watch?v=UMCka_vXtL4, 151538542915354624
 https://www.youtube.com/watch?v=35A8HFLUETg, 151538542915354624
-https://www.youtube.com/watch?v=cV2LfNl5eO8, 151538542915354624
+https://www.youtube.com/watch?v=cV2LfNl5eO8, 151538542915354624; 136665080820400128
 https://www.youtube.com/watch?v=gMU7JK0zCGE, 151538542915354624
 https://www.youtube.com/watch?v=KmAE3lzMN9Q, 151538542915354624
 https://www.youtube.com/watch?v=06koEdJiwZg, 138532752038297600
@@ -367,3 +364,13 @@ https://www.youtube.com/watch?v=6OcVjEzK1Bs&index=21&list=PL_bb-PXLflw9xb96FBTxT
 https://www.youtube.com/watch?v=ZzqIEGRpx0c&index=34&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ, 136665080820400128
 https://www.youtube.com/watch?v=c8VK2Fn3bAo, 138532752038297600
 https://www.youtube.com/watch?v=LehT7Xs48yA, 153637062787072001
+https://www.youtube.com/watch?v=eQ-XFZTiqGM, 127159254611263489
+https://www.youtube.com/watch?v=khcfN0GALZM, 127159254611263489
+https://www.youtube.com/watch?v=bCe8-ZBWbr8, 127159254611263489
+https://soundcloud.com/dan-gyokuei/fullmetal-alchemist-2-hologram, 127159254611263489
+https://www.youtube.com/watch?v=3pHQuCezmLE, 138532752038297600
+https://www.youtube.com/watch?v=XSvLTZu8Ejc, 136665080820400128
+https://www.youtube.com/watch?v=s8cbak34DR0, 136665080820400128
+https://www.youtube.com/watch?v=vB001blO1_U, 136665080820400128
+https://www.youtube.com/watch?v=yFz1Q8bVZ_g, 136665080820400128
+https://www.youtube.com/watch?v=Upu4cR3yZ4k, 136665080820400128

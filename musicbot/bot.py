@@ -19,7 +19,8 @@ from io import BytesIO
 from functools import wraps
 from textwrap import dedent
 from datetime import timedelta
-from random import choice, shuffle
+from random import choice, shuffle, seed
+from datetime import datetime
 from collections import defaultdict
 
 from musicbot.playlist import Playlist
@@ -64,6 +65,7 @@ class Response:
 class MusicBot(discord.Client):
 
     def __init__(self, config_file=ConfigDefaults.options_file, perms_file=PermissionsDefaults.perms_file):
+        seed(datetime.now())
         self.players = {}
         self.the_voice_clients = {}
         self.locks = defaultdict(asyncio.Lock)
@@ -642,7 +644,7 @@ class MusicBot(discord.Client):
             return await super().send_typing(destination)
         except discord.Forbidden:
             if self.config.debug_mode:
-                print("Could not send typing to %s, no permssion" % destination)
+                print("Could not send typing to %s, no permission" % destination)
 
     async def edit_profile(self, **fields):
         if self.user.bot:
@@ -1118,13 +1120,13 @@ class MusicBot(discord.Client):
         if author.id in list(self.dict_of_apls.keys()):
 
             for each_link in self.dict_of_apls[author.id]:
-                data.append(each_link)
+                data.append(each_link + os.linesep)
 
         else:
             data.append("Your auto play list is empty.")
 
         with BytesIO() as sdata:
-            sdata.writelines(d.encode('utf8') + b'\n' for d in data)
+            sdata.writelines(d.encode('utf8') for d in data)
             sdata.seek(0)
 
             # TODO: Fix naming (Discord20API-ids.txt)
