@@ -499,9 +499,11 @@ class MusicBot(discord.Client):
 
     async def on_player_finished_playing(self, player, **_):
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
-            while self.autoplaylist:
+            counter = 0
+            while self.autoplaylist and counter < 100:
 
                 author = choice(list(self.dict_of_apls.keys()))
+                self.cur_author = author
                 print(author)
                 
                 #old way of getting a random song
@@ -518,8 +520,9 @@ class MusicBot(discord.Client):
                 song_url = ""
 
                 if len(self.dict_of_apls[author]) == 0:
-                	print("USER HAS NO SONGS IN APL")
-                	continue
+                    print("USER HAS NO SONGS IN APL")
+                    counter = counter + 1
+                    continue
                 else:
                     if self._get_user(author, voice=True) and (self._get_channel(author, voice=True) == self._get_channel(self.user.id, voice=True)):
                         print("USER IN CHANNEL!")
@@ -527,11 +530,13 @@ class MusicBot(discord.Client):
                         print(self._get_user(author, voice=True))
                         song_url = choice(self.dict_of_apls[author])
                         print(song_url)
+                        counter = 0
                     else:
                         print("USER NOT IN CHANNEL!")
                         print(author)
                         #print(self._get_user(author, voice=True))
                         print("---")
+                        counter = counter + 1
                         continue
 
                 try:
@@ -857,7 +862,10 @@ class MusicBot(discord.Client):
 
         names = []
         for each_id in likers:
-            names.append(self._get_user(each_id))
+            name = self._get_user(each_id)
+            # what if the user has left the server?
+            if name is not None:
+                names.append(name)
 
         return names
 
@@ -1678,9 +1686,12 @@ class MusicBot(discord.Client):
 
                 likers = ""
                 for each_user in self.get_likers(player.current_entry.url):
-                	# strip off the unique identifiers 
-                	# I'm not using the meta data since technically it has no author so I wrote a get_likers function
-                	likers = likers + str(each_user)[:-5] + ", "
+                    # strip off the unique identifiers 
+                    # I'm not using the meta data since technically it has no author so I wrote a get_likers function
+                    if each_user == self._get_user(self.cur_author):
+                        likers = likers + "**" + str(each_user)[:-5] + "**" + ", "
+                    else:
+                        likers = likers + str(each_user)[:-5] + ", "
 
                 # slice off last " ,""
                 likers = likers[:-2]
@@ -1825,7 +1836,8 @@ class MusicBot(discord.Client):
 
         if author.id == self.config.owner_id \
                 or permissions.instaskip \
-                or author == player.current_entry.meta.get('author', None):
+                or author == player.current_entry.meta.get('author', None) \
+                or author in self.get_likers(player.current_entry.url):
 
             player.skip()  # check autopause stuff here
             await self._manual_delete_check(message)
