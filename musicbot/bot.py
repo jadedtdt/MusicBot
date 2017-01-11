@@ -8,6 +8,7 @@ import aiohttp
 import discord
 import asyncio
 import traceback
+import random
 
 from discord import utils
 from discord.object import Object
@@ -19,7 +20,6 @@ from io import BytesIO
 from functools import wraps
 from textwrap import dedent
 from datetime import timedelta
-from random import choice, shuffle, seed
 from datetime import datetime
 from collections import defaultdict
 
@@ -27,7 +27,7 @@ from musicbot.playlist import Playlist
 from musicbot.player import MusicPlayer
 from musicbot.config import Config, ConfigDefaults
 from musicbot.permissions import Permissions, PermissionsDefaults
-from musicbot.utils import load_file, write_file, sane_round_int
+from musicbot.utils import load_file, write_file, sane_round_int, get_header
 
 from . import exceptions
 from . import downloader
@@ -65,7 +65,7 @@ class Response:
 class MusicBot(discord.Client):
 
     def __init__(self, config_file=ConfigDefaults.options_file, perms_file=PermissionsDefaults.perms_file):
-        seed(datetime.now())
+        random.seed(datetime.now())
         self.players = {}
         self.the_voice_clients = {}
         self.locks = defaultdict(asyncio.Lock)
@@ -100,7 +100,7 @@ class MusicBot(discord.Client):
         	# initializes APLs for each user
             for each_song in self.autoplaylist:
 
-                print(self.sanitize_string(each_song))
+                #print(self.sanitize_string(each_song))
                 tuple_song_authors = self.sanitize_string(each_song)
 
                 # make sure we're not splitting with a delimeter that doesn't exist
@@ -119,15 +119,15 @@ class MusicBot(discord.Client):
 
                 # for multiple likers, just iterate over comma separated authors
 
-                print(song_url)
-                print(authors)
+                #print(song_url)
+                #print(authors)
 
                 authors = authors.split("; ")
 
                 for each_author in authors:
                 	self._add_to_autoplaylist(song_url, each_author)
 
-                print(self.dict_of_apls)
+                #print(self.dict_of_apls)
 
         # TODO: Do these properly
         ssd_defaults = {'last_np_msg': None, 'auto_paused': False}
@@ -500,9 +500,9 @@ class MusicBot(discord.Client):
     async def on_player_finished_playing(self, player, **_):
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
             counter = 0
-            while self.autoplaylist and counter < 100:
+            while self.autoplaylist and counter < 100 and not player.is_paused:
 
-                author = choice(list(self.dict_of_apls.keys()))
+                author = random.choice(list(self.dict_of_apls.keys()))
                 self.cur_author = author
                 print(author)
                 
@@ -528,7 +528,7 @@ class MusicBot(discord.Client):
                         print("USER IN CHANNEL!")
                         #print(author)
                         print(self._get_user(author, voice=True))
-                        song_url = choice(self.dict_of_apls[author])
+                        song_url = random.choice(self.dict_of_apls[author])
                         print(song_url)
                         counter = 0
                     else:
@@ -546,7 +546,7 @@ class MusicBot(discord.Client):
                     continue
 
                 if not info:
-                    self.autoplaylist.remove(song_url)
+                    self.remove_from_autoplaylist(song_url, author)
                     self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % song_url)
                     write_file(self.config.auto_playlist_file, self.autoplaylist)
                     continue
@@ -561,8 +561,6 @@ class MusicBot(discord.Client):
                 except exceptions.ExtractionError as e:
                     print("Error adding song from autoplaylist:", e)
                     continue
-
-
 
                 break
 
@@ -1169,10 +1167,11 @@ class MusicBot(discord.Client):
 
         return Response(reply_text, delete_after=30)
 
-    async def cmd_dislike(self, player, channel, author, permissions, leftover_args):
+    async def cmd_dislike(self, player, channel, author, permissions, leftover_args, song_url=None):
         """
         Usage:
             {command_prefix}dislike
+            {command_prefix}dislike song_url
 
         Removes the current song from your autoplaylist. 
         """
@@ -1181,14 +1180,22 @@ class MusicBot(discord.Client):
         user = ""
         song_name = ""
 
-        if self.remove_from_autoplaylist(player.current_entry.url, author.id):
+        if song_url is None:
+            url = player.current_entry.url
+        else:
+            url = song_url
+
+        if self.remove_from_autoplaylist(url, author.id):
             reply_text = "**%s**, the song **%s** has been removed from your auto play list."
-            user = str(author)[:-5]
-            song_name = player.current_entry.title
         else:
             reply_text = "**%s**, the song **%s** wasn't in your auto play list."
-            user = str(author)[:-5]
+
+        user = str(author)[:-5]
+
+        if song_url is None:
             song_name = player.current_entry.title
+        else:
+            song_name = url
 
         reply_text %= (user, song_name)
 
@@ -1224,7 +1231,7 @@ class MusicBot(discord.Client):
         if position == 1:
         	entry = player.playlist.remove_first()
         elif (position < 1 or position > len(player.playlist.entries)) and position != -1:
-            reply_text = "[Error] Invalid ID. Available positions are between 1 and %s." 
+            reply_text = "[Error] Invalid ID. Available positions are between 1 and %s."
             reply_text %= len(player.playlist.entries)
             return Response(reply_text, delete_after=30)
         else:
@@ -1236,7 +1243,7 @@ class MusicBot(discord.Client):
         if position == -1:
             position = len(player.playlist.entries)
 
-        reply_text %= (btext, position)
+        reply_text %= (btext, position+1)
 
         return Response(reply_text, delete_after=30)
 
@@ -1698,8 +1705,12 @@ class MusicBot(discord.Client):
 
                 np_text = "Now Playing: **%s** from the AutoPlayList. %s\nLiked by: %s" % (player.current_entry.title, prog_str, likers)
 
-            self.server_specific_data[server]['last_np_msg'] = await self.safe_send_message(channel, np_text)
-            await self._manual_delete_check(message)
+            #self.server_specific_data[server]['last_np_msg'] = await self.safe_send_message(channel, np_text)
+            #await self._manual_delete_check(message)
+            return Response(
+                np_text,
+                delete_after=30
+            )
         else:
             return Response(
                 'There are no songs queued! Queue something with {}play.'.format(self.config.command_prefix),
@@ -1790,7 +1801,7 @@ class MusicBot(discord.Client):
         await asyncio.sleep(0.6)
 
         for x in range(4):
-            shuffle(cards)
+            random.shuffle(cards)
             await self.safe_edit_message(hand, ' '.join(cards))
             await asyncio.sleep(0.6)
 

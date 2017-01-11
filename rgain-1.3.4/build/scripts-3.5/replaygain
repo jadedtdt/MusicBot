@@ -1,0 +1,8 @@
+#!C:\Users\Gene\AppData\Local\Programs\Python\Python35\python.exe
+# -*- coding: utf-8 -*-
+
+from rgain.script.replaygain import replaygain
+
+if __name__ == "__main__":
+    replaygain()
+
