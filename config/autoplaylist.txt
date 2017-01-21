@@ -83,7 +83,6 @@ https://www.youtube.com/watch?v=92XVwY54h5k&index=26&list=RDMMBB0DU4DoPP4, 13853
 https://www.youtube.com/watch?v=K38xNqZvBJI, 138532752038297600
 https://www.youtube.com/watch?v=0J2QdDbelmY&list=PLgwqhB4wv9zUKFtOJp_V2VhcQctNHT9NP&index=33, 138532752038297600
 https://www.youtube.com/watch?v=Ct6BUPvE2sM, 160886196879228928; 127966571300651008; 153637062787072001
-https://www.youtube.com/watch?v=ejTgl3cCyDo, 181268300301336576
 https://www.youtube.com/watch?v=Wd_pU80mGXk, 212329923568861185
 https://www.youtube.com/watch?v=R0P_f0gXXqs, 142099539963150336
 https://www.youtube.com/watch?v=jC1vtG3oyqg, 212329923568861185
@@ -186,18 +185,16 @@ https://www.youtube.com/watch?v=UpSHC1dqX1o, 85618365707587584
 https://www.youtube.com/watch?v=QytSmM3W3Lo, 85618365707587584
 https://www.youtube.com/watch?v=lhjk5x54bsE, 85618365707587584
 https://www.youtube.com/watch?v=o5PB9b33qf0, 85618365707587584
-https://www.youtube.com/watch?v=2gJIdq9syn0, 85618365707587584; 127966571300651008
-https://www.youtube.com/watch?v=NI9Sa8LpZ3g, 85618365707587584; 127966571300651008
-https://www.youtube.com/watch?v=hvCUnpkc9IU, 85618365707587584; 127966571300651008
+https://www.youtube.com/watch?v=NI9Sa8LpZ3g, 85618365707587584
 https://www.youtube.com/watch?v=_A33Knm_Sd4, 85618365707587584
 https://www.youtube.com/watch?v=lCfYrxx_hBE, 85618365707587584
 https://www.youtube.com/watch?v=r4sTdD0UMDA, 85618365707587584
-https://www.youtube.com/watch?v=2KYYVrBX4v0, 85618365707587584; 127966571300651008
+https://www.youtube.com/watch?v=2KYYVrBX4v0, 85618365707587584
 https://www.youtube.com/watch?v=E2tMV96xULk, 181268300301336576
 https://www.youtube.com/watch?v=N6O2ncUKvlg, 181268300301336576
 https://www.youtube.com/watch?v=bd2B6SjMh_w, 181268300301336576
 https://www.youtube.com/watch?v=U8eYDg_TgNg, 181268300301336576
-https://www.youtube.com/watch?v=QCFwghVCvps, 160886196879228928; 181268300301336576
+https://www.youtube.com/watch?v=QCFwghVCvps, 160886196879228928
 https://www.youtube.com/watch?v=uiaqUPRTV9E, 142099539963150336; 181268300301336576
 https://www.youtube.com/watch?v=9NzlDUeS1U4, 142099539963150336
 https://www.youtube.com/watch?v=fqh7N_4FZDw, 142099539963150336; 151538542915354624
@@ -226,9 +223,9 @@ https://youtu.be/9OVv-J-LXQU, 138532752038297600; 127966571300651008
 https://www.youtube.com/watch?v=XK7XwLbd-oI&list=PLR1m37W9Dc9kBc5qKkUOWqkc8rPseKbUL&index=6, 160886196879228928
 https://www.youtube.com/watch?v=Bkn1cWi03FA, 160886196879228928
 https://www.youtube.com/watch?v=o_1aF54DO60&list=PLt3WBh3heAPtkZRvTnU-fWnwIFcGS92rv&index=2, 136665080820400128
-https://www.youtube.com/watch?v=akhmS1D2Ce4, 136665080820400128; 127966571300651008; 181268300301336576
-https://www.youtube.com/watch?v=uQnzFq8lfbw, 127966571300651008
-https://www.youtube.com/watch?v=UcHJtgljXEo, 181268300301336576
+https://www.youtube.com/watch?v=akhmS1D2Ce4, 136665080820400128; 181268300301336576
+https://www.youtube.com/watch?v=uQnzFq8lfbw, 127966571300651008; 136665080820400128
+https://www.youtube.com/watch?v=UcHJtgljXEo, 181268300301336576; 136665080820400128
 https://www.youtube.com/watch?v=b4EAwSg621U, 181268300301336576
 https://www.youtube.com/watch?v=Po5zT1krKOc, 181268300301336576
 https://www.youtube.com/watch?v=jMgE61PjKKw, 181268300301336576
@@ -251,7 +248,7 @@ https://www.youtube.com/watch?v=uTq8OvrAgYc, 181268300301336576
 https://www.youtube.com/watch?v=Wm-iUlReoWU, 181268300301336576
 https://www.youtube.com/watch?v=vnAdZX3s3n8, 181268300301336576
 https://soundcloud.com/iamtheelephante/clean-bandit-rather-be-elephante-remix, 181268300301336576
-https://soundcloud.com/iamtheelephante/phoebe-ryan-mine-elephante-remix, 181268300301336576
+https://soundcloud.com/iamtheelephante/phoebe-ryan-mine-elephante-remix, 181268300301336576; 136665080820400128
 https://soundcloud.com/hikeii/no-money-w-warpstr, 181268300301336576
 https://www.youtube.com/watch?v=dMMUH_ZpbB0, 127159254611263489; 181268300301336576
 https://www.youtube.com/watch?v=rUgAgfO-16s, 151538542915354624
@@ -335,7 +332,6 @@ https://www.youtube.com/watch?v=cCXdBLbp7gM, 181268300301336576
 https://www.youtube.com/watch?v=rXesMK5TXpU, 181268300301336576
 https://www.youtube.com/watch?v=2V0IteZTClg, 153637062787072001
 https://www.youtube.com/watch?v=Uq3Ayh2BmC8, 181268300301336576
-https://www.youtube.com/watch?v=u8rjrPIGZ5U, 181268300301336576
 https://www.youtube.com/watch?v=g9j5UzxEhEM, 181268300301336576
 https://www.youtube.com/watch?v=kPBzTxZQG5Q, 261534837607890946
 https://soundcloud.com/yukihimes/noragami-opening-full-goya-no, 127159254611263489
@@ -351,12 +347,11 @@ https://www.youtube.com/watch?v=oOPKDYuUzyw, 138532752038297600
 https://www.youtube.com/watch?v=48qwvBkpw1g, 138532752038297600
 https://www.youtube.com/watch?v=Pf_ldxntwJg, 138532752038297600
 https://www.youtube.com/watch?v=Y2V6yjjPbX0&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ&index=14, 136665080820400128
-https://www.youtube.com/watch?v=6OcVjEzK1Bs&index=21&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ, 136665080820400128
+https://www.youtube.com/watch?v=6OcVjEzK1Bs&index=21&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ, 136665080820400128; 127966571300651008
 https://www.youtube.com/watch?v=ZzqIEGRpx0c&index=34&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ, 136665080820400128
 https://www.youtube.com/watch?v=c8VK2Fn3bAo, 138532752038297600
 https://www.youtube.com/watch?v=LehT7Xs48yA, 153637062787072001
 https://www.youtube.com/watch?v=eQ-XFZTiqGM, 127159254611263489
-https://www.youtube.com/watch?v=bCe8-ZBWbr8, 127159254611263489
 https://soundcloud.com/dan-gyokuei/fullmetal-alchemist-2-hologram, 127159254611263489
 https://www.youtube.com/watch?v=3pHQuCezmLE, 138532752038297600
 https://www.youtube.com/watch?v=XSvLTZu8Ejc, 136665080820400128
@@ -374,16 +369,12 @@ https://www.youtube.com/watch?v=3Zp5xfD0LHE, 181268300301336576
 https://www.youtube.com/watch?v=p47fEXGabaY, 138532752038297600
 https://www.youtube.com/watch?v=ME6RtQgBMSI, 181268300301336576
 https://www.youtube.com/watch?v=Ow_qI_F2ZJI, 181268300301336576
-https://www.youtube.com/watch?v=0jgrCKhxE1s, 181268300301336576
 https://www.youtube.com/watch?v=3soskkvYBgM, 136665080820400128
 https://www.youtube.com/watch?v=5i7qZxICwgQ, 181268300301336576
-https://www.youtube.com/watch?v=f55CqLc6IR0, 138532752038297600
 https://www.youtube.com/watch?v=GjsnYmi4z0U, 151538542915354624
 https://www.youtube.com/watch?v=_BadtZ-vmtA, 181268300301336576
 https://www.youtube.com/watch?v=dcSPK5yn9K8, 136665080820400128; 181268300301336576
 https://www.youtube.com/watch?v=ARYt0XDAtsg&spfreload=10, 127966571300651008
-https://www.youtube.com/watch?v=IC-bSbXZBcU, 127159254611263489
-https://www.youtube.com/watch?v=iko4s3CfBi0, 138532752038297600
 https://www.youtube.com/watch?v=cWyQg74AK3E, 138532752038297600
 https://www.youtube.com/watch?v=bSdtvfBQd6c, 138532752038297600
 https://www.youtube.com/watch?v=a2v_zGWawP0, 181268300301336576
@@ -397,7 +388,7 @@ https://www.youtube.com/watch?v=ZkqyIoYAXV8, 181268300301336576
 https://www.youtube.com/watch?v=9EW27b8_E_I, 181268300301336576
 https://www.youtube.com/watch?v=NF9D1Xh_NLU, 181268300301336576
 https://www.youtube.com/watch?v=cUYSGojUuAU, 136665080820400128
-https://www.youtube.com/watch?v=T7HBg8CDzSQ, 85618365707587584
+https://www.youtube.com/watch?v=T7HBg8CDzSQ, 85618365707587584; 181268300301336576
 https://www.youtube.com/watch?v=7FkpM4FWa8A, 85618365707587584
 https://www.youtube.com/watch?v=Bs7gne5fcoo, 85618365707587584
 https://www.youtube.com/watch?v=hRK7PVJFbS8, 181268300301336576
@@ -413,7 +404,7 @@ https://www.youtube.com/watch?v=pIgZ7gMze7A&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkN
 https://www.youtube.com/watch?v=SIu4bHWYg0w&index=1&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ, 136665080820400128
 https://www.youtube.com/watch?v=pZb4gI17aNI, 138532752038297600
 https://www.youtube.com/watch?v=_v_pedV88KM, 138532752038297600
-https://www.youtube.com/watch?v=k22fidYRvoM, 138532752038297600
+https://www.youtube.com/watch?v=k22fidYRvoM, 138532752038297600; 181268300301336576
 https://www.youtube.com/watch?v=tfs2I5_HdZM, 127966571300651008
 https://www.youtube.com/watch?v=mWeXrR5Ivzw, 85618365707587584
 https://www.youtube.com/watch?v=c7cmO25utTo, 136665080820400128
@@ -433,3 +424,91 @@ https://www.youtube.com/watch?v=Ytb7J0ciBcE, 138532752038297600
 https://www.youtube.com/watch?v=yw6i1SAHetc, 138532752038297600
 https://www.youtube.com/watch?v=_dK2tDK9grQ, 127159254611263489
 https://www.youtube.com/watch?v=7Qp5vcuMIlk, 127159254611263489
+https://www.youtube.com/watch?v=k-sfFFnfO8g, 136665080820400128
+https://www.youtube.com/watch?v=T3rDc7sL0Co, 138532752038297600; 181268300301336576
+https://www.youtube.com/watch?v=67LhRGfNpYc, 138532752038297600
+https://www.youtube.com/watch?v=hIGKP_YdGwM, 138532752038297600
+https://www.youtube.com/watch?v=E879PGlGwPg, 127966571300651008
+https://www.youtube.com/watch?v=3Ez7vi-kQdM, 181268300301336576
+https://www.youtube.com/watch?v=0FBpNEaqEBg, 181268300301336576
+https://www.youtube.com/watch?v=HMjI64xSxqo, 181268300301336576
+https://www.youtube.com/watch?v=E_1-oylPHjs, 127966571300651008
+https://www.youtube.com/watch?v=ITqh-Tzs3QM, 181268300301336576
+https://youtu.be/wwCykGDEp7M?t=25s, 138532752038297600
+https://www.youtube.com/watch?v=BqDjMZKf-wg, 181268300301336576
+https://www.youtube.com/watch?v=V0lw3qylVfY, 138532752038297600
+https://www.youtube.com/watch?v=EsYNcQsSZ7A, 85618365707587584
+https://www.youtube.com/watch?v=zsJzJROlITU, 85618365707587584
+https://www.youtube.com/watch?v=AdWksHMS7Fo, 85618365707587584
+https://www.youtube.com/watch?v=atuFSv2bLa8, 85618365707587584
+https://www.youtube.com/watch?v=XCiDuy4mrWU, 85618365707587584
+https://www.youtube.com/watch?v=tNveMjoSxp0, 85618365707587584
+https://www.youtube.com/watch?v=Wu5TDEpAqwQ, 85618365707587584
+https://www.youtube.com/watch?v=Ba-8A3mOIio, 85618365707587584
+https://www.youtube.com/watch?v=dv13gl0a-FA, 85618365707587584
+https://www.youtube.com/watch?v=F3KOnv9MVNY, 85618365707587584
+https://www.youtube.com/watch?v=XswuFtW1bco, 85618365707587584
+https://www.youtube.com/watch?v=An9p4qkuyKE, 85618365707587584
+https://www.youtube.com/watch?v=pK2-XuLByuQ, 138532752038297600
+https://www.youtube.com/watch?v=TR3Vdo5etCQ, 138532752038297600
+https://www.youtube.com/watch?v=7F762DHNM7Q, 138532752038297600
+https://www.youtube.com/watch?v=_ZvjicLNKgI, 127966571300651008
+https://www.youtube.com/watch?v=4_4aWTAkCFY, 136665080820400128
+https://www.youtube.com/watch?v=CMSYv_Z4SI8, 136665080820400128
+https://www.youtube.com/watch?v=0Xal2-mlWYo, 136665080820400128
+https://www.youtube.com/watch?v=GYFJjwXtsU4, 136665080820400128
+https://www.youtube.com/watch?v=8FRtaY7Qu2w, 136665080820400128
+https://www.youtube.com/watch?v=3AtDnEC4zak, 136665080820400128
+https://www.youtube.com/watch?v=hoskDZRLOCs, 138532752038297600
+https://www.youtube.com/watch?v=bCe8-ZBWbr8, 127966571300651008
+https://www.youtube.com/watch?v=1vx3_2ks5qQ, 181268300301336576
+https://www.youtube.com/watch?v=YTnWoMl0Jew, 181268300301336576
+https://www.youtube.com/watch?v=kw8mTjBt-VM, 136665080820400128
+https://www.youtube.com/watch?v=kgeA8frWjvQ&index=1&list=PL_bb-PXLflw9xb96FBTxTln3mYWRkNqlQ, 136665080820400128
+https://www.youtube.com/watch?v=r546F8rSWE8, 181268300301336576
+https://www.youtube.com/watch?v=F30G87zlRPw, 181268300301336576
+https://www.youtube.com/watch?v=gmBRRaqGYNw, 181268300301336576
+https://www.youtube.com/watch?v=lDK9QqIzhwk, 181268300301336576
+https://www.youtube.com/watch?v=dZn_VBgkPNY, 181268300301336576
+https://www.youtube.com/watch?v=CSvFpBOe8eY, 138532752038297600
+https://www.youtube.com/watch?v=mcQNmQdVhlY, 127159254611263489; 136665080820400128
+https://www.youtube.com/watch?v=g7_VlmEamUQ, 136665080820400128
+https://www.youtube.com/watch?v=TklM2-lSby4&index=226, 136665080820400128
+https://www.youtube.com/watch?v=43vOAw2sAFU, 136665080820400128
+https://www.youtube.com/watch?v=m9We2XsVZfc, 136665080820400128
+https://www.youtube.com/watch?v=lsJLLEwUYZM, 181268300301336576
+https://www.youtube.com/watch?v=WIXjHt8KmUc&list=PLuufEyQIZ8kmnSzppotXI2c_KkOzIsRmf&index=1, 181268300301336576
+https://www.youtube.com/watch?v=-Tdu4uKSZ3M, 85618365707587584
+https://www.youtube.com/watch?v=822P87a773c, 142099539963150336
+https://www.youtube.com/watch?v=nSz16ngdsG0, 181268300301336576
+https://www.youtube.com/watch?v=1SiylvmFI_8, 181268300301336576
+https://www.youtube.com/watch?v=-LX7WrHCaUA, 181268300301336576
+www.youtube.com/watch?v=AGDHxXdQkQ8&index=2, 136665080820400128
+https://www.youtube.com/watch?v=gxEPV4kolz0, 127159254611263489
+www.youtube.com/watch?v=Zi_XLOBDo_Y, 136665080820400128
+https://www.youtube.com/watch?v=JoQ4GidQP-k, 181268300301336576; 153637062787072001
+https://www.youtube.com/watch?v=_FyJyurljoM, 189536249248219136
+https://www.youtube.com/watch?v=mOKqNxN4jWM, 181268300301336576
+https://www.youtube.com/watch?v=hKx0R3HBzsA, 153637062787072001
+https://www.youtube.com/watch?v=zbB2uuSu2lw, 127966571300651008
+https://www.youtube.com/watch?v=1-pUaogoX5o, 181268300301336576
+https://www.youtube.com/watch?v=EDc_I3ulc7E, 153637062787072001
+https://www.youtube.com/watch?v=YgHoZXL61gI, 138532752038297600
+https://www.youtube.com/watch?v=6-n5LQ050Sk, 138532752038297600
+https://www.youtube.com/watch?v=IR7CvJZ01co&t=3s, 138532752038297600
+https://www.youtube.com/watch?v=TAyma5EuICQ, 138532752038297600
+https://www.youtube.com/watch?v=KBWfUc5jKiM, 138532752038297600
+https://www.youtube.com/watch?v=6xQy0zsbMuU, 138532752038297600
+https://www.youtube.com/watch?v=ZD3thRb6uOg&t=0s, 138532752038297600
+https://www.youtube.com/watch?v=2ypnqx2aPEk, 138532752038297600
+https://www.youtube.com/watch?v=UY7vuHaO8rg, 138532752038297600
+https://www.youtube.com/watch?v=IJNR2EpS0jw, 136665080820400128
+https://www.youtube.com/watch?v=C2khAbHqDbg, 181268300301336576
+https://www.youtube.com/watch?v=Bw1RGNvFLs8, 181268300301336576
+https://www.youtube.com/watch?v=KvkUY2LZ5uc, 181268300301336576
+https://www.youtube.com/watch?v=RnqT_LPBf1A, 181268300301336576
+https://www.youtube.com/watch?v=4aagZC_C_hU, 181268300301336576
+https://www.youtube.com/watch?v=LaTGrV58wec, 181268300301336576
+https://www.youtube.com/watch?v=pAwR6w2TgxY, 181268300301336576
+https://www.youtube.com/watch?v=FRSr0GprIIw, 181268300301336576
+https://www.youtube.com/watch?v=13GD78Bmo8s, 127159254611263489

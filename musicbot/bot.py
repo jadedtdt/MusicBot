@@ -1126,7 +1126,8 @@ class MusicBot(discord.Client):
         if author.id in list(self.dict_of_apls.keys()):
 
             for each_link in self.dict_of_apls[author.id]:
-                data.append(each_link + os.linesep)
+                data.append(each_link + "\r\n")
+                #data.append(each_link + os.linsep)
 
         else:
             data.append("Your auto play list is empty.")
