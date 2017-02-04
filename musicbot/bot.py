@@ -93,6 +93,10 @@ class MusicBot(discord.Client):
         #
         self.dict_of_apls = {}
 
+        # If someone dislikes a song, they might want to skip it.
+        # Since they previously had autoskip privilege, they might be sad to lose that right after disliking it 
+        self.was_disliked = False
+
         if not self.autoplaylist:
             print("Warning: Autoplaylist is empty, disabling.")
             self.config.auto_playlist = False
@@ -498,6 +502,14 @@ class MusicBot(discord.Client):
         await self.update_now_playing()
 
     async def on_player_finished_playing(self, player, **_):
+
+        # let's reset our boolean so that it doesn't affect our next song
+        if self.was_disliked == True:
+            print("reset our variable")
+            self.was_disliked = False
+        else:
+            print("it's already disabled")
+
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
             counter = 0
             while self.autoplaylist and counter < 100 and not player.is_paused:
@@ -1113,6 +1125,46 @@ class MusicBot(discord.Client):
         except:
             raise exceptions.CommandError('Invalid URL provided:\n{}\n'.format(server_link), expire_in=30)
 
+    async def cmd_stat(self, server, player, channel, author, leftover_args):
+        """
+        Usage:
+        {command_prefix}stat
+
+        Prints the number of songs for the top 10 and the author who asked
+
+        """
+        listNumbers = {}
+        longStr = ""
+
+        await self.send_typing(channel)
+        #Get ids of all users
+        #(m.name, m.id) for m in server.members
+        for m in server.members:
+            print("Process: " + m.name + " : " + str(m.id))
+            if m.id in self.dict_of_apls:
+                listNumbers[m.name] = len(self.dict_of_apls[m.id])
+            else:
+                #print("skipped")
+                pass
+
+        #Printing the users song number
+        longStr += "`" + str(author)[:-5] + ": " + str(listNumbers[str(author)[:-5]]) + "`\n\n"
+        longStr += "*--Number of Songs--*\n"
+        for i in range(0,10):
+            #gets the key with the largest value
+            tempLarge = max(listNumbers.items(), key=lambda k: k[1])
+            #delete to find next max
+            del listNumbers[tempLarge[0]]
+            tempStr = str(i + 1) + "." + str(tempLarge[0]) + ": " + str(tempLarge[1])
+            #If the person asked for it their name is bold
+            if tempLarge[0] == str(author)[:-5]:
+                tempStr = "**__" + tempStr + "__**"
+            longStr += tempStr + "\n"
+            if len(listNumbers) == 0:
+                break
+
+        return Response(longStr, delete_after=35)
+
     async def cmd_mylist(self, player, channel, author, permissions, leftover_args):
         """
         Usage:
@@ -1176,6 +1228,8 @@ class MusicBot(discord.Client):
 
         Removes the current song from your autoplaylist. 
         """
+
+        self.was_disliked = True
 
         reply_text = ""
         user = ""
@@ -1849,7 +1903,8 @@ class MusicBot(discord.Client):
         if author.id == self.config.owner_id \
                 or permissions.instaskip \
                 or author == player.current_entry.meta.get('author', None) \
-                or author in self.get_likers(player.current_entry.url):
+                or author in self.get_likers(player.current_entry.url) \
+                or self.was_disliked is True:
 
             player.skip()  # check autopause stuff here
             await self._manual_delete_check(message)
