@@ -1,8 +1,0 @@
-#!C:\Users\Gene\AppData\Local\Programs\Python\Python35\python.exe
-# -*- coding: utf-8 -*-
-
-from rgain.script.collectiongain import collectiongain
-
-if __name__ == "__main__":
-    collectiongain()
-

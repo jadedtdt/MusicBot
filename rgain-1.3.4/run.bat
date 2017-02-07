@@ -1,1 +1,0 @@
-CMD /k replaygain --help

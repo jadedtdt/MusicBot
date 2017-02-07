@@ -175,6 +175,12 @@ class MusicBot(discord.Client):
 
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
+    # a, b: string of values seperated by semicolons (;)
+    def joinStr(self, a, b):
+        lista = a.split('; ')
+        listb = b.split('; ')
+        return '; '.join(sorted(list(set(lista) | set(listb))))
+
     def remove_duplicates(self):
         list_found = []
         list_urls = []
@@ -189,6 +195,7 @@ class MusicBot(discord.Client):
 
                 #each_line = self.sanitize_string(each_line)
 
+                # split depending if its title has been added yet or not
                 if " ~~~ " in each_line:
                     (url, likers) = each_line.split(" ~~~ ")
                 else:
@@ -203,6 +210,18 @@ class MusicBot(discord.Client):
                         each_line = title + " --- " + each_line
 
                     list_found.append(each_line)
+                else:
+                    # join/union the likers list
+                    index = list_urls.index(url)
+                    if index != -1:
+                        cached_likers_line = list_found[index]
+
+                    if " ~~~ " in cached_likers_line:
+                        (cached_start, cached_likers) = cached_likers_line.split(" ~~~ ")
+
+                    new_likers_str = self.joinStr(cached_likers, likers)
+                    new_likers_line = cached_start + " ~~~ " + new_likers_str
+                    list_found[index] = new_likers_line
 
         self.autoplaylist = list_found
         write_file(self.config.auto_playlist_file, self.autoplaylist)
@@ -623,7 +642,7 @@ class MusicBot(discord.Client):
 
                 #print(author)
                 #print(list(self.dict_of_apls.keys()))
-                if author in list(self.dict_of_apls.keys()):
+                if author in list(self.dict_of_apls.keys()) and author != self.user.id:
                     if len(self.dict_of_apls[author]) == 0:
                         print("USER HAS NO SONGS IN APL")
                         counter = counter + 1
@@ -646,11 +665,6 @@ class MusicBot(discord.Client):
                             print("---")
                             counter = counter + 1
                             continue
-                else:
-                    print("Someone left while selecting a song, trying again")
-                    print(author)
-                    #print(self.dict_of_apls)
-                    continue
 
                 try:
                     info = await self.downloader.safe_extract_info(player.playlist.loop, song_url, download=False, process=False)
@@ -965,8 +979,12 @@ class MusicBot(discord.Client):
         likers = []
 
         for each_user in self.dict_of_apls.keys():
-            if song_url in self.dict_of_apls[each_user]:
+
+            if song_url in str(self.dict_of_apls[each_user]):
                 likers.append(each_user)
+            else:
+                pass
+                #print("not found! ", str(self.dict_of_apls[each_user]))
 
         return self._get_likers(likers)
 
@@ -1099,7 +1117,7 @@ class MusicBot(discord.Client):
         else:
         	print("The song isn't in here?")
         	print(self.dict_of_apls[author])
-        	print(self.dict_of_apls)
+        	#print(self.dict_of_apls)
 
     # finds the first instance a song URL is found and returns the index
     def find_song(self, song_url):
@@ -1321,7 +1339,7 @@ class MusicBot(discord.Client):
             user = str(author)[:-5]
             song_name = player.current_entry.title
 
-        print(self.dict_of_apls)
+        #print(self.dict_of_apls)
 
         reply_text %= (user, song_name)
 
@@ -1834,9 +1852,6 @@ class MusicBot(discord.Client):
 
         Displays the current song in chat.
         """
-
-        #self.remove_duplicates()
-        #self.assign_to_music_bot()
 
         if player.current_entry:
             if self.server_specific_data[server]['last_np_msg']:
