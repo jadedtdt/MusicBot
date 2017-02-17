@@ -94,13 +94,13 @@ class MusicBot(discord.Client):
         # ex.
         # {
         #     1234 -> [ https://www.youtube.com/watch?v=FCbWLSZrZfw, https://www.youtube.com/watch?v=UcHJtgljXEo ]
-        #     9087 -> [ https://www.youtube.com/watch?v=3lDqMx4rmFU ] 
+        #     9087 -> [ https://www.youtube.com/watch?v=3lDqMx4rmFU ]
         # }
         #
         self.dict_of_apls = {}
 
         # If someone dislikes a song, they might want to skip it.
-        # Since they previously had autoskip privilege, they might be sad to lose that right after disliking it 
+        # Since they previously had autoskip privilege, they might be sad to lose that right after disliking it
         self.was_disliked = False
 
         if not self.autoplaylist:
@@ -265,7 +265,7 @@ class MusicBot(discord.Client):
 
                     print("Processing: ", song_title)
 
-                    # prepend url with its name and override 
+                    # prepend url with its name and override
                     each_line = song_title + " --- " + each_line
 
             list_found.append(each_line)
@@ -626,7 +626,7 @@ class MusicBot(discord.Client):
                 self.cur_author = author
                 print(author)
                 #print(list(self.dict_of_apls.keys()))
-                
+
                 #old way of getting a random song
                 #tuple_song_author = self.sanitize_string(choice(self.autoplaylist))
 
@@ -1252,10 +1252,15 @@ class MusicBot(discord.Client):
         """
         Usage:
         {command_prefix}stat
+        {command_prefix}stat compat
 
         Prints the number of songs for the top 10 and the author who asked
+        Prints the amount of similar songs to the other people in the discord
 
         """
+        if len(leftover_args) > 0:
+            if leftover_args[0].strip().lower() == "compat":
+                return await self._cmd_stat(server, player, channel, author)
         listNumbers = {}
         longStr = ""
 
@@ -1271,7 +1276,10 @@ class MusicBot(discord.Client):
                 pass
 
         #Printing the users song number
-        longStr += "`" + str(author)[:-5] + ": " + str(listNumbers[str(author)[:-5]]) + "`\n\n"
+        if author.id in self.dict_of_apls:
+            longStr += "`" + str(author)[:-5] + ": " + str(listNumbers[str(author)[:-5]]) + "`\n\n"
+        else:
+            longStr += "`" + str(author)[:-5] + ": 0`\n\n"
         longStr += "*--Number of Songs--*\n"
         for i in range(0,10):
             #gets the key with the largest value
@@ -1288,12 +1296,40 @@ class MusicBot(discord.Client):
 
         return Response(longStr, delete_after=35)
 
+
+    async def _cmd_stat(self, server, player, channel, author):
+        t0 = time.clock()
+        #If author no music printing
+        if author.id not in self.dict_of_apls:
+            prntStr = "You have no music"
+            return Response(prntStr, delete_after=35)
+        #List of people with similar songs
+        peopleCompare = {}
+        prntStr = "**__Affinity to Others__**\n\n"
+        #Finds each link for the author who called command
+        for link in self.dict_of_apls[author.id]:
+            #Gets the people who liked the url
+            listOfPeople = self.get_likers(link)
+            for person in listOfPeople:
+                if person in peopleCompare:
+                    peopleCompare[person] += 1
+                else:
+                    peopleCompare[person] = 1
+        #Organizes the list from largest to smallest
+        for i in range(0,len(peopleCompare.keys())):
+            pplInfo = max(peopleCompare.items(), key=lambda k: k[1])
+            del peopleCompare[pplInfo[0]]
+            if pplInfo[0].id != author.id:
+                prntStr += pplInfo[0].name + ": *" + str(pplInfo[1]) + " of " + str(len(self.dict_of_apls[author.id])) + "*\n"
+        print("Time to process compat: " + str(time.clock() - t0) + " sec")
+        return Response(prntStr, delete_after=35)
+
     async def cmd_mylist(self, player, channel, author, permissions, leftover_args):
         """
         Usage:
             {command_prefix}mylist
 
-        View the songs in your personal autoplaylist. 
+        View the songs in your personal autoplaylist.
         """
 
         data = []
@@ -1323,7 +1359,7 @@ class MusicBot(discord.Client):
         Usage:
             {command_prefix}like
 
-        Adds the current song to your autoplaylist. 
+        Adds the current song to your autoplaylist.
         """
 
         print("CMD_LIKE ", str(author.id))
@@ -1351,7 +1387,7 @@ class MusicBot(discord.Client):
             {command_prefix}dislike
             {command_prefix}dislike song_url
 
-        Removes the current song from your autoplaylist. 
+        Removes the current song from your autoplaylist.
         """
 
         self.was_disliked = True
@@ -1397,15 +1433,15 @@ class MusicBot(discord.Client):
 
         # Check for popping from empty queue
         if len(player.playlist.entries) == 0:
-            reply_text = "[Error] Queue is empty." 
+            reply_text = "[Error] Queue is empty."
             return Response(reply_text, delete_after=30)
 
         try:
             position = int(position)
         except ValueError as e:
-            reply_text = "[Error] Invalid position in queue. Enter a valid integer between 1 and %s." 
+            reply_text = "[Error] Invalid position in queue. Enter a valid integer between 1 and %s."
             reply_text %= len(player.playlist.entries)
-            return Response(reply_text, delete_after=30) 
+            return Response(reply_text, delete_after=30)
 
         # Validating
         if position == 1:
@@ -1436,7 +1472,7 @@ class MusicBot(discord.Client):
         Adds the song to the playlist.  If a link is not provided, the first
         result from a youtube search is added to the queue.
         """
-        
+
         song_url = song_url.strip('<>')
 
         if permissions.max_songs and player.playlist.count_for_user(author) >= permissions.max_songs:
@@ -1870,7 +1906,7 @@ class MusicBot(discord.Client):
 
                 likers = ""
                 for each_user in self.get_likers(player.current_entry.url):
-                    # strip off the unique identifiers 
+                    # strip off the unique identifiers
                     # I'm not using the meta data since technically it has no author so I wrote a get_likers function
                     if each_user == self._get_user(self.cur_author):
                         likers = likers + "**" + str(each_user)[:-5] + "**" + ", "
