@@ -1324,6 +1324,96 @@ class MusicBot(discord.Client):
         print("Time to process compat: " + str(time.clock() - t0) + " sec")
         return Response(prntStr, delete_after=35)
 
+    async def cmd_listhas(self, author, channel, leftover_args):
+        """
+        Usage:
+            {command_prefix}listhas songTitle
+
+        Looks if a song title in in your list
+        """
+        prntStr = ""
+        songsInList = 0
+        if len(leftover_args) == 0:
+            prntStr += "```Usage:\n\t{command_prefix}listhas songTitle\n\nLooks if a song title in in your list```"
+        else:
+            #Combining all search words
+            searchWord = ""
+            for words in leftover_args:
+                searchWord += words + " "
+            searchWord = searchWord.strip().lower()
+            prntStr += "**Autoplay lists containing: \"" + searchWord + "\"**\n\n"
+            t0 = time.clock()
+            #Gets all songs with the input word in your list
+            ContainsList = list(filter(lambda element: searchWord in element.split(" --- ")[0].lower(), self.dict_of_apls[author.id]))
+            print("Time pass on your list: %s", time.clock() - t0)
+            #Getting number of songs added
+            songsInList += len(ContainsList)
+            if ContainsList:
+                prntStr += "\t\t:busts_in_silhouette:__Yours__\n"
+            #Printing the list with the word
+            for link in ContainsList:
+                [title, link] = link.split(" --- ")
+                prntStr += ":point_right:" + title + " (" + link + ")" + "\n"
+            if ContainsList:
+                prntStr += "\n"
+            #Looking in other peoples lists for the song
+            t0 = time.clock()
+            for pplID in self.dict_of_apls.keys():
+                #If the key being looked at isn't the same as the author
+                if pplID != author.id:
+                    userName = self._get_user(pplID)
+                    #Converting the name accordinly (if user doesn't exist anymore)
+                    userName = "Unknown User" if str(userName) == "None" else str(userName)[:-5]
+                    ContainsList = list(filter(lambda element: searchWord in element.split(" --- ")[0].lower(), self.dict_of_apls[pplID]))
+                    #Number of songs added
+                    songsInList += len(ContainsList)
+                    if ContainsList:
+                        prntStr += "\t\t:busts_in_silhouette:__" + userName + "__\n"
+                    #Prints other peoples list
+                    for link in ContainsList:
+                        [title, link] = link.split(" --- ")
+                        prntStr += ":point_right:" + title + " (" + link + ")" + "\n"
+                    if ContainsList:
+                        prntStr += "\n"
+            print("Time pass on others list: %s", time.clock() - t0)
+            #Print string limit 2000, go into special printing
+            if len(prntStr) > 2000:
+                #Splits into each person
+                eachPersonList = prntStr.split("\t\t")
+                #Prints the inital line
+                await self.send_typing(channel)
+                await self.safe_send_message(channel, eachPersonList[0], expire_in=(0.5*songsInList+5))
+                del eachPersonList[0]
+                print(str(len(eachPersonList)) + " - # of songs" + str(songsInList))
+                toPrintStr = ""
+                for prsnList in eachPersonList:
+                    #Prints abbrivated version of list
+                    #Note: another option is to print without urls
+                    if len(prsnList) > 2000:
+                        [firstHalf, secondHalf] = prsnList.split("__\n")
+                        secondHalfList = secondHalf.split(":point_right:")
+                        secondHalf = secondHalfList[0]
+                        del secondHalfList[0]
+                        while (len(secondHalf) + len(":point_right:") + len(secondHalfList[0])) < 1905:
+                            secondHalf += ":point_right:" + secondHalfList[0]
+                            del secondHalfList[0]
+                        prntLn = "```Partial List: " + firstHalf[23:] + "```\n" + secondHalf
+                        await self.send_typing(channel)
+                        await self.safe_send_message(channel, prntLn, expire_in=(0.5*songsInList+5))
+                    #If adding next person list to current too large, print
+                    elif (len(toPrintStr) + len(prsnList) > 2000):
+                        await self.send_typing(channel)
+                        await self.safe_send_message(channel, toPrintStr, expire_in=(0.5*songsInList+5))
+                        toPrintStr = prsnList
+                    #Can add person's list to printing queue
+                    else:
+                        toPrintStr += prsnList
+                if len(toPrintStr) != 0:
+                    await self.send_typing(channel)
+                    await self.safe_send_message(channel, toPrintStr, expire_in=(0.5*songsInList+5))
+                return
+        return Response(prntStr, delete_after=(1.1*songsInList+5))
+
     async def cmd_mylist(self, player, channel, author, permissions, leftover_args):
         """
         Usage:
