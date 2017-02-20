@@ -85,6 +85,15 @@ class MusicBot(discord.Client):
         self.init_ok = False
         self.cached_client_id = None
 
+        ########################
+        # housekeeping functions
+        ########################
+        # tweak delimeters - parses any legacy autoplaylists and reformats it to the current format
+        # remove_duplicates - when combining multiple versions of autoplaylists, sometimes you have duplicate
+        #                     entries with different users liking the song. this joins the two lists
+        # update_song_names - grabs the title of the youtube song and stores in the autoplaylist file
+        #
+        ########################
         self.tweak_delimiters()
         self.remove_duplicates()
         self.update_song_names()
@@ -107,11 +116,13 @@ class MusicBot(discord.Client):
             print("Warning: Autoplaylist is empty, disabling.")
             self.config.auto_playlist = False
         else:
+            # using autoplaylist
 
-        	# initializes APLs for each user
+            # initializes APLs for each user
+            # if the --- delimeter is found, that means it's already added the title so we don't want to santize non-alphanumeric characters
+            # if the ~~~ delimeter is found, that means the song is liked by at least one person and we can split the string into URL and likers
             for each_song in self.autoplaylist:
 
-                #print(self.sanitize_string(each_song))
                 tuple_song_authors = each_song
                 if " --- " not in each_song:
                     tuple_song_authors = self.sanitize_string(each_song)
@@ -121,26 +132,19 @@ class MusicBot(discord.Client):
                     # create tuple(url, author)
                     tuple_song_authors = tuple_song_authors.split(" ~~~ ")
                 else:
-                    #print(tuple_song_authors)
                     #print("No delimiter to split with. Assigning to MusicBot")
                     #self.assign_to_music_bot()
                     #break
                     continue
 
-                # FIXME if songs start to corrupt, make sure it's not stripping parts of the URL!
                 song_url, authors = tuple_song_authors
 
                 # for multiple likers, just iterate over comma separated authors
-
-                #print(song_url)
-                #print(authors)
-
                 authors = authors.split("; ")
 
+                # fills our dictionary of user ids=>songs 
                 for each_author in authors:
-                	self._add_to_autoplaylist(song_url, each_author)
-
-                #print(self.dict_of_apls)
+                    self._add_to_autoplaylist(song_url, each_author)
 
         # TODO: Do these properly
         ssd_defaults = {'last_np_msg': None, 'auto_paused': False}
@@ -150,6 +154,14 @@ class MusicBot(discord.Client):
         self.aiosession = aiohttp.ClientSession(loop=self.loop)
         self.http.user_agent += ' MusicBot/%s' % BOTVERSION
 
+    ########################
+    # sanitize_string
+    # 
+    # Cleans up a string by removing characters that might interefere when we split the string
+    #
+    # Precondition: string containing any possible characters
+    # Postcondition: string without characters possible included from using str(variable) like from lists or tuples
+    ########################
     def sanitize_string(self, string):
         clean = ""
         try:
@@ -159,10 +171,29 @@ class MusicBot(discord.Client):
 
         return clean
 
-    # replaces commas with semicolons so we can split on semicolons in the 'likers'
+    ########################
+    # parse_string_delimeter
+    # 
+    # Replaces commas with semicolons so we can split on semicolons for the 'likers'
+    # We do this because a semicolon is a better delimeter when working with URLs
+    # Reference: http://www.sitepoint.com/forums/showthread.php?128801-Recommended-delimiter-for-list-of-URLs
+    #
+    # Precondition: string splitting IDs with commas. i.e. "1234, 3412, 2344"
+    # Postcondition: string splitting IDs with semicolons. i.e. "1234; 3412; 2344"
+    ########################
     def parse_string_delimeter(self, string):
         return str(string).replace(",", ";")
 
+    ########################
+    # assign_to_music_bot
+    # 
+    # If no one likes a song, we assign it to the music bot in hopes that someone likes it while it's playing
+    # Currently not possible to make the music bot dislike it without admin access (manual record modification)
+    # Not recommended for use unless you're importing a legacy autoplaylist
+    #
+    # Precondition: song without any likers. i.e. "https://www.youtube.com"
+    # Postcondition: the music bot likes the song. i.e. "https://www.youtube.com, 1234567890"
+    ########################
     def assign_to_music_bot(self):
         i = 0
         for each_line in self.autoplaylist:
@@ -175,12 +206,29 @@ class MusicBot(discord.Client):
 
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
-    # a, b: string of values seperated by semicolons (;)
+    ########################
+    # joinStr
+    # 
+    # When we have duplicate entries from merging autoplaylists, I believe the safest option is merge the two lists
+    # This function, written by Toaxt, does exactly that
+    #
+    # Precondition: two strings representing the likers for a url i.e. "1234; 2345; 3456", "1234; 4567"
+    # Postcondition: a single string representing the 'join' i.e. "1234; 2345; 3456; 4567"
+    ########################
     def joinStr(self, a, b):
         lista = a.split('; ')
         listb = b.split('; ')
         return '; '.join(sorted(list(set(lista) | set(listb))))
 
+    ########################
+    # remove_duplicates
+    # 
+    # When we have duplicate entries from merging autoplaylists, we could have multiple versions of songs with varying names, of varying names
+    # This function strips down each entry to its url and makes sure there aren't any duplicates and if so, it combines the sets of the likers
+    #
+    # Precondition: messy autoplaylist file, most likely a conglomeration of several archived txt files
+    # Postcondition: clean autoplaylist file, single instance of each video's url and the corresponding likers
+    ########################
     def remove_duplicates(self):
         list_found = []
         list_urls = []
@@ -193,15 +241,15 @@ class MusicBot(discord.Client):
                 if " --- " in each_line:
                     (title, each_line) = each_line.split(" --- ")
 
-                #each_line = self.sanitize_string(each_line)
-
                 # split depending if its title has been added yet or not
+                # alternatively, it depends how the autoplaylist is formatted
                 if " ~~~ " in each_line:
                     (url, likers) = each_line.split(" ~~~ ")
                 else:
-                    print(each_line)
+                    # assume separated by commas
                     (url, likers) = each_line.split(", ")
 
+                # if this is a new url, add it to our list_found, otherwise ignore
                 if url not in list_urls:
                     list_urls.append(url)
 
@@ -226,6 +274,14 @@ class MusicBot(discord.Client):
         self.autoplaylist = list_found
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
+    ########################
+    # tweak_delimiters
+    # 
+    # Updates the delimeters from commas to triple tildas incase titles have commas in them.
+    #
+    # Precondition: URLS and likers separated by ,
+    # Postcondition: URLS and likers separated by ~~~
+    ########################
     def tweak_delimiters(self):
         list_found = []
         for each_line in self.autoplaylist:
@@ -237,6 +293,15 @@ class MusicBot(discord.Client):
         self.autoplaylist = list_found
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
+    ########################
+    # update_song_names
+    # 
+    # Takes the URL of the song and gets 
+    #
+    # Precondition: line containing URL and likers
+    # Postcondition: line containing name of song URL and likers separated by ~~~
+    # Example: Panic! At The Disco: Death Of A Bachelor [OFFICIAL VIDEO] --- https://www.youtube.com/watch?v=R03cqGg40GU ~~~ 12345
+    ########################
     def update_song_names(self):
 
         # TODO: update list name to something more accurate
@@ -261,6 +326,7 @@ class MusicBot(discord.Client):
                     except:
                         # song has probably been removed to copywright
                         # if we don't add it to the list, it's the same as removing it
+                        # notifyLikers()?
                         continue
 
                     print("Processing: ", song_title)
