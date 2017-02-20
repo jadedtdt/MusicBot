@@ -142,7 +142,7 @@ class MusicBot(discord.Client):
                 # for multiple likers, just iterate over comma separated authors
                 authors = authors.split("; ")
 
-                # fills our dictionary of user ids=>songs 
+                # fills our dictionary of user ids=>songs
                 for each_author in authors:
                     self._add_to_autoplaylist(song_url, each_author)
 
@@ -1434,7 +1434,7 @@ class MusicBot(discord.Client):
                     await self.send_typing(channel)
                     await self.safe_send_message(channel, toPrintStr, expire_in=(0.5*songsInList+5))
                 return
-        return Response(prntStr, delete_after=(1.1*songsInList+5))
+        return Response(prntStr, delete_after=(1.1*songsInList+30))
 
     async def cmd_mylist(self, player, channel, author, permissions, leftover_args):
         """
