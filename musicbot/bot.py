@@ -156,7 +156,7 @@ class MusicBot(discord.Client):
 
     ########################
     # assign_to_music_bot
-    # 
+    #
     # If no one likes a song, we assign it to the music bot in hopes that someone likes it while it's playing
     # Currently not possible to make the music bot dislike it without admin access (manual record modification)
     # Not recommended for use unless you're importing a legacy autoplaylist
@@ -178,7 +178,7 @@ class MusicBot(discord.Client):
 
     ########################
     # remove_duplicates
-    # 
+    #
     # When we have duplicate entries from merging autoplaylists, we could have multiple versions of songs with varying names, of varying names
     # This function strips down each entry to its url and makes sure there aren't any duplicates and if so, it combines the sets of the likers
     #
@@ -232,8 +232,8 @@ class MusicBot(discord.Client):
 
     ########################
     # update_song_names
-    # 
-    # Takes the URL of the song and gets 
+    #
+    # Takes the URL of the song and gets
     #
     # Precondition: line containing URL and likers
     # Postcondition: line containing name of song URL and likers separated by ~~~
@@ -278,7 +278,7 @@ class MusicBot(discord.Client):
 
     ########################
     # tweak_delimiters
-    # 
+    #
     # Updates the delimeters from commas to triple tildas incase titles have commas in them.
     #
     # Precondition: URLS and likers separated by ,
@@ -294,7 +294,7 @@ class MusicBot(discord.Client):
 
         self.autoplaylist = list_found
         write_file(self.config.auto_playlist_file, self.autoplaylist)
-        
+
     # TODO: Add some sort of `denied` argument for a message to send when someone else tries to use it
     def owner_only(func):
         @wraps(func)
@@ -1374,6 +1374,9 @@ class MusicBot(discord.Client):
                 prntStr += "\t\t:busts_in_silhouette:__Yours__\n"
             #Printing the list with the word
             for link in ContainsList:
+                #skips songs not processed
+                if " --- " not in link:
+                    continue
                 [title, link] = link.split(" --- ")
                 prntStr += ":point_right:" + title + " (" + link + ")" + "\n"
             if ContainsList:
@@ -1393,6 +1396,9 @@ class MusicBot(discord.Client):
                         prntStr += "\t\t:busts_in_silhouette:__" + userName + "__\n"
                     #Prints other peoples list
                     for link in ContainsList:
+                        #skips songs not processed
+                        if " --- " not in link:
+                            continue
                         [title, link] = link.split(" --- ")
                         prntStr += ":point_right:" + title + " (" + link + ")" + "\n"
                     if ContainsList:
@@ -1406,7 +1412,7 @@ class MusicBot(discord.Client):
                 await self.send_typing(channel)
                 await self.safe_send_message(channel, eachPersonList[0], expire_in=(0.5*songsInList+5))
                 del eachPersonList[0]
-                print(str(len(eachPersonList)) + " - # of songs" + str(songsInList))
+                print(str(len(eachPersonList)) + " - # of songs " + str(songsInList))
                 toPrintStr = ""
                 for prsnList in eachPersonList:
                     #Prints abbrivated version of list
