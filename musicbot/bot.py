@@ -29,7 +29,7 @@ from musicbot.playlist import Playlist
 from musicbot.player import MusicPlayer
 from musicbot.config import Config, ConfigDefaults
 from musicbot.permissions import Permissions, PermissionsDefaults
-from musicbot.utils import load_file, write_file, sane_round_int, get_header
+from musicbot.utils import *
 
 from . import exceptions
 from . import downloader
@@ -125,7 +125,7 @@ class MusicBot(discord.Client):
 
                 tuple_song_authors = each_song
                 if " --- " not in each_song:
-                    tuple_song_authors = self.sanitize_string(each_song)
+                    tuple_song_authors = sanitize_string(each_song)
 
                 # make sure we're not splitting with a delimeter that doesn't exist
                 if " ~~~ " in tuple_song_authors:
@@ -155,36 +155,6 @@ class MusicBot(discord.Client):
         self.http.user_agent += ' MusicBot/%s' % BOTVERSION
 
     ########################
-    # sanitize_string
-    # 
-    # Cleans up a string by removing characters that might interefere when we split the string
-    #
-    # Precondition: string containing any possible characters
-    # Postcondition: string without characters possible included from using str(variable) like from lists or tuples
-    ########################
-    def sanitize_string(self, string):
-        clean = ""
-        try:
-            clean = str(string).replace("(", "").replace(")", "").replace("'", "").replace("[", "").replace("]", "").replace("\"", "")
-        except:
-            print("COPYRIGHT ISSUE")
-
-        return clean
-
-    ########################
-    # parse_string_delimeter
-    # 
-    # Replaces commas with semicolons so we can split on semicolons for the 'likers'
-    # We do this because a semicolon is a better delimeter when working with URLs
-    # Reference: http://www.sitepoint.com/forums/showthread.php?128801-Recommended-delimiter-for-list-of-URLs
-    #
-    # Precondition: string splitting IDs with commas. i.e. "1234, 3412, 2344"
-    # Postcondition: string splitting IDs with semicolons. i.e. "1234; 3412; 2344"
-    ########################
-    def parse_string_delimeter(self, string):
-        return str(string).replace(",", ";")
-
-    ########################
     # assign_to_music_bot
     # 
     # If no one likes a song, we assign it to the music bot in hopes that someone likes it while it's playing
@@ -200,25 +170,11 @@ class MusicBot(discord.Client):
             # make sure we're not splitting with a delimeter that doesn't exist
             if ", " not in each_line:
                 string = self.autoplaylist[i], str(self.user.id)
-                self.autoplaylist[i] = self.sanitize_string(string)
+                self.autoplaylist[i] = sanitize_string(string)
 
             i += 1
 
         write_file(self.config.auto_playlist_file, self.autoplaylist)
-
-    ########################
-    # joinStr
-    # 
-    # When we have duplicate entries from merging autoplaylists, I believe the safest option is merge the two lists
-    # This function, written by Toaxt, does exactly that
-    #
-    # Precondition: two strings representing the likers for a url i.e. "1234; 2345; 3456", "1234; 4567"
-    # Postcondition: a single string representing the 'join' i.e. "1234; 2345; 3456; 4567"
-    ########################
-    def joinStr(self, a, b):
-        lista = a.split('; ')
-        listb = b.split('; ')
-        return '; '.join(sorted(list(set(lista) | set(listb))))
 
     ########################
     # remove_duplicates
@@ -267,28 +223,9 @@ class MusicBot(discord.Client):
                     if " ~~~ " in cached_likers_line:
                         (cached_start, cached_likers) = cached_likers_line.split(" ~~~ ")
 
-                    new_likers_str = self.joinStr(cached_likers, likers)
+                    new_likers_str = joinStr(cached_likers, likers)
                     new_likers_line = cached_start + " ~~~ " + new_likers_str
                     list_found[index] = new_likers_line
-
-        self.autoplaylist = list_found
-        write_file(self.config.auto_playlist_file, self.autoplaylist)
-
-    ########################
-    # tweak_delimiters
-    # 
-    # Updates the delimeters from commas to triple tildas incase titles have commas in them.
-    #
-    # Precondition: URLS and likers separated by ,
-    # Postcondition: URLS and likers separated by ~~~
-    ########################
-    def tweak_delimiters(self):
-        list_found = []
-        for each_line in self.autoplaylist:
-            each_line = self.sanitize_string(each_line)
-            if " ~~~ " not in each_line:
-                each_line = each_line.replace(", ", " ~~~ ")
-            list_found.append(each_line)
 
         self.autoplaylist = list_found
         write_file(self.config.auto_playlist_file, self.autoplaylist)
@@ -311,7 +248,7 @@ class MusicBot(discord.Client):
             # if a ---  is not found, that means the title needs to be loaded with pafy
             if " --- " not in each_line:
                 # let's assert the line is clean before we change its format
-                each_line = self.sanitize_string(each_line)
+                each_line = sanitize_string(each_line)
 
                 if " ~~~ " in each_line:
                     (url, authors) = each_line.split(" ~~~ ")
@@ -339,6 +276,25 @@ class MusicBot(discord.Client):
         self.autoplaylist = list_found
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
+    ########################
+    # tweak_delimiters
+    # 
+    # Updates the delimeters from commas to triple tildas incase titles have commas in them.
+    #
+    # Precondition: URLS and likers separated by ,
+    # Postcondition: URLS and likers separated by ~~~
+    ########################
+    def tweak_delimiters(self):
+        list_found = []
+        for each_line in self.autoplaylist:
+            each_line = sanitize_string(each_line)
+            if " ~~~ " not in each_line:
+                each_line = each_line.replace(", ", " ~~~ ")
+            list_found.append(each_line)
+
+        self.autoplaylist = list_found
+        write_file(self.config.auto_playlist_file, self.autoplaylist)
+        
     # TODO: Add some sort of `denied` argument for a message to send when someone else tries to use it
     def owner_only(func):
         @wraps(func)
@@ -694,7 +650,7 @@ class MusicBot(discord.Client):
                 #print(list(self.dict_of_apls.keys()))
 
                 #old way of getting a random song
-                #tuple_song_author = self.sanitize_string(choice(self.autoplaylist))
+                #tuple_song_author = sanitize_string(choice(self.autoplaylist))
 
                 # make sure we're not splitting with a delimeter that doesn't exist
                 #if ", " in tuple_song_author:
@@ -1081,7 +1037,7 @@ class MusicBot(discord.Client):
         if song_line == None:
 
             str_to_write = song_url + " ~~~ " + author
-            self.autoplaylist.append(self.sanitize_string(str_to_write))
+            self.autoplaylist.append(sanitize_string(str_to_write))
         # otherwise we just want to add this liker to the list
         else:
             if author in song_line:
@@ -1094,7 +1050,7 @@ class MusicBot(discord.Client):
             # finds where in the file this line is and updates it (same as )
             index = self.autoplaylist.index(song_line)
             if index != None:
-                self.autoplaylist[index] = self.sanitize_string(str_to_write)
+                self.autoplaylist[index] = sanitize_string(str_to_write)
 
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
@@ -1142,13 +1098,13 @@ class MusicBot(discord.Client):
                 print("*********")
                 likers.remove(author)
                 print(str(likers))
-                #new_line = url, self.parse_string_delimeter(self.sanitize_string(str(likers)))
-                new_line = url, self.parse_string_delimeter(str(likers))
+                #new_line = url, parse_string_delimeter(sanitize_string(str(likers)))
+                new_line = url, parse_string_delimeter(str(likers))
 
                 if line_index != None:
                     print("LINE_INDEX")
-                    print(self.sanitize_string(new_line))
-                    #self.autoplaylist[line_index] = self.sanitize_string(new_line)
+                    print(sanitize_string(new_line))
+                    #self.autoplaylist[line_index] = sanitize_string(new_line)
                     self.autoplaylist[line_index] = new_line
 
             else:
