@@ -142,7 +142,7 @@ class MusicBot(discord.Client):
                 # for multiple likers, just iterate over comma separated authors
                 authors = authors.split("; ")
 
-                # fills our dictionary of user ids=>songs 
+                # fills our dictionary of user ids=>songs
                 for each_author in authors:
                     self._add_to_autoplaylist(song_url, each_author)
 
@@ -156,7 +156,7 @@ class MusicBot(discord.Client):
 
     ########################
     # sanitize_string
-    # 
+    #
     # Cleans up a string by removing characters that might interefere when we split the string
     #
     # Precondition: string containing any possible characters
@@ -173,7 +173,7 @@ class MusicBot(discord.Client):
 
     ########################
     # parse_string_delimeter
-    # 
+    #
     # Replaces commas with semicolons so we can split on semicolons for the 'likers'
     # We do this because a semicolon is a better delimeter when working with URLs
     # Reference: http://www.sitepoint.com/forums/showthread.php?128801-Recommended-delimiter-for-list-of-URLs
@@ -186,7 +186,7 @@ class MusicBot(discord.Client):
 
     ########################
     # assign_to_music_bot
-    # 
+    #
     # If no one likes a song, we assign it to the music bot in hopes that someone likes it while it's playing
     # Currently not possible to make the music bot dislike it without admin access (manual record modification)
     # Not recommended for use unless you're importing a legacy autoplaylist
@@ -208,7 +208,7 @@ class MusicBot(discord.Client):
 
     ########################
     # joinStr
-    # 
+    #
     # When we have duplicate entries from merging autoplaylists, I believe the safest option is merge the two lists
     # This function, written by Toaxt, does exactly that
     #
@@ -222,7 +222,7 @@ class MusicBot(discord.Client):
 
     ########################
     # remove_duplicates
-    # 
+    #
     # When we have duplicate entries from merging autoplaylists, we could have multiple versions of songs with varying names, of varying names
     # This function strips down each entry to its url and makes sure there aren't any duplicates and if so, it combines the sets of the likers
     #
@@ -276,7 +276,7 @@ class MusicBot(discord.Client):
 
     ########################
     # tweak_delimiters
-    # 
+    #
     # Updates the delimeters from commas to triple tildas incase titles have commas in them.
     #
     # Precondition: URLS and likers separated by ,
@@ -295,8 +295,8 @@ class MusicBot(discord.Client):
 
     ########################
     # update_song_names
-    # 
-    # Takes the URL of the song and gets 
+    #
+    # Takes the URL of the song and gets
     #
     # Precondition: line containing URL and likers
     # Postcondition: line containing name of song URL and likers separated by ~~~
@@ -1478,7 +1478,7 @@ class MusicBot(discord.Client):
                     await self.send_typing(channel)
                     await self.safe_send_message(channel, toPrintStr, expire_in=(0.5*songsInList+5))
                 return
-        return Response(prntStr, delete_after=(1.1*songsInList+5))
+        return Response(prntStr, delete_after=(1.1*songsInList+30))
 
     async def cmd_mylist(self, player, channel, author, permissions, leftover_args):
         """
