@@ -1346,41 +1346,82 @@ class MusicBot(discord.Client):
         print("Time to process compat: " + str(time.clock() - t0) + " sec")
         return Response(prntStr, delete_after=35)
 
-    async def cmd_listhas(self, author, channel, leftover_args):
+        #addtag
+        #playtag
+
+    async def cmd_listhas(self, player, author, channel, permissions, leftover_args):
         """
         Usage:
-            {command_prefix}listhas songTitle
+            {command_prefix}listhas -command songTitle
 
-        Looks if a song title in in your list
+        command:
+            -w looks only for whole words not part of words
+            -p# plays a song of that spot in your list of found
+        Looks if a song title is in your or others lists
+
         """
+        thinkingMsg = await self.safe_send_message(channel, "Processing:thought_balloon:")
         prntStr = ""
         songsInList = 0
         if len(leftover_args) == 0:
             prntStr += "```Usage:\n\t{command_prefix}listhas songTitle\n\nLooks if a song title in in your list```"
         else:
-            #Combining all search words
             searchWord = ""
-            for words in leftover_args:
-                searchWord += words + " "
-            searchWord = searchWord.strip().lower()
+            toPlay = None
+            #Combining all search words
+            if leftover_args[0] == "-w":
+                for words in leftover_args[1:]:
+                    searchWord += words + " "
+                searchWord = " " + searchWord.lower()
+            elif "-p" in leftover_args[0]:
+                 for words in leftover_args[1:]:
+                     searchWord += words + " "
+                 searchWord = searchWord.strip().lower()
+                 toPlay = leftover_args[0].split("-p")[1]
+                 if toPlay == "":
+                     toPlay = 1
+            else:
+                for words in leftover_args:
+                    searchWord += words + " "
+                searchWord = searchWord.strip().lower()
             prntStr += "**Autoplay lists containing: \"" + searchWord + "\"**\n\n"
             t0 = time.clock()
             #Gets all songs with the input word in your list
             ContainsList = list(filter(lambda element: searchWord in element.split(" --- ")[0].lower(), self.dict_of_apls[author.id]))
             print("Time pass on your list: %s", time.clock() - t0)
-            #Getting number of songs added
-            songsInList += len(ContainsList)
+            #Removing unprocessed songs
+            for link in ContainsList:
+                if " --- " not in link:
+                    ContainsList.remove(link)
             if ContainsList:
                 prntStr += "\t\t:busts_in_silhouette:__Yours__\n"
             #Printing the list with the word
             for link in ContainsList:
-                #skips songs not processed
-                if " --- " not in link:
-                    continue
-                [title, link] = link.split(" --- ")
+                #Dealing with -p command
+                try:
+                    if (ContainsList.index(link) + 1) == int(toPlay):
+                        #await self.cmd_play(player, channel, author, permissions, "", link.split(" --- ")[1])
+                        info = await self.downloader.extract_info(player.playlist.loop, link.split(" --- ")[1], download=False, process=False)
+                        if not info:
+                            raise exceptions.CommandError("That video cannot be played.", expire_in=30)
+                        entry, position = await player.playlist.add_entry(link.split(" --- ")[1], channel=channel, author=author)
+                        #Not sure if needed
+                        #await entry.get_ready_future()
+                        await self.safe_send_message(channel, "Song added to queue: " + link.split(" --- ")[0], expire_in=30)
+                except Exception:
+                    pass
+                try:
+                    [title, link] = link.split(" --- ")
+                except:
+                    print("Fail to parse yours: " + link)
+                    ContainsList.remove(link)
+                    pass
                 prntStr += ":point_right:" + title + " (" + link + ")" + "\n"
+            #Getting number of songs added
+            songsInList += len(ContainsList)
             if ContainsList:
                 prntStr += "\n"
+
             #Looking in other peoples lists for the song
             t0 = time.clock()
             for pplID in self.dict_of_apls.keys():
@@ -1390,29 +1431,34 @@ class MusicBot(discord.Client):
                     #Converting the name accordinly (if user doesn't exist anymore)
                     userName = "Unknown User" if str(userName) == "None" else str(userName)[:-5]
                     ContainsList = list(filter(lambda element: searchWord in element.split(" --- ")[0].lower(), self.dict_of_apls[pplID]))
-                    #Number of songs added
-                    songsInList += len(ContainsList)
                     if ContainsList:
                         prntStr += "\t\t:busts_in_silhouette:__" + userName + "__\n"
                     #Prints other peoples list
                     for link in ContainsList:
-                        #skips songs not processed
-                        if " --- " not in link:
-                            continue
-                        [title, link] = link.split(" --- ")
+                        try:
+                            [title, link] = link.split(" --- ")
+                        except:
+                            print("Fail to parse " + userName + ": " + link)
+                            ContainsList.remove(link)
+                            pass
                         prntStr += ":point_right:" + title + " (" + link + ")" + "\n"
+                    #Number of songs added
+                    songsInList += len(ContainsList)
                     if ContainsList:
                         prntStr += "\n"
             print("Time pass on others list: %s", time.clock() - t0)
+
+            #PRINTING TIME
             #Print string limit 2000, go into special printing
+            await self.safe_delete_message(thinkingMsg)
             if len(prntStr) > 2000:
                 #Splits into each person
                 eachPersonList = prntStr.split("\t\t")
                 #Prints the inital line
                 await self.send_typing(channel)
-                await self.safe_send_message(channel, eachPersonList[0], expire_in=(0.5*songsInList+5))
+                await self.safe_send_message(channel, eachPersonList[0], expire_in=(0.25*songsInList+5))
                 del eachPersonList[0]
-                print(str(len(eachPersonList)) + " - # of songs " + str(songsInList))
+                print("ppl: " + str(len(eachPersonList)) + " - # of songs " + str(songsInList))
                 toPrintStr = ""
                 for prsnList in eachPersonList:
                     #Prints abbrivated version of list
@@ -1427,18 +1473,18 @@ class MusicBot(discord.Client):
                             del secondHalfList[0]
                         prntLn = "```Partial List: " + firstHalf[23:] + "```\n" + secondHalf
                         await self.send_typing(channel)
-                        await self.safe_send_message(channel, prntLn, expire_in=(0.5*songsInList+5))
+                        await self.safe_send_message(channel, prntLn, expire_in=(0.25*songsInList+5))
                     #If adding next person list to current too large, print
                     elif (len(toPrintStr) + len(prsnList) > 2000):
                         await self.send_typing(channel)
-                        await self.safe_send_message(channel, toPrintStr, expire_in=(0.5*songsInList+5))
+                        await self.safe_send_message(channel, toPrintStr, expire_in=(0.25*songsInList+5))
                         toPrintStr = prsnList
                     #Can add person's list to printing queue
                     else:
                         toPrintStr += prsnList
                 if len(toPrintStr) != 0:
                     await self.send_typing(channel)
-                    await self.safe_send_message(channel, toPrintStr, expire_in=(0.5*songsInList+5))
+                    await self.safe_send_message(channel, toPrintStr, expire_in=(0.25*songsInList+5))
                 return
         return Response(prntStr, delete_after=(1.1*songsInList+30))
 
