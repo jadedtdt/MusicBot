@@ -70,6 +70,7 @@ class MusicBot(discord.Client):
         random.seed(datetime.now())
         self.players = {}
         self.the_voice_clients = {}
+        self.metaData = {}
         self.locks = defaultdict(asyncio.Lock)
         self.voice_client_connect_lock = asyncio.Lock()
         self.voice_client_move_lock = asyncio.Lock()
@@ -1346,8 +1347,22 @@ class MusicBot(discord.Client):
         print("Time to process compat: " + str(time.clock() - t0) + " sec")
         return Response(prntStr, delete_after=35)
 
-        #addtag
-        #playtag
+    async def cmd_addtag(self, player, author, channel, leftover_args):
+        if leftover_args[0].lower() in self.metaData.keys():
+            if player.current_entry.url not in self.metaData[leftover_args[0].lower()]:
+                self.metaData[leftover_args[0].lower()].append(player.current_entry.url)
+        else:
+            self.metaData[leftover_args[0].lower()] = [player.current_entry.url]
+
+    async def cmd_playtag(self, player, author, channel, permissions, leftover_args):
+        print(self.metaData[leftover_args[0].lower()])
+        pass
+
+    async def cmd_alltag(self, player, author, channel, permissions, leftover_args):
+        prntStr = "**Metadata tags**\n\n"
+        for tags in self.metaData.keys():
+            prntStr += tags + " : " + str(len(self.metaData[tags]))
+        return Response(prntStr, delete_after=30)
 
     async def cmd_listhas(self, player, author, channel, permissions, leftover_args):
         """
@@ -1456,7 +1471,7 @@ class MusicBot(discord.Client):
                 eachPersonList = prntStr.split("\t\t")
                 #Prints the inital line
                 await self.send_typing(channel)
-                await self.safe_send_message(channel, eachPersonList[0], expire_in=(0.25*songsInList+5))
+                await self.safe_send_message(channel, eachPersonList[0], expire_in=(0.1*songsInList+5))
                 del eachPersonList[0]
                 print("ppl: " + str(len(eachPersonList)) + " - # of songs " + str(songsInList))
                 toPrintStr = ""
@@ -1473,18 +1488,18 @@ class MusicBot(discord.Client):
                             del secondHalfList[0]
                         prntLn = "```Partial List: " + firstHalf[23:] + "```\n" + secondHalf
                         await self.send_typing(channel)
-                        await self.safe_send_message(channel, prntLn, expire_in=(0.25*songsInList+5))
+                        await self.safe_send_message(channel, prntLn, expire_in=(0.1*songsInList+5))
                     #If adding next person list to current too large, print
                     elif (len(toPrintStr) + len(prsnList) > 2000):
                         await self.send_typing(channel)
-                        await self.safe_send_message(channel, toPrintStr, expire_in=(0.25*songsInList+5))
+                        await self.safe_send_message(channel, toPrintStr, expire_in=(0.1*songsInList+5))
                         toPrintStr = prsnList
                     #Can add person's list to printing queue
                     else:
                         toPrintStr += prsnList
                 if len(toPrintStr) != 0:
                     await self.send_typing(channel)
-                    await self.safe_send_message(channel, toPrintStr, expire_in=(0.25*songsInList+5))
+                    await self.safe_send_message(channel, toPrintStr, expire_in=(0.1*songsInList+5))
                 return
         return Response(prntStr, delete_after=(1.1*songsInList+30))
 
