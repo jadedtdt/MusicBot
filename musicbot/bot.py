@@ -80,7 +80,7 @@ class MusicBot(discord.Client):
 
         self.blacklist = set(load_file(self.config.blacklist_file))
         self.autoplaylist = load_file(self.config.auto_playlist_file)
-        self.downloader = downloader.Downloader(download_folder='audio_cache')
+        self.downloader = downloader.Downloader(download_folder=AUDIO_CACHE_PATH)
 
         self.exit_signal = None
         self.init_ok = False
@@ -96,7 +96,7 @@ class MusicBot(discord.Client):
         #
         ########################
         self.tweak_delimiters()
-        self.remove_duplicates()
+        #self.remove_duplicates()
         self.update_song_names()
 
         # it's a dictionary of lists where the keys are the IDs and the value is a list of their songs
