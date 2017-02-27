@@ -1367,55 +1367,80 @@ class MusicBot(discord.Client):
         print("Time to process compat: " + str(time.clock() - t0) + " sec")
         return Response(prntStr, delete_after=35)
 
-    async def cmd_addtag(self, player, author, channel, leftover_args):
+    async def cmd_tag(self, player, author, channel, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}tag command TAG
+
+        Uses the tag command to do the following:
+        - ADD : Adds the current song to the specified tag
+        - REMOVE : Removes the current song from the specified tag
+        - PLAY : Plays a random song from the specified tag
+        - ALL : Prints all the tags
+        """
+
+        if len(leftover_args) >= 1 and len(leftover_args) <= 2:
+            if leftover_args[0].lower() == "add":
+                return await self._cmd_addtag(player, author, channel, leftover_args[1])
+            elif leftover_args[0].lower() == "remove":
+                return await self._cmd_removetag(player, author, channel, leftover_args[1])
+            elif leftover_args[0].lower() == "all":
+                return await self._cmd_alltag(player, author, channel, permissions, None)
+            elif leftover_args[0].lower() == "play":
+                return await self._cmd_playtag(player, author, channel, permissions, leftover_args[1])
+            else:
+                prntStr = "**[" + leftover_args[0] + "]** is not a recognized command"
+                return Response(prntStr, delete_after=20)
+        else:
+            prntStr = "**" + len(leftover_args) + "** arguments were given **1-2** arguments expected"
+            return Response(prntStr, delete_after=20)
+
+
+    async def _cmd_addtag(self, player, author, channel, leftover_args):
         """
         Usage:
             {command_prefix}addtag TAG
 
         Adds the playing song to the specified tag
         """
-        if len(leftover_args) > 1:
-            prntStr = "Too many arguments are given. Give only one tag."
-            return Response(prntStr, delete_after=20)
+
         #Checks if tag already exists
-        if leftover_args[0].lower() in self.metaData.keys():
+        if leftover_args.lower() in self.metaData.keys():
             #Checks if the song is already in the tag/list
-            if sanitize_string(player.current_entry.url) not in self.metaData[leftover_args[0].lower()]:
-                self.metaData[leftover_args[0].lower()].append(player.current_entry.url)
+            if sanitize_string(player.current_entry.url) not in self.metaData[leftover_args.lower()]:
+                self.metaData[leftover_args.lower()].append(player.current_entry.url)
             else:
-                prntStr = "**" + player.current_entry.title + "** is already added to the tag **" + leftover_args[0] + "**"
+                prntStr = "**" + player.current_entry.title + "** is already added to the **[" + leftover_args + "]** tag"
                 return Response(prntStr, delete_after=20)
         else:
             #If tag doesn't exist, create a new tag
-            self.metaData[leftover_args[0].lower()] = [player.current_entry.url]
+            self.metaData[leftover_args.lower()] = [player.current_entry.url]
         #Updating list to file
         await self._cmd_updatetags()
-        prntStr = "**" + player.current_entry.title + "** was added to the **" + leftover_args[0] + "** tag"
+        prntStr = "**" + player.current_entry.title + "** was added to the **[" + leftover_args + "]** tag"
         return Response(prntStr, delete_after=20)
 
-    async def cmd_removetag(self, player, author, channel, leftover_args):
+    async def _cmd_removetag(self, player, author, channel, leftover_args):
         """
         Usage:
             {command_prefix}removetag TAG
 
         Removes the current playing song for the specified tag
         """
-        if len(leftover_args) > 1:
-            prntStr = "Too many arguments are given. Give only one tag."
-            return Response(prntStr, delete_after=20)
+
         # Checks if the tag exists first
-        if leftover_args[0] in self.metaData.keys():
+        if leftover_args in self.metaData.keys():
             #Checks if the url is in the list
-            if sanitize_string(player.current_entry.url) in self.metaData[leftover_args[0].lower()]:
-                self.metaData[leftover_args[0].lower()].remove(sanitize_string(player.current_entry.url))
+            if sanitize_string(player.current_entry.url) in self.metaData[leftover_args.lower()]:
+                self.metaData[leftover_args.lower()].remove(sanitize_string(player.current_entry.url))
                 #Remove tag entirely if empty
-                if len(self.metaData[leftover_args[0].lower()]) == 0:
-                    del self.metaData[leftover_args[0].lower()]
+                if len(self.metaData[leftover_args.lower()]) == 0:
+                    del self.metaData[leftover_args.lower()]
                 #Update tags file
                 await self._cmd_updatetags()
-                prntStr = "**" + player.current_entry.title + "** is removed from **" + leftover_args[0] + "**"
+                prntStr = "**" + player.current_entry.title + "** is removed from **[" + leftover_args + "]** tag"
             else:
-                prntStr = "**" + player.current_entry.title + "** was not in **" + leftover_args[0] + "**"
+                prntStr = "**" + player.current_entry.title + "** was not in **[" + leftover_args + "]** tag"
         return Response(prntStr, delete_after=20)
 
     async def _cmd_updatetags(self):
@@ -1433,21 +1458,19 @@ class MusicBot(discord.Client):
             str_to_write.append(sanitize_string(self.metaData[metaTag]))
         write_file(self.config.metadata_file, str_to_write)
 
-    async def cmd_playtag(self, player, author, channel, permissions, leftover_args):
+    async def _cmd_playtag(self, player, author, channel, permissions, leftover_args):
         """
         Usage:
             {command_prefix}playtag TAG
 
         Plays a song from the specified tag
         """
-        if len(leftover_args) > 1:
-            prntStr = "Too many arguments are given. Give only one tag."
-            return Response(prntStr, delete_after=20)
+
         #Checks if tag exists
-        if leftover_args[0].lower() in self.metaData.keys():
-            playUrl = random.choice(self.metaData[leftover_args[0].lower()])
+        if leftover_args.lower() in self.metaData.keys():
+            playUrl = random.choice(self.metaData[leftover_args.lower()])
         else:
-            prntStr = "The tag " + leftover_args[0] + " does not exist."
+            prntStr = "The tag " + leftover_args + " does not exist."
             return Response(prntStr, delete_after=35)
         try:
             info = await self.downloader.extract_info(player.playlist.loop, playUrl, download=False, process=False)
@@ -1466,10 +1489,10 @@ class MusicBot(discord.Client):
             prntStr = "Enqueued **%s** to be played. Position in queue: %s - estimated time until playing: %s" %(entry.title, position, time_until)
             return Response(prntStr, delete_after=30)
         except Exception:
-            prntStr = "A song from " + leftover_args[0] + " was unable to be added."
+            prntStr = "A song from " + leftover_args + " was unable to be added."
             return Response(prntStr, delete_after=35)
 
-    async def cmd_alltag(self, player, author, channel, permissions, leftover_args):
+    async def _cmd_alltag(self, player, author, channel, permissions, leftover_args):
         """
         Usage:
             {command_prefix}alltag
