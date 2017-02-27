@@ -81,6 +81,7 @@ class Config:
 
         self.blacklist_file = config.get('Files', 'BlacklistFile', fallback=ConfigDefaults.blacklist_file)
         self.auto_playlist_file = config.get('Files', 'AutoPlaylistFile', fallback=ConfigDefaults.auto_playlist_file)
+        self.metadata_file = config.get('Files', 'MetaDataFile', fallback=ConfigDefaults.metadata_file)
 
         self.run_checks()
 
@@ -191,6 +192,7 @@ class ConfigDefaults:
     options_file = 'config/options.ini'
     blacklist_file = 'config/blacklist.txt'
     auto_playlist_file = 'config/autoplaylist.txt' # this will change when I add playlists
+    metadata_file = 'config/metadata.txt'
 
 # These two are going to be wrappers for the id lists, with add/remove/load/save functions
 # and id/object conversion so types aren't an issue

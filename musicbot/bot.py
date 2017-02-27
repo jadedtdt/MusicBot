@@ -80,6 +80,7 @@ class MusicBot(discord.Client):
 
         self.blacklist = set(load_file(self.config.blacklist_file))
         self.autoplaylist = load_file(self.config.auto_playlist_file)
+        self.wholeMetadata = load_file(self.config.metadata_file)
         self.downloader = downloader.Downloader(download_folder=AUDIO_CACHE_PATH)
 
         self.exit_signal = None
@@ -146,6 +147,21 @@ class MusicBot(discord.Client):
                 # fills our dictionary of user ids=>songs
                 for each_author in authors:
                     self._add_to_autoplaylist(song_url, each_author)
+
+        #Setting up the metaData tags
+        if not self.wholeMetadata:
+            print("Attention: Metadata tags are empty")
+        else:
+            temp = True
+            for row in self.wholeMetadata:
+                if temp == True:
+                    self.metaData[row] = []
+                    temp = row
+                else:
+                    urlList = row.split(", ")
+                    for addurl in urlList:
+                        self.metaData[temp].append(addurl)
+                    temp = True
 
         # TODO: Do these properly
         ssd_defaults = {'last_np_msg': None, 'auto_paused': False}
@@ -638,10 +654,14 @@ class MusicBot(discord.Client):
             while self.autoplaylist and counter < 100 and not player.is_paused:
 
                 people = []
+                #Looking for people in the channel to choose who song gets played
                 for m in player.voice_client.channel.voice_members:
                     if not (m.deaf or m.self_deaf):
                         people.append(m.id)
 
+                #ADDING NEXT
+                #Looks through list of fake people to add to list for songs to be played
+                #Will only add that list if person still in channel, else remove from list
                 #print(people)
 
                 #author = random.choice(list(self.dict_of_apls.keys()))
@@ -1348,20 +1368,117 @@ class MusicBot(discord.Client):
         return Response(prntStr, delete_after=35)
 
     async def cmd_addtag(self, player, author, channel, leftover_args):
+        """
+        Usage:
+            {command_prefix}addtag TAG
+
+        Adds the playing song to the specified tag
+        """
+        if len(leftover_args) > 1:
+            prntStr = "Too many arguments are given. Give only one tag."
+            return Response(prntStr, delete_after=20)
+        #Checks if tag already exists
         if leftover_args[0].lower() in self.metaData.keys():
-            if player.current_entry.url not in self.metaData[leftover_args[0].lower()]:
+            #Checks if the song is already in the tag/list
+            if sanitize_string(player.current_entry.url) not in self.metaData[leftover_args[0].lower()]:
                 self.metaData[leftover_args[0].lower()].append(player.current_entry.url)
+            else:
+                prntStr = "**" + player.current_entry.title + "** is already added to the tag **" + leftover_args[0] + "**"
+                return Response(prntStr, delete_after=20)
         else:
+            #If tag doesn't exist, create a new tag
             self.metaData[leftover_args[0].lower()] = [player.current_entry.url]
+        #Updating list to file
+        await self._cmd_updatetags()
+        prntStr = "**" + player.current_entry.title + "** was added to the **" + leftover_args[0] + "** tag"
+        return Response(prntStr, delete_after=20)
+
+    async def cmd_removetag(self, player, author, channel, leftover_args):
+        """
+        Usage:
+            {command_prefix}removetag TAG
+
+        Removes the current playing song for the specified tag
+        """
+        if len(leftover_args) > 1:
+            prntStr = "Too many arguments are given. Give only one tag."
+            return Response(prntStr, delete_after=20)
+        # Checks if the tag exists first
+        if leftover_args[0] in self.metaData.keys():
+            #Checks if the url is in the list
+            if sanitize_string(player.current_entry.url) in self.metaData[leftover_args[0].lower()]:
+                self.metaData[leftover_args[0].lower()].remove(sanitize_string(player.current_entry.url))
+                #Remove tag entirely if empty
+                if len(self.metaData[leftover_args[0].lower()]) == 0:
+                    del self.metaData[leftover_args[0].lower()]
+                #Update tags file
+                await self._cmd_updatetags()
+                prntStr = "**" + player.current_entry.title + "** is removed from **" + leftover_args[0] + "**"
+            else:
+                prntStr = "**" + player.current_entry.title + "** was not in **" + leftover_args[0] + "**"
+        return Response(prntStr, delete_after=20)
+
+    async def _cmd_updatetags(self):
+        """
+        Usage:
+            self._cmd_updatetags()
+
+        Takes the current metaData dictionary and pushes to file
+        """
+        str_to_write = []
+        for metaTag in self.metaData:
+            #First tag
+            str_to_write.append(metaTag)
+            #Second push urls
+            str_to_write.append(sanitize_string(self.metaData[metaTag]))
+        write_file(self.config.metadata_file, str_to_write)
 
     async def cmd_playtag(self, player, author, channel, permissions, leftover_args):
-        print(self.metaData[leftover_args[0].lower()])
-        pass
+        """
+        Usage:
+            {command_prefix}playtag TAG
+
+        Plays a song from the specified tag
+        """
+        if len(leftover_args) > 1:
+            prntStr = "Too many arguments are given. Give only one tag."
+            return Response(prntStr, delete_after=20)
+        #Checks if tag exists
+        if leftover_args[0].lower() in self.metaData.keys():
+            playUrl = random.choice(self.metaData[leftover_args[0].lower()])
+        else:
+            prntStr = "The tag " + leftover_args[0] + " does not exist."
+            return Response(prntStr, delete_after=35)
+        try:
+            info = await self.downloader.extract_info(player.playlist.loop, playUrl, download=False, process=False)
+            if not info:
+                raise exceptions.CommandError("That video cannot be played.", expire_in=30)
+            entry, position = await player.playlist.add_entry(playUrl, channel=channel, author=author)
+            if position == 1 and player.is_stopped:
+                position = 'Up next!'
+            else:
+                try:
+                    time_until = await player.playlist.estimate_time_until(position, player)
+                except:
+                    time_until = ''
+            #Not sure if needed
+            #await entry.get_ready_future()
+            prntStr = "Enqueued **%s** to be played. Position in queue: %s - estimated time until playing: %s" %(entry.title, position, time_until)
+            return Response(prntStr, delete_after=30)
+        except Exception:
+            prntStr = "A song from " + leftover_args[0] + " was unable to be added."
+            return Response(prntStr, delete_after=35)
 
     async def cmd_alltag(self, player, author, channel, permissions, leftover_args):
-        prntStr = "**Metadata tags**\n\n"
+        """
+        Usage:
+            {command_prefix}alltag
+
+        Shows all the tags
+        """
+        prntStr = "__Metadata tags__\n\n"
         for tags in self.metaData.keys():
-            prntStr += tags + " : " + str(len(self.metaData[tags]))
+            prntStr += "**" + tags.capitalize() + "** : " + str(len(self.metaData[tags])) + "\n"
         return Response(prntStr, delete_after=30)
 
     async def cmd_listhas(self, player, author, channel, permissions, leftover_args):
@@ -1375,6 +1492,8 @@ class MusicBot(discord.Client):
         Looks if a song title is in your or others lists
 
         """
+
+        #Add to list after whole list is compiled
         thinkingMsg = await self.safe_send_message(channel, "Processing:thought_balloon:")
         prntStr = ""
         songsInList = 0
@@ -1408,10 +1527,17 @@ class MusicBot(discord.Client):
             for link in ContainsList:
                 if " --- " not in link:
                     ContainsList.remove(link)
-            if ContainsList:
-                prntStr += "\t\t:busts_in_silhouette:__Yours__\n"
+            prsnPrint = "\t\t:busts_in_silhouette:__Yours__\n"
             #Printing the list with the word
             for link in ContainsList:
+                #Making the song list
+                try:
+                    [title, link] = link.split(" --- ")
+                    prsnPrint += ":point_right:" + title + " (" + link + ")" + "\n"
+                except:
+                    print("Fail to parse yours: " + link)
+                    ContainsList.remove(link)
+                    continue
                 #Dealing with -p command
                 try:
                     if (ContainsList.index(link) + 1) == int(toPlay):
@@ -1422,20 +1548,21 @@ class MusicBot(discord.Client):
                         entry, position = await player.playlist.add_entry(link.split(" --- ")[1], channel=channel, author=author)
                         #Not sure if needed
                         #await entry.get_ready_future()
-                        await self.safe_send_message(channel, "Song added to queue: " + link.split(" --- ")[0], expire_in=30)
+                        if position == 1 and player.is_stopped:
+                            position = 'Up next!'
+                        else:
+                            try:
+                                time_until = await player.playlist.estimate_time_until(position, player)
+                            except:
+                                time_until = ''
+                        shrtPrint = "Enqueued **%s** to be played. Position in queue: %s - estimated time until playing: %s" %(entry.title, position, time_until)
+                        await self.safe_send_message(channel, shrtPrint, expire_in=30)
                 except Exception:
                     pass
-                try:
-                    [title, link] = link.split(" --- ")
-                except:
-                    print("Fail to parse yours: " + link)
-                    ContainsList.remove(link)
-                    pass
-                prntStr += ":point_right:" + title + " (" + link + ")" + "\n"
             #Getting number of songs added
             songsInList += len(ContainsList)
             if ContainsList:
-                prntStr += "\n"
+                prntStr += prsnPrint + "\n"
 
             #Looking in other peoples lists for the song
             t0 = time.clock()
@@ -1446,21 +1573,24 @@ class MusicBot(discord.Client):
                     #Converting the name accordinly (if user doesn't exist anymore)
                     userName = "Unknown User" if str(userName) == "None" else str(userName)[:-5]
                     ContainsList = list(filter(lambda element: searchWord in element.split(" --- ")[0].lower(), self.dict_of_apls[pplID]))
-                    if ContainsList:
-                        prntStr += "\t\t:busts_in_silhouette:__" + userName + "__\n"
+                    for link in ContainsList:
+                        if " --- " not in link:
+                            ContainsList.remove(link)
+                    prsnPrint += "\t\t:busts_in_silhouette:__" + userName + "__\n"
                     #Prints other peoples list
                     for link in ContainsList:
                         try:
                             [title, link] = link.split(" --- ")
+                            prsnPrint += ":point_right:" + title + " (" + link + ")" + "\n"
                         except:
                             print("Fail to parse " + userName + ": " + link)
                             ContainsList.remove(link)
                             pass
-                        prntStr += ":point_right:" + title + " (" + link + ")" + "\n"
                     #Number of songs added
                     songsInList += len(ContainsList)
                     if ContainsList:
-                        prntStr += "\n"
+                        prntStr += prsnPrint + "\n"
+                    prsnPrint = ""
             print("Time pass on others list: %s", time.clock() - t0)
 
             #PRINTING TIME
@@ -1501,7 +1631,7 @@ class MusicBot(discord.Client):
                     await self.send_typing(channel)
                     await self.safe_send_message(channel, toPrintStr, expire_in=(0.1*songsInList+5))
                 return
-        return Response(prntStr, delete_after=(1.1*songsInList+30))
+        return Response(prntStr, delete_after=(1.1*songsInList+50))
 
     async def cmd_mylist(self, player, channel, author, permissions, leftover_args):
         """
@@ -1818,7 +1948,10 @@ class MusicBot(discord.Client):
             reply_text = "Enqueued **%s** to be played. Position in queue: %s"
             btext = entry.title
 
-            self.add_to_autoplaylist(song_url, author.id)
+            try:
+                self.add_to_autoplaylist(entry.title + " --- " + song_url, author.id)
+            except:
+                print("Failed to add song to apl in play command")
 
         if position == 1 and player.is_stopped:
             position = 'Up next!'
@@ -2647,7 +2780,10 @@ class MusicBot(discord.Client):
             if player.is_playing:
                 player.skip()
 
-            self.add_to_autoplaylist(song_url, author.id)
+            try:
+                self.add_to_autoplaylist(entry.title + " --- " + song_url, author.id)
+            except:
+                print("Failed to add song in playnow command")
 
         # return Response(reply_text, delete_after=30)
 
