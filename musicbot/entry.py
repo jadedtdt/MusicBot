@@ -81,6 +81,7 @@ class URLPlaylistEntry(BasePlaylistEntry):
         self.duration = duration
         self.expected_filename = expected_filename
         self.meta = meta
+        self.disliked = False
 
         self.download_folder = self.playlist.downloader.download_folder
 

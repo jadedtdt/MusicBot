@@ -113,10 +113,6 @@ class MusicBot(discord.Client):
         #
         self.dict_of_apls = {}
 
-        # If someone dislikes a song, they might want to skip it.
-        # Since they previously had autoskip privilege, they might be sad to lose that right after disliking it
-        self.was_disliked = False
-
         if not self.autoplaylist:
             print("Warning: Autoplaylist is empty, disabling.")
             self.config.auto_playlist = False
@@ -354,7 +350,7 @@ class MusicBot(discord.Client):
             return discord.utils.find(lambda m: m.id == user_id, self.get_all_members())
 
     def _get_owner(self, voice=False):
-    	return self._get_user(self.config.owner_id, voice)
+        return self._get_user(self.config.owner_id, voice)
 
     def _delete_old_audiocache(self, path=AUDIO_CACHE_PATH):
         try:
@@ -647,10 +643,6 @@ class MusicBot(discord.Client):
         await self.update_now_playing()
 
     async def on_player_finished_playing(self, player, **_):
-
-        # let's reset our boolean so that it doesn't affect our next song
-        if self.was_disliked == True:
-            self.was_disliked = False
 
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
             counter = 0
@@ -1113,29 +1105,29 @@ class MusicBot(discord.Client):
             likers = likers.split("; ")
 
             if author not in likers:
-            	return False
+                return False
 
             if len(likers) > 1:
                 #print(url)
-                print(likers)
-                print(author)
-                print("*********")
+                #print(likers)
+                #print(author)
+                #print("*********")
                 likers.remove(author)
-                print(str(likers))
+                #print(str(likers))
                 #new_line = url, parse_string_delimeter(sanitize_string(str(likers)))
                 new_line = url, parse_string_delimeter(str(likers))
 
                 if line_index != None:
-                    print("LINE_INDEX")
-                    print(sanitize_string(new_line))
+                    #print("LINE_INDEX")
+                    #print(sanitize_string(new_line))
                     #self.autoplaylist[line_index] = sanitize_string(new_line)
                     self.autoplaylist[line_index] = new_line
 
             else:
                 self.autoplaylist.remove(song_line)
 
-            print("LINE")
-            print(song_line)
+            #print("LINE")
+            #print(song_line)
             #print("APL")
             #print(self.autoplaylist)
             write_file(self.config.auto_playlist_file, self.autoplaylist)
@@ -1156,14 +1148,14 @@ class MusicBot(discord.Client):
         if self.dict_of_apls.get(author, None) == None:
             self.dict_of_apls[author] = []
         #else:
-        #	print("SHOULD BE HERE")
+        #   print("SHOULD BE HERE")
 
         if song_url in self.dict_of_apls[author]:
             self.dict_of_apls[author].remove(song_url)
         else:
-        	print("The song isn't in here?")
-        	print(self.dict_of_apls[author])
-        	#print(self.dict_of_apls)
+            print("The song isn't in here?")
+            print(self.dict_of_apls[author])
+            #print(self.dict_of_apls)
 
     # finds the first instance a song URL is found and returns the index
     def find_song(self, song_url):
@@ -1805,8 +1797,6 @@ class MusicBot(discord.Client):
         Removes the current song from your autoplaylist.
         """
 
-        self.was_disliked = True
-
         reply_text = ""
         user = ""
         song_name = ""
@@ -1818,6 +1808,7 @@ class MusicBot(discord.Client):
 
         if self.remove_from_autoplaylist(url, author.id):
             reply_text = "**%s**, the song **%s** has been removed from your auto play list."
+            player.current_entry.disliked = True
         else:
             reply_text = "**%s**, the song **%s** wasn't in your auto play list."
 
@@ -1860,13 +1851,13 @@ class MusicBot(discord.Client):
 
         # Validating
         if position == 1:
-        	entry = player.playlist.remove_first()
+            entry = player.playlist.remove_first()
         elif (position < 1 or position > len(player.playlist.entries)) and position != -1:
             reply_text = "[Error] Invalid ID. Available positions are between 1 and %s."
             reply_text %= len(player.playlist.entries)
             return Response(reply_text, delete_after=30)
         else:
-        	entry = await player.playlist.remove_entry(position, channel=channel, author=author)
+            entry = await player.playlist.remove_entry(position, channel=channel, author=author)
 
         reply_text = "Removed **%s** from the queue. It was in position: %s"
         btext = entry.title
@@ -2490,7 +2481,7 @@ class MusicBot(discord.Client):
                 or permissions.instaskip \
                 or author == player.current_entry.meta.get('author', None) \
                 or author in self.get_likers(player.current_entry.url) \
-                or self.was_disliked is True:
+                or player.current_entry.disliked == True:
 
             player.skip()  # check autopause stuff here
             await self._manual_delete_check(message)
