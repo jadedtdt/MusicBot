@@ -1,3 +1,6 @@
+#~mood TAG plays from a tag
+#fake person makes a fake person to still consider music
+
 import os
 import sys
 import time
@@ -138,7 +141,7 @@ class MusicBot(discord.Client):
                     #self.assign_to_music_bot()
                     #break
                     continue
-
+                #print(tuple_song_authors)
                 song_url, authors = tuple_song_authors
 
                 # for multiple likers, just iterate over comma separated authors
@@ -1370,24 +1373,32 @@ class MusicBot(discord.Client):
     async def cmd_tag(self, player, author, channel, permissions, leftover_args):
         """
         Usage:
-            {command_prefix}tag command TAG
+            {command_prefix}tag [command] the_tag
 
-        Uses the tag command to do the following:
+        Ex: ~tag add rock
+        [command]:
         - ADD : Adds the current song to the specified tag
         - REMOVE : Removes the current song from the specified tag
         - PLAY : Plays a random song from the specified tag
-        - ALL : Prints all the tags
+        - LIST : Prints all the tags
+        - SHOW : Shows the songs in the specified tag
+        - MSG : Messages user with all the songs w/ urls of the specified tag
         """
 
+        await self.send_typing(channel)
         if len(leftover_args) >= 1 and len(leftover_args) <= 2:
             if leftover_args[0].lower() == "add":
                 return await self._cmd_addtag(player, author, channel, leftover_args[1])
             elif leftover_args[0].lower() == "remove":
                 return await self._cmd_removetag(player, author, channel, leftover_args[1])
-            elif leftover_args[0].lower() == "all":
-                return await self._cmd_alltag(player, author, channel, permissions, None)
             elif leftover_args[0].lower() == "play":
                 return await self._cmd_playtag(player, author, channel, permissions, leftover_args[1])
+            elif leftover_args[0].lower() == "list":
+                return await self._cmd_listtag(player, author, channel, permissions, None)
+            elif leftover_args[0].lower() == "show":
+                return await self._cmd_showtag(player, author, channel, permissions, leftover_args[1])
+            elif leftover_args[0].lower() == "msg":
+                return await self._cmd_msgtag(player, author, channel, permissions, leftover_args[1])
             else:
                 prntStr = "**[" + leftover_args[0] + "]** is not a recognized command"
                 return Response(prntStr, delete_after=20)
@@ -1450,6 +1461,7 @@ class MusicBot(discord.Client):
 
         Takes the current metaData dictionary and pushes to file
         """
+
         str_to_write = []
         for metaTag in self.metaData:
             #First tag
@@ -1470,7 +1482,7 @@ class MusicBot(discord.Client):
         if leftover_args.lower() in self.metaData.keys():
             playUrl = random.choice(self.metaData[leftover_args.lower()])
         else:
-            prntStr = "The tag " + leftover_args + " does not exist."
+            prntStr = "The tag **[" + leftover_args + "]** does not exist."
             return Response(prntStr, delete_after=35)
         try:
             info = await self.downloader.extract_info(player.playlist.loop, playUrl, download=False, process=False)
@@ -1489,20 +1501,91 @@ class MusicBot(discord.Client):
             prntStr = "Enqueued **%s** to be played. Position in queue: %s - estimated time until playing: %s" %(entry.title, position, time_until)
             return Response(prntStr, delete_after=30)
         except Exception:
-            prntStr = "A song from " + leftover_args + " was unable to be added."
+            prntStr = "A song from **[" + leftover_args + "]** was unable to be added."
             return Response(prntStr, delete_after=35)
 
-    async def _cmd_alltag(self, player, author, channel, permissions, leftover_args):
+    async def _cmd_listtag(self, player, author, channel, permissions, leftover_args):
         """
         Usage:
-            {command_prefix}alltag
+            {command_prefix}listtag
 
         Shows all the tags
         """
-        prntStr = "__Metadata tags__\n\n"
-        for tags in self.metaData.keys():
-            prntStr += "**" + tags.capitalize() + "** : " + str(len(self.metaData[tags])) + "\n"
+
+        #await self.send_typing(channel)
+        prntStr = "__List of all tags__\n\n"
+        #Will sort the metaData by the number of songs in it largest at top
+        #for key,value in sorted(self.metaData.items(), key=lambda tuple: (len(tuple[1]),tuple[0]), reverse=True):
+        #Will sort the metaData by the
+        for key,value in sorted(self.metaData.items()):
+        #for tags in self.metaData.keys():
+            if len(prntStr + key) < 1990:
+                prntStr += "**" + key.capitalize() + "** : " + str(len(value)) + "\n"
+            else:
+                prntStr += "```Partial```"
+                break
         return Response(prntStr, delete_after=30)
+
+    async def _cmd_showtag(self, player, author, channel, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}showtag TAG
+
+        Shows the songs in a tag
+        """
+
+        #Checks if tag exists
+        if leftover_args.lower() in self.metaData.keys():
+            playUrl = random.choice(self.metaData[leftover_args.lower()])
+        else:
+            prntStr = "The tag **[" + leftover_args + "]** does not exist."
+            return Response(prntStr, delete_after=35)
+
+        prntStr = "__Songs in **[" + leftover_args.capitalize() + "]** tag__\n\n"
+        for link in self.metaData[leftover_args]:
+            t0 = time.clock()
+            #Getting people with the url in their list
+            prsnLists = list(filter(lambda person: [songList for songList in self.dict_of_apls[person] if link in songList], self.dict_of_apls.keys()))
+            #Getting song name
+            songTitle = list(filter(lambda songs: link in songs, self.dict_of_apls[prsnLists[0]]))
+            if len(songTitle) == 0:
+                continue
+
+            if len(prntStr + songTitle[0]) < 2000:
+                prntStr += ":notes:" + songTitle[0].split(" --- ")[0] + "\n"
+        return Response(prntStr, delete_after=50)
+
+    async def _cmd_msgtag(self, player, author, channel, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}msgtag the_tag
+
+        Messages all the songs and urls in a tag
+        """
+
+        #Checks if tag exists
+        if leftover_args.lower() in self.metaData.keys():
+            playUrl = random.choice(self.metaData[leftover_args.lower()])
+        else:
+            prntStr = "The tag **[" + leftover_args + "]** does not exist."
+            return Response(prntStr, delete_after=35)
+
+        prntStr = []
+        for link in self.metaData[leftover_args]:
+            t0 = time.clock()
+            prsnLists = list(filter(lambda person: [songList for songList in self.dict_of_apls[person] if link in songList], self.dict_of_apls.keys()))
+
+            songTitle = list(filter(lambda songs: link in songs, self.dict_of_apls[prsnLists[0]]))
+            if len(songTitle) == 0:
+                continue
+            prntStr.append(songTitle[0].split(" --- ")[0] + "\n\t" + link)
+
+        with BytesIO() as prntDoc:
+            prntDoc.writelines(d.encode('utf8') + b'\n' for d in prntStr)
+            prntDoc.seek(0)
+            await self.send_file(author, prntDoc, filename='%stagList.txt' %leftover_args)
+
+        return Response(":mailbox_with_mail:", delete_after=20)
 
     async def cmd_listhas(self, player, author, channel, permissions, leftover_args):
         """
@@ -2251,7 +2334,17 @@ class MusicBot(discord.Client):
                 # slice off last " ,""
                 likers = likers[:-2]
 
-                np_text = "Now Playing: **%s** from the AutoPlayList. %s\nLiked by: %s" % (player.current_entry.title, prog_str, likers)
+                #Getting all tags for song
+                list_tags = list(filter(lambda tag: player.current_entry.url in self.metaData[tag], self.metaData.keys()))
+                if len(list_tags) != 0:
+                    the_tags = "\nTags: "
+                    for each_tag in list_tags:
+                        the_tags += "**" + each_tag + "**, "
+                    the_tags = the_tags[:-2]
+                else:
+                    the_tags = ""
+
+                np_text = "Now Playing: **%s** from the AutoPlayList. %s\nLiked by: %s%s" % (player.current_entry.title, prog_str, likers, the_tags)
 
             #self.server_specific_data[server]['last_np_msg'] = await self.safe_send_message(channel, np_text)
             #await self._manual_delete_check(message)
