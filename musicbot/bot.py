@@ -2339,7 +2339,7 @@ class MusicBot(discord.Client):
                 if len(list_tags) != 0:
                     the_tags = "\nTags: "
                     for each_tag in list_tags:
-                        the_tags += "**" + each_tag + "**, "
+                        the_tags += "**[" + each_tag + "]**, "
                     the_tags = the_tags[:-2]
                 else:
                     the_tags = ""
