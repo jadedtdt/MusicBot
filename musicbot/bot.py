@@ -1,5 +1,4 @@
 #~mood TAG plays from a tag
-#fake person makes a fake person to still consider music
 
 import os
 import sys
@@ -74,6 +73,7 @@ class MusicBot(discord.Client):
         self.players = {}
         self.the_voice_clients = {}
         self.metaData = {}
+        self.ghost_list = {}
         self.locks = defaultdict(asyncio.Lock)
         self.voice_client_connect_lock = asyncio.Lock()
         self.voice_client_move_lock = asyncio.Lock()
@@ -654,10 +654,21 @@ class MusicBot(discord.Client):
                     if not (m.deaf or m.self_deaf):
                         people.append(m.id)
 
-                #ADDING NEXT
-                #Looks through list of fake people to add to list for songs to be played
-                #Will only add that list if person still in channel, else remove from list
-                #print(people)
+                print(self.ghost_list)
+                copy_ghost_list = self.ghost_list.copy()
+                for author_fakePPL in copy_ghost_list.keys():
+                    #Check if the author of the list is still in the channel
+                    if not list(filter(lambda objId: author_fakePPL == objId.id ,player.voice_client.channel.voice_members)):
+                        del self.ghost_list[author_fakePPL]
+                        continue
+                    for fakePPL in copy_ghost_list[author_fakePPL]:
+                        #Checks if the ghost is in the channel (remove them from the list if they are)
+                        if list(filter(lambda objId: fakePPL == objId.id ,player.voice_client.channel.voice_members)):
+                            self.ghost_list[author_fakePPL].remove(fakePPL)
+                            continue
+                        else:
+                            people.append(fakePPL)
+                del copy_ghost_list
 
                 #author = random.choice(list(self.dict_of_apls.keys()))
                 author = random.choice(people)
@@ -697,12 +708,19 @@ class MusicBot(discord.Client):
                             print(song_url)
                             counter = 0
                         else:
-                            print("USER NOT IN CHANNEL!")
-                            print(author)
-                            #print(self._get_user(author, voice=True))
-                            print("---")
-                            counter = counter + 1
-                            continue
+                            if list(filter(lambda personID: author in self.ghost_list[personID], self.ghost_list.keys())):
+                                print("FAKE USER NOT IN CHANNEL!")
+                                song_url = random.choice(self.dict_of_apls[author])
+                                if " --- " in song_url:
+                                    song_url = song_url.split(" --- ")[1]
+                                counter = 0
+                            else:
+                                print("USER NOT IN CHANNEL!")
+                                print(author)
+                                #print(self._get_user(author, voice=True))
+                                print("---")
+                                counter = counter + 1
+                                continue
 
                 try:
                     info = await self.downloader.safe_extract_info(player.playlist.loop, song_url, download=False, process=False)
@@ -1362,6 +1380,80 @@ class MusicBot(discord.Client):
         print("Time to process compat: " + str(time.clock() - t0) + " sec")
         return Response(prntStr, delete_after=35)
 
+    async def cmd_ghost(self, player, server, author, channel, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}ghost user_name
+
+        MusicBot will act as if the user is in the channel when deciding a song to play.
+        Using the command with the user's name twice removes the ghost of the user.
+
+        """
+
+        user_name = " ".join(leftover_args)
+        channel_id_list = list(map(lambda personObj: personObj.id, player.voice_client.channel.voice_members))
+        #Check if it was a mention
+        if '<@' in user_name and '>' in user_name:
+            #Get all the info on the person
+            personObj = list(filter(lambda user_list: user_name[2:-1] == user_list.id, self.get_all_members()))[0]
+
+            #Checking if person is currently in channel
+            if str(user_name[2:-1]) in channel_id_list:
+                prntStr = "**" + personObj.display_name + "** is currently in this voice channel."
+                return Response(prntStr, delete_after=20)
+
+            #Check if author already has a ghost
+            if str(author.id) in self.ghost_list.keys():
+                #Check if ghost id already in list (delete if it is in list)
+                if str(personObj.id) in self.ghost_list[str(author.id)]:
+                    if len(self.ghost_list[str(author.id)]) == 1:
+                        del self.ghost_list[str(author.id)]
+                    else:
+                        self.ghost_list[str(author.id)].remove(str(personObj.id))
+                    prntStr = "**" + personObj.display_name + "** was removed from **" + author.display_name + "**'s ghost list"
+                    return Response(prntStr, delete_after=20)
+                else:
+                    self.ghost_list[str(author.id)].append(str(personObj.id))
+            else:
+                self.ghost_list[str(author.id)] = [str(personObj.id)]
+            prntStr = "**" + personObj.display_name + "** was added to **" + author.display_name + "**'s ghost list"
+            return Response(prntStr, delete_after=20)
+        else:
+            #Checking if user_name exists in channel
+            for personObj in server.members:
+                if user_name.lower() == personObj.display_name.lower() or user_name.lower() == personObj.name.lower() or user_name == personObj.id:
+                    #Check if person is in the channel
+                    if str(personObj.id) in channel_id_list:
+                        prntStr = "**" + personObj.display_name + "** is currently in this voice channel."
+                        return Response(prntStr, delete_after=20)
+
+                    #Check if the author already has a ghost list
+                    if str(author.id) in self.ghost_list.keys():
+                        #Check if ghost name already exists (delete if does)
+                        if str(personObj.id) in self.ghost_list[str(author.id)]:
+                            if len(self.ghost_list[str(author.id)]) == 1:
+                                del self.ghost_list[str(author.id)]
+                            else:
+                                self.ghost_list[str(author.id)].remove(str(personObj.id))
+                            prntStr = "**" + personObj.display_name + "** was removed from **" + author.display_name + "**'s ghost list"
+                            return Response(prntStr, delete_after=20)
+                        else:
+                            self.ghost_list[str(author.id)].append(str(personObj.id))
+                    #If doesn't create new list
+                    else:
+                        self.ghost_list[str(author.id)] = [str(personObj.id)]
+                    prntStr = "**" + personObj.display_name + "** was added to **" + author.display_name + "**'s ghost list"
+                    return Response(prntStr, delete_after=20)
+        prntStr = "**" + user_name + "** does not exist in this Discord"
+        return Response(prntStr, delete_after=20)
+
+    def get_ghost_exist(self, id):
+        if str(id) in self.ghost_list.keys():
+            return self.ghost_list[str(id)]
+        else:
+            return None
+
+
     async def cmd_tag(self, player, author, channel, permissions, leftover_args):
         """
         Usage:
@@ -1512,7 +1604,7 @@ class MusicBot(discord.Client):
         for key,value in sorted(self.metaData.items()):
         #for tags in self.metaData.keys():
             if len(prntStr + key) < 1990:
-                prntStr += "**" + key.capitalize() + "** : " + str(len(value)) + "\n"
+                prntStr += "**[" + key.lower() + "]** : " + str(len(value)) + "\n"
             else:
                 prntStr += "```Partial```"
                 break
@@ -2481,6 +2573,7 @@ class MusicBot(discord.Client):
                 or permissions.instaskip \
                 or author == player.current_entry.meta.get('author', None) \
                 or author in self.get_likers(player.current_entry.url) \
+                or any(list(filter(lambda userID: userID in self.get_likers(player.current_entry.url), self.get_ghost_exist(author.id)))) \
                 or player.current_entry.disliked == True:
 
             player.skip()  # check autopause stuff here
