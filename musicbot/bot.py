@@ -293,6 +293,30 @@ class MusicBot(discord.Client):
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
     ########################
+    # updateMetaData
+    #
+    # Grabs the updated metaData tags
+    #
+    # Precondition:
+    # Postcondition: self.metaData contains newest list
+    ########################
+    def updateMetaData(self):
+        self.wholeMetadata = load_file(self.config.metadata_file)
+        if not self.wholeMetadata:
+            print("Attention: Metadata tags are empty")
+        else:
+            temp = True
+            for row in self.wholeMetadata:
+                if temp == True:
+                    self.metaData[row] = []
+                    temp = row
+                else:
+                    urlList = row.split(", ")
+                    for addurl in urlList:
+                        self.metaData[temp].append(addurl)
+                    temp = True
+
+    ########################
     # tweak_delimiters
     #
     # Updates the delimeters from commas to triple tildas incase titles have commas in them.
@@ -1471,6 +1495,7 @@ class MusicBot(discord.Client):
 
         await self.send_typing(channel)
         if len(leftover_args) >= 1 and len(leftover_args) <= 2:
+            self.updateMetaData()
             if leftover_args[0].lower() == "add":
                 return await self._cmd_addtag(player, author, channel, leftover_args[1])
             elif leftover_args[0].lower() == "remove":
@@ -1487,7 +1512,7 @@ class MusicBot(discord.Client):
                 prntStr = "**[" + leftover_args[0] + "]** is not a recognized command"
                 return Response(prntStr, delete_after=20)
         else:
-            prntStr = "**" + len(leftover_args) + "** arguments were given **1-2** arguments expected"
+            prntStr = "**" + str(len(leftover_args)) + "** arguments were given **1-2** arguments expected"
             return Response(prntStr, delete_after=20)
 
 
