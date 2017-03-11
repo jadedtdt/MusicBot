@@ -100,7 +100,7 @@ class MusicBot(discord.Client):
         #
         ########################
         self.tweak_delimiters()
-        #self.remove_duplicates()
+        self.remove_duplicates()
         self.update_song_names()
 
         # it's a dictionary of lists where the keys are the IDs and the value is a list of their songs
@@ -138,7 +138,10 @@ class MusicBot(discord.Client):
                     #break
                     continue
                 #print(tuple_song_authors)
-                song_url, authors = tuple_song_authors
+                try:
+                    song_url, authors = tuple_song_authors
+                except ValueError:
+                    print("Error: " + str(tuple_song_authors))
 
                 # for multiple likers, just iterate over comma separated authors
                 authors = authors.split("; ")
@@ -161,6 +164,11 @@ class MusicBot(discord.Client):
                     for addurl in urlList:
                         self.metaData[temp].append(addurl)
                     temp = True
+
+        # initializes each user's mood to none
+        self.dict_moods = {}
+        for user in self.dict_of_apls.keys():
+            self.dict_moods[user] = []
 
         # TODO: Do these properly
         ssd_defaults = {'last_np_msg': None, 'auto_paused': False}
@@ -316,6 +324,11 @@ class MusicBot(discord.Client):
                         self.metaData[temp].append(addurl)
                     temp = True
 
+    # http://stackoverflow.com/questions/2556108/rreplace-how-to-replace-the-last-occurence-of-an-expression-in-a-string
+    def rreplace(s, old, new, occurence):
+            li = s.rsplit(old, occurence)
+            return new.join(li)
+
     ########################
     # tweak_delimiters
     #
@@ -329,7 +342,7 @@ class MusicBot(discord.Client):
         for each_line in self.autoplaylist:
             each_line = sanitize_string(each_line)
             if " ~~~ " not in each_line:
-                each_line = each_line.replace(", ", " ~~~ ")
+                each_line = rreplace(eachline, ", ", " ~~~ ", 1)
             list_found.append(each_line)
 
         self.autoplaylist = list_found
@@ -725,7 +738,13 @@ class MusicBot(discord.Client):
                             print("USER IN CHANNEL!")
                             #print(author)
                             print(self._get_user(author, voice=True))
-                            song_url = random.choice(self.dict_of_apls[author])
+
+                            # if user's mood isn't the default setting (None)
+                            if (self.dict_moods[author]):
+                                song_url = random.choice(self.dict_moods[author])
+                            else:
+                                song_url = random.choice(self.dict_of_apls[author])
+
                             if " --- " in song_url:
                                 song_url = song_url.split(" --- ")[1]
 
@@ -1327,6 +1346,48 @@ class MusicBot(discord.Client):
 
         except:
             raise exceptions.CommandError('Invalid URL provided:\n{}\n'.format(server_link), expire_in=30)
+
+    async def cmd_mood(self, author, leftover_args=None):
+        """
+        Usage:
+        {command_prefix}mood
+        {command_prefix}mood TAG
+        {command_prefix}mood reset
+
+        mood
+        displays your current mood if you have one
+
+        mood happy
+        will replace the author's autoplaylist with songs listed in the [happy] tag 
+
+        mood reset
+        will revert back to the author's autoplaylist
+
+        """
+        longStr = ""
+        args = str(leftover_args)[2:-2]
+        curMood = "none"
+
+        if (args is ""):
+            # if their mood isn't default
+            if self.dict_moods[author.id]:
+                # search for which moods were added
+                for tag in list(self.metaData.keys()):
+                    if self.dict_moods[author.id] == self.metaData[tag]:
+                        curMood = tag
+
+            longStr = "**" + author.name + "**, your current mood is: **" + curMood + "**"
+        elif "reset" in args:
+            longStr = "**" + author.name + "**, your mood has been reset and your autoplaylist has been restored."
+            self.dict_moods[author.id] = []
+        elif args in str(list(self.metaData.keys())):
+            self.dict_moods[author.id] = self.metaData[args]
+            longStr = "**" + author.name + "**, your mood is set to: **" + args + "**"
+        else:
+            longStr = "Error: We could not find the tag: ", args, "\nTry using \"~tag list\" to see available tags."
+
+        return Response(longStr, delete_after=35)
+
 
     async def cmd_stat(self, server, player, channel, author, leftover_args):
         """
