@@ -1,5 +1,3 @@
-#~mood TAG plays from a tag
-
 import os
 import sys
 import time
@@ -1358,7 +1356,7 @@ class MusicBot(discord.Client):
         displays your current mood if you have one
 
         mood happy
-        will replace the author's autoplaylist with songs listed in the [happy] tag 
+        will replace the author's autoplaylist with songs listed in the [happy] tag
 
         mood reset
         will revert back to the author's autoplaylist
@@ -1716,6 +1714,8 @@ class MusicBot(discord.Client):
             t0 = time.clock()
             #Getting people with the url in their list
             prsnLists = list(filter(lambda person: [songList for songList in self.dict_of_apls[person] if link in songList], self.dict_of_apls.keys()))
+            if len(prsnLists) == 0:
+                continue
             #Getting song name
             songTitle = list(filter(lambda songs: link in songs, self.dict_of_apls[prsnLists[0]]))
             if len(songTitle) == 0:
@@ -1748,7 +1748,7 @@ class MusicBot(discord.Client):
             songTitle = list(filter(lambda songs: link in songs, self.dict_of_apls[prsnLists[0]]))
             if len(songTitle) == 0:
                 continue
-            prntStr.append(songTitle[0].split(" --- ")[0] + "\n\t" + link)
+            prntStr.append(songTitle[0].split(" --- ")[0] + "\r\n\t" + link)
 
         with BytesIO() as prntDoc:
             prntDoc.writelines(d.encode('utf8') + b'\n' for d in prntStr)
