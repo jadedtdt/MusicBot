@@ -4,7 +4,8 @@ import decimal
 import unicodedata
 
 from hashlib import md5
-from .constants import DISCORD_MSG_CHAR_LIMIT
+from .constants import DISCORD_MSG_CHAR_LIMIT, LIKERS_DELIMETER
+
 
 
 def load_file(filename, skip_commented_lines=True, comment_char='#'):
@@ -124,9 +125,9 @@ def parse_string_delimeter(string):
 # Postcondition: a single string representing the 'join' i.e. "1234; 2345; 3456; 4567"
 ########################
 def joinStr(a, b):
-    lista = a.split('; ')
-    listb = b.split('; ')
-    return '; '.join(sorted(list(set(lista) | set(listb))))
+    lista = a.split(LIKERS_DELIMETER)
+    listb = b.split(LIKERS_DELIMETER)
+    return LIKERS_DELIMETER.join(sorted(list(set(lista) | set(listb))))
 
 
 

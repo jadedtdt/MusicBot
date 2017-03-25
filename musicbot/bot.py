@@ -1,5 +1,3 @@
-#~mood TAG plays from a tag
-
 import os
 import sys
 import time
@@ -37,7 +35,7 @@ from . import exceptions
 from . import downloader
 from .opus_loader import load_opus_lib
 from .constants import VERSION as BOTVERSION
-from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
+from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH, TITLE_URL_SEPARATOR, URL_LIKERS_SEPARATOR, LIKERS_DELIMETER
 
 
 load_opus_lib()
@@ -101,7 +99,8 @@ class MusicBot(discord.Client):
         ########################
         self.tweak_delimiters()
         self.remove_duplicates()
-        self.update_song_names()
+        #theoretically we shouldn't need this anymore
+        #self.update_song_names()
 
         # it's a dictionary of lists where the keys are the IDs and the value is a list of their songs
         #
@@ -120,31 +119,31 @@ class MusicBot(discord.Client):
             # using autoplaylist
 
             # initializes APLs for each user
-            # if the --- delimeter is found, that means it's already added the title so we don't want to santize non-alphanumeric characters
-            # if the ~~~ delimeter is found, that means the song is liked by at least one person and we can split the string into URL and likers
+            # if the TITLE_URL delimeter is found, that means it's already added the title so we don't want to santize non-alphanumeric characters
+            # if the URL_LIKERS delimeter is found, that means the song is liked by at least one person and we can split the string into URL and likers
             for each_song in self.autoplaylist:
 
                 tuple_song_authors = each_song
-                if " --- " not in each_song:
+                if TITLE_URL_SEPARATOR not in each_song:
                     tuple_song_authors = sanitize_string(each_song)
 
                 # make sure we're not splitting with a delimeter that doesn't exist
-                if " ~~~ " in tuple_song_authors:
-                    # create tuple(url, author)
-                    tuple_song_authors = tuple_song_authors.split(" ~~~ ")
+                if URL_LIKERS_SEPARATOR in tuple_song_authors:
+                    tuple_song_authors = tuple_song_authors.split(URL_LIKERS_SEPARATOR)
                 else:
                     #print("No delimiter to split with. Assigning to MusicBot")
                     #self.assign_to_music_bot()
                     #break
                     continue
                 #print(tuple_song_authors)
+
                 try:
                     song_url, authors = tuple_song_authors
                 except ValueError:
                     print("Error: " + str(tuple_song_authors))
 
                 # for multiple likers, just iterate over comma separated authors
-                authors = authors.split("; ")
+                authors = authors.split(LIKERS_DELIMETER)
 
                 # fills our dictionary of user ids=>songs
                 for each_author in authors:
@@ -216,39 +215,23 @@ class MusicBot(discord.Client):
         for each_line in self.autoplaylist:
             if each_line not in list_found:
 
-                # strips off title, we don't need it for checking duplicates. .
-                title = ""
-                if " --- " in each_line:
-                    (title, each_line) = each_line.split(" --- ")
-
-                # split depending if its title has been added yet or not
-                # alternatively, it depends how the autoplaylist is formatted
-                if " ~~~ " in each_line:
-                    (url, likers) = each_line.split(" ~~~ ")
-                else:
-                    # assume separated by commas
-                    (url, likers) = each_line.split(", ")
+                url = self.fetch_url(each_line)
 
                 # if this is a new url, add it to our list_found, otherwise ignore
                 if url not in list_urls:
                     list_urls.append(url)
-
-                    # readds the title for storing in the file
-                    if title != "":
-                        each_line = title + " --- " + each_line
-
                     list_found.append(each_line)
                 else:
                     # join/union the likers list
                     index = list_urls.index(url)
-                    if index != -1:
-                        cached_likers_line = list_found[index]
+                    assert index != -1
+                    cached_likers_line = list_found[index]
 
-                    if " ~~~ " in cached_likers_line:
-                        (cached_start, cached_likers) = cached_likers_line.split(" ~~~ ")
-
-                    new_likers_str = joinStr(cached_likers, likers)
-                    new_likers_line = cached_start + " ~~~ " + new_likers_str
+                    cached_title = self.fetch_title(cached_likers_line)
+                    if cached_title is None:
+                        cached_title = self.fetch_title(each_line)
+                    new_likers_str = joinStr(self.fetch_likers(cached_likers_line), self.fetch_likers(each_line))
+                    new_likers_line = cached_title + TITLE_URL_SEPARATOR + url + URL_LIKERS_SEPARATOR + new_likers_str
                     list_found[index] = new_likers_line
 
         self.autoplaylist = list_found
@@ -260,7 +243,7 @@ class MusicBot(discord.Client):
     # Takes the URL of the song and gets
     #
     # Precondition: line containing URL and likers
-    # Postcondition: line containing name of song URL and likers separated by ~~~
+    # Postcondition: line containing name of song URL and likers separated by URL_LIKERS_SEPARATOR
     # Example: Panic! At The Disco: Death Of A Bachelor [OFFICIAL VIDEO] --- https://www.youtube.com/watch?v=R03cqGg40GU ~~~ 12345
     ########################
     def update_song_names(self):
@@ -269,13 +252,13 @@ class MusicBot(discord.Client):
         list_found = []
 
         for each_line in self.autoplaylist:
-            # if a ---  is not found, that means the title needs to be loaded with pafy
-            if " --- " not in each_line:
+            # if a TITLE_URL_SEPARATOR is not found, that means the title needs to be loaded with pafy
+            if TITLE_URL_SEPARATOR not in each_line:
                 # let's assert the line is clean before we change its format
                 each_line = sanitize_string(each_line)
 
-                if " ~~~ " in each_line:
-                    (url, authors) = each_line.split(" ~~~ ")
+                if TITLE_URL_SEPARATOR in each_line:
+                    (url, authors) = each_line.split(TITLE_URL_SEPARATOR)
                 else:
                     print("NO LIKERS FOR ", each_line)
 
@@ -293,7 +276,7 @@ class MusicBot(discord.Client):
                     print("Processing: ", song_title)
 
                     # prepend url with its name and override
-                    each_line = song_title + " --- " + each_line
+                    each_line = song_title + TITLE_URL_SEPARATOR + each_line
 
             list_found.append(each_line)
 
@@ -325,9 +308,9 @@ class MusicBot(discord.Client):
                     temp = True
 
     # http://stackoverflow.com/questions/2556108/rreplace-how-to-replace-the-last-occurence-of-an-expression-in-a-string
-    def rreplace(s, old, new, occurence):
-            li = s.rsplit(old, occurence)
-            return new.join(li)
+    def rreplace(self, s, old, new, occurence):
+        li = s.rsplit(old, occurence)
+        return new.join(li)
 
     ########################
     # tweak_delimiters
@@ -335,14 +318,14 @@ class MusicBot(discord.Client):
     # Updates the delimeters from commas to triple tildas incase titles have commas in them.
     #
     # Precondition: URLS and likers separated by ,
-    # Postcondition: URLS and likers separated by ~~~
+    # Postcondition: URLS and likers separated by the URL_LIKERS_SEPARATOR in constants.py
     ########################
     def tweak_delimiters(self):
         list_found = []
         for each_line in self.autoplaylist:
             each_line = sanitize_string(each_line)
-            if " ~~~ " not in each_line:
-                each_line = rreplace(eachline, ", ", " ~~~ ", 1)
+            if URL_LIKERS_SEPARATOR not in each_line:
+                each_line = self.rreplace(each_line, ", ", URL_LIKERS_SEPARATOR, 1)
             list_found.append(each_line)
 
         self.autoplaylist = list_found
@@ -745,8 +728,8 @@ class MusicBot(discord.Client):
                             else:
                                 song_url = random.choice(self.dict_of_apls[author])
 
-                            if " --- " in song_url:
-                                song_url = song_url.split(" --- ")[1]
+                            if TITLE_URL_SEPARATOR in song_url:
+                                song_url = song_url.split(TITLE_URL_SEPARATOR)[1]
 
                             print(song_url)
                             counter = 0
@@ -754,14 +737,14 @@ class MusicBot(discord.Client):
                             if list(filter(lambda personID: author in self.ghost_list[personID], self.ghost_list.keys())):
                                 print("FAKE USER NOT IN CHANNEL!")
                                 song_url = random.choice(self.dict_of_apls[author])
-                                if " --- " in song_url:
-                                    song_url = song_url.split(" --- ")[1]
+                                if TITLE_URL_SEPARATOR in song_url:
+                                    song_url = song_url.split(TITLE_URL_SEPARATOR)[1]
                                 counter = 0
                             else:
                                 print("USER NOT IN CHANNEL!")
                                 print(author)
                                 #print(self._get_user(author, voice=True))
-                                print("---")
+                                print(TITLE_URL_SEPARATOR)
                                 counter = counter + 1
                                 continue
 
@@ -772,9 +755,9 @@ class MusicBot(discord.Client):
                     continue
 
                 if not info:
-                    self.remove_from_autoplaylist(song_url, author)
+                    #self.remove_from_autoplaylist(song_url, author)
                     self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % song_url)
-                    write_file(self.config.auto_playlist_file, self.autoplaylist)
+                    #write_file(self.config.auto_playlist_file, self.autoplaylist)
                     continue
 
                 if info.get('entries', None):  # or .get('_type', '') == 'playlist'
@@ -1074,6 +1057,47 @@ class MusicBot(discord.Client):
         print()
         # t-t-th-th-that's all folks!
 
+    def fetch_title(self, song_line):
+
+        if TITLE_URL_SEPARATOR in song_line:
+            (title, url_likers) = song_line.split(TITLE_URL_SEPARATOR)
+            return title
+        else:
+            return None
+
+    def fetch_url(self, song_line):
+
+        if TITLE_URL_SEPARATOR in song_line:
+            (title, url_likers) = song_line.split(TITLE_URL_SEPARATOR)
+        else:
+            # now we know the format of song_line
+            url_likers = song_line
+
+        if URL_LIKERS_SEPARATOR in url_likers:
+            (url, likers) = url_likers.split(URL_LIKERS_SEPARATOR)
+            return url
+        elif ", " in url_likers:
+            (url, likers) = url_likers.split(", ")
+            return url
+        else:
+            return url_likers 
+
+    def fetch_likers(self, song_line):
+
+        if TITLE_URL_SEPARATOR in song_line:
+            (title, url_likers) = song_line.split(TITLE_URL_SEPARATOR)
+        else:
+            url_likers = song_line
+
+        if URL_LIKERS_SEPARATOR in url_likers:
+            (url, likers) = url_likers.split(URL_LIKERS_SEPARATOR)
+        elif ", " in url_likers:
+            (url, likers) = url_likers.split(", ")
+        else:
+            likers = None
+
+        return likers
+
     def get_likers(self, song_url):
         likers = []
 
@@ -1099,13 +1123,15 @@ class MusicBot(discord.Client):
 
         return names
 
-    def add_to_autoplaylist(self, song_url, author=None):
+    def add_to_autoplaylist(self, song_title_url, author=None):
 
         if author == None:
             print("No Author... Don't know who to add to")
 
+        url = self.fetch_url(song_title_url)
+
         # find the url and get the whole line
-        line_index = self.find_song(song_url)
+        line_index = self.find_song(url)
         song_line = None
         if line_index != None:
             song_line = self.autoplaylist[line_index]
@@ -1113,25 +1139,26 @@ class MusicBot(discord.Client):
         # if not on anyone's list, let's add it to someone's
         if song_line == None:
 
-            str_to_write = song_url + " ~~~ " + author
-            self.autoplaylist.append(sanitize_string(str_to_write))
+            str_to_write = url + URL_LIKERS_SEPARATOR + author
+            self.autoplaylist.append(str_to_write)
         # otherwise we just want to add this liker to the list
         else:
+            title = self.fetch_title(song_line)
             if author in song_line:
-                print("Song already added", song_url)
+                print("Song already added", url)
                 return False
             else:
                 # appends current author to the end of the likers list
-                str_to_write = song_line + "; " + author
+                str_to_write = song_line + LIKERS_DELIMETER + author
 
-            # finds where in the file this line is and updates it (same as )
+            # finds where in the file this line is and updates it
             index = self.autoplaylist.index(song_line)
             if index != None:
-                self.autoplaylist[index] = sanitize_string(str_to_write)
+                self.autoplaylist[index] = str_to_write
 
         write_file(self.config.auto_playlist_file, self.autoplaylist)
 
-        self._add_to_autoplaylist(song_url, author)
+        self._add_to_autoplaylist(title + TITLE_URL_SEPARATOR + url, author)
         return True
 
     def _add_to_autoplaylist(self, song_url, author=None):
@@ -1151,6 +1178,7 @@ class MusicBot(discord.Client):
 
         if author == None:
             print("No Author... Don't know who to remove from")
+            return False
 
         # find the url and get the whole line
         line_index = self.find_song(song_url)
@@ -1162,21 +1190,16 @@ class MusicBot(discord.Client):
 
             #print("LINE OF SONG")
             #print(song_line)
-            (url, likers) = song_line.split(" ~~~ ")
-            likers = likers.split("; ")
+            (url, likers) = song_line.split(URL_LIKERS_SEPARATOR)
+            likers = likers.split(LIKERS_DELIMETER)
 
             if author not in likers:
                 return False
 
             if len(likers) > 1:
-                #print(url)
-                #print(likers)
-                #print(author)
-                #print("*********")
                 likers.remove(author)
-                #print(str(likers))
                 #new_line = url, parse_string_delimeter(sanitize_string(str(likers)))
-                new_line = url, parse_string_delimeter(str(likers))
+                new_line = "" + url + URL_LIKERS_SEPARATOR + sanitize_string(parse_string_delimeter(str(likers)))
 
                 if line_index != None:
                     #print("LINE_INDEX")
@@ -1185,6 +1208,7 @@ class MusicBot(discord.Client):
                     self.autoplaylist[line_index] = new_line
 
             else:
+                print("ONE LIKER, REMOVING: ", song_line)
                 self.autoplaylist.remove(song_line)
 
             #print("LINE")
@@ -1197,13 +1221,13 @@ class MusicBot(discord.Client):
             print("Can't remove a song that's not in the auto playlist")
             return False
 
-        self._remove_from_autoplaylist(song_url, author)
-        return True
+        return self._remove_from_autoplaylist(url, author)
 
     # removes from our dictionary of lists
     def _remove_from_autoplaylist(self, song_url, author=None):
         if author == None:
             print("No Author in _remove_from_autoplaylist")
+            return False
 
         # initializes list for a new user
         if self.dict_of_apls.get(author, None) == None:
@@ -1214,14 +1238,27 @@ class MusicBot(discord.Client):
         if song_url in self.dict_of_apls[author]:
             self.dict_of_apls[author].remove(song_url)
         else:
-            print("The song isn't in here?")
-            print(self.dict_of_apls[author])
-            #print(self.dict_of_apls)
+            # end case
+            if sanitize_string(song_url) == song_url:
+                # we failed
+                print("The song isn't in here? ROUND 2")
+                print(song_url)
+                print(self.dict_of_apls[author])
+                return False
+            else:
+                print("The song isn't in here? ROUND 1")
+                print(song_url)
+                print(self.dict_of_apls[author])
+                # we can try again
+                return self._remove_from_autoplaylist(sanitize_string(song_url), author)
+            return False
+        return True
 
     # finds the first instance a song URL is found and returns the index
     def find_song(self, song_url):
+
         for each_line in self.autoplaylist:
-            if song_url in each_line:
+            if song_url == self.fetch_url(each_line):
                 return self.autoplaylist.index(each_line)
         return None
 
@@ -1358,7 +1395,7 @@ class MusicBot(discord.Client):
         displays your current mood if you have one
 
         mood happy
-        will replace the author's autoplaylist with songs listed in the [happy] tag 
+        will replace the author's autoplaylist with songs listed in the [happy] tag
 
         mood reset
         will revert back to the author's autoplaylist
@@ -1716,13 +1753,15 @@ class MusicBot(discord.Client):
             t0 = time.clock()
             #Getting people with the url in their list
             prsnLists = list(filter(lambda person: [songList for songList in self.dict_of_apls[person] if link in songList], self.dict_of_apls.keys()))
+            if len(prsnLists) == 0:
+                continue
             #Getting song name
             songTitle = list(filter(lambda songs: link in songs, self.dict_of_apls[prsnLists[0]]))
             if len(songTitle) == 0:
                 continue
 
             if len(prntStr + songTitle[0]) < 2000:
-                prntStr += ":notes:" + songTitle[0].split(" --- ")[0] + "\n"
+                prntStr += ":notes:" + songTitle[0].split(TITLE_URL_SEPARATOR)[0] + "\n"
         return Response(prntStr, delete_after=50)
 
     async def _cmd_msgtag(self, player, author, channel, permissions, leftover_args):
@@ -1748,7 +1787,7 @@ class MusicBot(discord.Client):
             songTitle = list(filter(lambda songs: link in songs, self.dict_of_apls[prsnLists[0]]))
             if len(songTitle) == 0:
                 continue
-            prntStr.append(songTitle[0].split(" --- ")[0] + "\n\t" + link)
+            prntStr.append(songTitle[0].split(TITLE_URL_SEPARATOR)[0] + "\r\n\t" + link)
 
         with BytesIO() as prntDoc:
             prntDoc.writelines(d.encode('utf8') + b'\n' for d in prntStr)
@@ -1797,18 +1836,18 @@ class MusicBot(discord.Client):
             prntStr += "**Autoplay lists containing: \"" + searchWord + "\"**\n\n"
             t0 = time.clock()
             #Gets all songs with the input word in your list
-            ContainsList = list(filter(lambda element: searchWord in element.split(" --- ")[0].lower(), self.dict_of_apls[author.id]))
+            ContainsList = list(filter(lambda element: searchWord in element.split(TITLE_URL_SEPARATOR)[0].lower(), self.dict_of_apls[author.id]))
             print("Time pass on your list: %s", time.clock() - t0)
             #Removing unprocessed songs
             for link in ContainsList:
-                if " --- " not in link:
+                if TITLE_URL_SEPARATOR not in link:
                     ContainsList.remove(link)
             prsnPrint = "\t\t:busts_in_silhouette:__Yours__\n"
             #Printing the list with the word
             for link in ContainsList:
                 #Making the song list
                 try:
-                    [title, link] = link.split(" --- ")
+                    [title, link] = link.split(TITLE_URL_SEPARATOR)
                     prsnPrint += ":point_right:" + title + " (" + link + ")" + "\n"
                 except:
                     print("Fail to parse yours: " + link)
@@ -1818,10 +1857,10 @@ class MusicBot(discord.Client):
                 try:
                     if (ContainsList.index(link) + 1) == int(toPlay):
                         #await self.cmd_play(player, channel, author, permissions, "", link.split(" --- ")[1])
-                        info = await self.downloader.extract_info(player.playlist.loop, link.split(" --- ")[1], download=False, process=False)
+                        info = await self.downloader.extract_info(player.playlist.loop, link.split(TITLE_URL_SEPARATOR)[1], download=False, process=False)
                         if not info:
                             raise exceptions.CommandError("That video cannot be played.", expire_in=30)
-                        entry, position = await player.playlist.add_entry(link.split(" --- ")[1], channel=channel, author=author)
+                        entry, position = await player.playlist.add_entry(link.split(TITLE_URL_SEPARATOR)[1], channel=channel, author=author)
                         #Not sure if needed
                         #await entry.get_ready_future()
                         if position == 1 and player.is_stopped:
@@ -1848,15 +1887,15 @@ class MusicBot(discord.Client):
                     userName = self._get_user(pplID)
                     #Converting the name accordinly (if user doesn't exist anymore)
                     userName = "Unknown User" if str(userName) == "None" else str(userName)[:-5]
-                    ContainsList = list(filter(lambda element: searchWord in element.split(" --- ")[0].lower(), self.dict_of_apls[pplID]))
+                    ContainsList = list(filter(lambda element: searchWord in element.split(TITLE_URL_SEPARATOR)[0].lower(), self.dict_of_apls[pplID]))
                     for link in ContainsList:
-                        if " --- " not in link:
+                        if TITLE_URL_SEPARATOR not in link:
                             ContainsList.remove(link)
                     prsnPrint += "\t\t:busts_in_silhouette:__" + userName + "__\n"
                     #Prints other peoples list
                     for link in ContainsList:
                         try:
-                            [title, link] = link.split(" --- ")
+                            [title, link] = link.split(TITLE_URL_SEPARATOR)
                             prsnPrint += ":point_right:" + title + " (" + link + ")" + "\n"
                         except:
                             print("Fail to parse " + userName + ": " + link)
@@ -1925,7 +1964,7 @@ class MusicBot(discord.Client):
                 data.append(each_line + "\r\n")
 
         else:
-            data.append("Your auto play list is empty.")
+            data.append("Your auto playlist is empty.")
 
         # sorts the mylist alphabetically Note: only works for ASCII characters
         data.sort(key=str.lower)
@@ -1947,18 +1986,17 @@ class MusicBot(discord.Client):
         Adds the current song to your autoplaylist.
         """
 
-        print("CMD_LIKE ", str(author.id))
+        #print("CMD_LIKE ", str(author.id))
         #print(self.dict_of_apls)
 
 
-        if self.add_to_autoplaylist(player.current_entry.url, author.id):
-            reply_text = "**%s**, the song **%s** has been added to your auto play list."
-            user = str(author)[:-5]
-            song_name = player.current_entry.title
+        if self.add_to_autoplaylist(player.current_entry.title + TITLE_URL_SEPARATOR + player.current_entry.url, author.id):
+            reply_text = "**%s**, the song **%s** has been added to your auto playlist."
         else:
-            reply_text = "**%s**, this song **%s** is already added to your auto play list."
-            user = str(author)[:-5]
-            song_name = player.current_entry.title
+            reply_text = "**%s**, this song **%s** is already added to your auto playlist."
+
+        user = str(author)[:-5]
+        song_name = player.current_entry.title
 
         #print(self.dict_of_apls)
 
@@ -1971,6 +2009,7 @@ class MusicBot(discord.Client):
         Usage:
             {command_prefix}dislike
             {command_prefix}dislike song_url
+            {command_prefix}dislike queue_position
 
         Removes the current song from your autoplaylist.
         """
@@ -1981,14 +2020,22 @@ class MusicBot(discord.Client):
 
         if song_url is None:
             url = player.current_entry.url
+        elif song_url.isnumeric():
+            position = int(song_url)
+            entry = await player.playlist.get_entry(position)
+
+            if entry is None:
+                url = player.current_entry.url
+            else:
+                url = entry.url
         else:
             url = song_url
 
         if self.remove_from_autoplaylist(url, author.id):
-            reply_text = "**%s**, the song **%s** has been removed from your auto play list."
+            reply_text = "**%s**, the song **%s** has been removed from your auto playlist."
             player.current_entry.disliked = True
         else:
-            reply_text = "**%s**, the song **%s** wasn't in your auto play list."
+            reply_text = "**%s**, the song **%s** wasn't in your auto playlist or something went wrong."
 
         user = str(author)[:-5]
 
@@ -2160,7 +2207,7 @@ class MusicBot(discord.Client):
             # that sends these every 10 seconds or a nice context manager.
             await self.send_typing(channel)
 
-            # TODO: I can create an event emitter object instead, add event functions, and every play list might be asyncified
+            # TODO: I can create an event emitter object instead, add event functions, and every playlist might be asyncified
             #       Also have a "verify_entry" hook with the entry as an arg and returns the entry if its ok
 
             entry_list, position = await player.playlist.import_from(song_url, channel=channel, author=author)
@@ -2224,7 +2271,7 @@ class MusicBot(discord.Client):
             btext = entry.title
 
             try:
-                self.add_to_autoplaylist(entry.title + " --- " + song_url, author.id)
+                self.add_to_autoplaylist(entry.title + TITLE_URL_SEPARATOR + song_url, author.id)
             except:
                 print("Failed to add song to apl in play command")
 
@@ -2484,36 +2531,42 @@ class MusicBot(discord.Client):
             song_progress = str(timedelta(seconds=player.progress)).lstrip('0').lstrip(':')
             song_total = str(timedelta(seconds=player.current_entry.duration)).lstrip('0').lstrip(':')
             prog_str = '`[%s/%s]`' % (song_progress, song_total)
+            np_text = ""
 
             if player.current_entry.meta.get('channel', False) and player.current_entry.meta.get('author', False):
                 np_text = "Now Playing: **%s** added by **%s** %s\n" % (
                     player.current_entry.title, player.current_entry.meta['author'].name, prog_str)
-            else:
-                # AutoPlayList playing
 
-                likers = ""
-                for each_user in self.get_likers(player.current_entry.url):
-                    # strip off the unique identifiers
-                    # I'm not using the meta data since technically it has no author so I wrote a get_likers function
-                    if each_user == self._get_user(self.cur_author):
-                        likers = likers + "**" + str(each_user)[:-5] + "**" + ", "
-                    else:
-                        likers = likers + str(each_user)[:-5] + ", "
 
-                # slice off last " ,""
-                likers = likers[:-2]
+            #else:
+            #    # AutoPlayList playing
 
-                #Getting all tags for song
-                list_tags = list(filter(lambda tag: player.current_entry.url in self.metaData[tag], self.metaData.keys()))
-                if len(list_tags) != 0:
-                    the_tags = "\nTags: "
-                    for each_tag in list_tags:
-                        the_tags += "**[" + each_tag + "]**, "
-                    the_tags = the_tags[:-2]
+            likers = ""
+            for each_user in self.get_likers(player.current_entry.url):
+                # strip off the unique identifiers
+                # I'm not using the meta data since technically it has no author so I wrote a get_likers function
+                if each_user == self._get_user(self.cur_author):
+                    likers = likers + "**" + str(each_user)[:-5] + "**" + ", "
                 else:
-                    the_tags = ""
+                    likers = likers + str(each_user)[:-5] + ", "
 
-                np_text = "Now Playing: **%s** from the AutoPlayList. %s\nLiked by: %s%s" % (player.current_entry.title, prog_str, likers, the_tags)
+            # slice off last " ,""
+            likers = likers[:-2]
+
+            #Getting all tags for song
+            list_tags = list(filter(lambda tag: player.current_entry.url in self.metaData[tag], self.metaData.keys()))
+            if len(list_tags) != 0:
+                the_tags = "\nTags: "
+                for each_tag in list_tags:
+                    the_tags += "**[" + each_tag + "]**, "
+                the_tags = the_tags[:-2]
+            else:
+                the_tags = ""
+
+            if np_text is not "":
+                np_text += "\nLiked by: %s%s" % (likers, the_tags)
+            else:
+                np_text += "Now Playing: **%s** from the AutoPlayList. %s\nLiked by: %s%s" % (player.current_entry.title, prog_str, likers, the_tags)
 
             #self.server_specific_data[server]['last_np_msg'] = await self.safe_send_message(channel, np_text)
             #await self._manual_delete_check(message)
@@ -3067,7 +3120,7 @@ class MusicBot(discord.Client):
                 player.skip()
 
             try:
-                self.add_to_autoplaylist(entry.title + " --- " + song_url, author.id)
+                self.add_to_autoplaylist(entry.title + TITLE_URL_SEPARATOR + song_url, author.id)
             except:
                 print("Failed to add song in playnow command")
 

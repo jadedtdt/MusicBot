@@ -31,6 +31,22 @@ class Playlist(EventEmitter):
     def clear(self):
         self.entries.clear()
 
+    async def get_entry(self, position, **meta):
+        if len(self.entries) == 0:
+            return None
+
+        entries_copy = self.entries
+
+        rotDist = -1 * (position - 1)
+        entries_copy.rotate(rotDist)
+        entry = entries_copy.popleft()
+        self.emit('entry-removed', playlist=self, entry=entry)
+        entries_copy.rotate(-1 * rotDist)
+
+        return entry
+
+
+
     async def add_entry(self, song_url, **meta):
         """
             Validates and adds a song_url to be played. This does not start the download of the song.
@@ -120,7 +136,7 @@ class Playlist(EventEmitter):
         entries_copy = self.entries
 
         # Create an empty deque that we'll use to re-fill the copied queue
-        entries_to_readd = deque()
+        #entries_to_readd = deque()
 
         """
         for i in len(entries_copy):
