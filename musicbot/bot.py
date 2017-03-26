@@ -100,7 +100,7 @@ class MusicBot(discord.Client):
         self.tweak_delimiters()
         self.remove_duplicates()
         #theoretically we shouldn't need this anymore
-        #self.update_song_names()
+        self.update_song_names()
 
         # it's a dictionary of lists where the keys are the IDs and the value is a list of their songs
         #
@@ -124,8 +124,8 @@ class MusicBot(discord.Client):
             for each_song in self.autoplaylist:
 
                 tuple_song_authors = each_song
-                if TITLE_URL_SEPARATOR not in each_song:
-                    tuple_song_authors = sanitize_string(each_song)
+                if TITLE_URL_SEPARATOR not in tuple_song_authors:
+                    tuple_song_authors = sanitize_string(tuple_song_authors)
 
                 # make sure we're not splitting with a delimeter that doesn't exist
                 if URL_LIKERS_SEPARATOR in tuple_song_authors:
@@ -257,9 +257,10 @@ class MusicBot(discord.Client):
                 # let's assert the line is clean before we change its format
                 each_line = sanitize_string(each_line)
 
-                if TITLE_URL_SEPARATOR in each_line:
-                    (url, authors) = each_line.split(TITLE_URL_SEPARATOR)
+                if URL_LIKERS_SEPARATOR in each_line:
+                    (url, likers) = each_line.split(URL_LIKERS_SEPARATOR)
                 else:
+                    url = each_line
                     print("NO LIKERS FOR ", each_line)
 
                 # in this case, each_line is strictly the URL
@@ -1128,8 +1129,8 @@ class MusicBot(discord.Client):
         if author == None:
             print("No Author... Don't know who to add to")
 
+        title = self.fetch_title(song_title_url)
         url = self.fetch_url(song_title_url)
-
         # find the url and get the whole line
         line_index = self.find_song(url)
         song_line = None
@@ -1139,11 +1140,10 @@ class MusicBot(discord.Client):
         # if not on anyone's list, let's add it to someone's
         if song_line == None:
 
-            str_to_write = url + URL_LIKERS_SEPARATOR + author
+            str_to_write = title + TITLE_URL_SEPARATOR + url + URL_LIKERS_SEPARATOR + author
             self.autoplaylist.append(str_to_write)
         # otherwise we just want to add this liker to the list
         else:
-            title = self.fetch_title(song_line)
             if author in song_line:
                 print("Song already added", url)
                 return False
@@ -1157,16 +1157,11 @@ class MusicBot(discord.Client):
                 self.autoplaylist[index] = str_to_write
 
         write_file(self.config.auto_playlist_file, self.autoplaylist)
-
         self._add_to_autoplaylist(title + TITLE_URL_SEPARATOR + url, author)
-        return True
 
     def _add_to_autoplaylist(self, song_url, author=None):
         if author == None:
             print("No Author in _add_to_autoplaylist")
-
-        #print("HELLO THERE!!!!")
-        #print(author)
 
         # initializes list for a new user
         if self.dict_of_apls.get(author, None) == None:
@@ -1174,57 +1169,47 @@ class MusicBot(discord.Client):
 
         self.dict_of_apls[author].append(song_url)
 
-    def remove_from_autoplaylist(self, song_url, author=None):
+    def remove_from_autoplaylist(self, song_title_url, author=None):
 
         if author == None:
             print("No Author... Don't know who to remove from")
             return False
 
         # find the url and get the whole line
-        line_index = self.find_song(song_url)
+        line_index = self.find_song(self.fetch_url(song_title_url))
         song_line = None
         if line_index != None:
             song_line = self.autoplaylist[line_index]
 
         if song_line != None:
 
-            #print("LINE OF SONG")
-            #print(song_line)
-            (url, likers) = song_line.split(URL_LIKERS_SEPARATOR)
-            likers = likers.split(LIKERS_DELIMETER)
+            title = self.fetch_title(song_line)
+            url = self.fetch_url(song_line)
+            likers = self.fetch_likers(song_line).split(LIKERS_DELIMETER)
 
             if author not in likers:
                 return False
 
             if len(likers) > 1:
                 likers.remove(author)
-                #new_line = url, parse_string_delimeter(sanitize_string(str(likers)))
                 new_line = "" + url + URL_LIKERS_SEPARATOR + sanitize_string(parse_string_delimeter(str(likers)))
 
                 if line_index != None:
-                    #print("LINE_INDEX")
-                    #print(sanitize_string(new_line))
-                    #self.autoplaylist[line_index] = sanitize_string(new_line)
                     self.autoplaylist[line_index] = new_line
 
             else:
                 print("ONE LIKER, REMOVING: ", song_line)
                 self.autoplaylist.remove(song_line)
 
-            #print("LINE")
-            #print(song_line)
-            #print("APL")
-            #print(self.autoplaylist)
             write_file(self.config.auto_playlist_file, self.autoplaylist)
+            return self._remove_from_autoplaylist(title + TITLE_URL_SEPARATOR + url, author)
 
         else:
             print("Can't remove a song that's not in the auto playlist")
             return False
 
-        return self._remove_from_autoplaylist(url, author)
-
     # removes from our dictionary of lists
-    def _remove_from_autoplaylist(self, song_url, author=None):
+    def _remove_from_autoplaylist(self, song_title_url, author=None):
         if author == None:
             print("No Author in _remove_from_autoplaylist")
             return False
@@ -1232,25 +1217,15 @@ class MusicBot(discord.Client):
         # initializes list for a new user
         if self.dict_of_apls.get(author, None) == None:
             self.dict_of_apls[author] = []
-        #else:
-        #   print("SHOULD BE HERE")
 
-        if song_url in self.dict_of_apls[author]:
-            self.dict_of_apls[author].remove(song_url)
+        if song_title_url in self.dict_of_apls[author]:
+            self.dict_of_apls[author].remove(song_title_url)
+        elif sanitize_string(song_title_url) in self.dict_of_apls[author]:
+            self.dict_of_apls[author].remove(sanitize_string(song_title_url))
         else:
-            # end case
-            if sanitize_string(song_url) == song_url:
-                # we failed
-                print("The song isn't in here? ROUND 2")
-                print(song_url)
-                print(self.dict_of_apls[author])
-                return False
-            else:
-                print("The song isn't in here? ROUND 1")
-                print(song_url)
-                print(self.dict_of_apls[author])
-                # we can try again
-                return self._remove_from_autoplaylist(sanitize_string(song_url), author)
+            print("The song isn't in here?")
+            print(song_title_url)
+            print(self.dict_of_apls[author][-1])
             return False
         return True
 
@@ -2016,22 +1991,24 @@ class MusicBot(discord.Client):
 
         reply_text = ""
         user = ""
-        song_name = ""
 
         if song_url is None:
             url = player.current_entry.url
+            title = player.current_entry.title
         elif song_url.isnumeric():
             position = int(song_url)
             entry = await player.playlist.get_entry(position)
 
             if entry is None:
                 url = player.current_entry.url
+                title = player.current_entry.url
             else:
                 url = entry.url
+                title = entry.title
         else:
             url = song_url
 
-        if self.remove_from_autoplaylist(url, author.id):
+        if self.remove_from_autoplaylist(title + TITLE_URL_SEPARATOR + url, author.id):
             reply_text = "**%s**, the song **%s** has been removed from your auto playlist."
             player.current_entry.disliked = True
         else:
@@ -2039,12 +2016,10 @@ class MusicBot(discord.Client):
 
         user = str(author)[:-5]
 
-        if song_url is None:
-            song_name = player.current_entry.title
-        else:
-            song_name = url
+        if title is None:
+            title = player.current_entry.title
 
-        reply_text %= (user, song_name)
+        reply_text %= (user, title)
 
         return Response(reply_text, delete_after=30)
 
