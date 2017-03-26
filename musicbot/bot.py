@@ -735,7 +735,7 @@ class MusicBot(discord.Client):
                             counter = 0
                         else:
                             if list(filter(lambda personID: author in self.ghost_list[personID], self.ghost_list.keys())):
-                                print("FAKE USER NOT IN CHANNEL!")
+                                print("GHOST IN CHANNEL!")
                                 song_url = random.choice(self.dict_of_apls[author])
                                 if TITLE_URL_SEPARATOR in song_url:
                                     song_url = song_url.split(TITLE_URL_SEPARATOR)[1]
@@ -1080,7 +1080,7 @@ class MusicBot(discord.Client):
             (url, likers) = url_likers.split(", ")
             return url
         else:
-            return url_likers 
+            return url_likers
 
     def fetch_likers(self, song_line):
 
