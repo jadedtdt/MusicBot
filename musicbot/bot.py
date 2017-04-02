@@ -72,6 +72,8 @@ class MusicBot(discord.Client):
         self.the_voice_clients = {}
         self.metaData = {}
         self.ghost_list = {}
+        self.list_Played = []
+        self.len_list_Played = 5
         self.locks = defaultdict(asyncio.Lock)
         self.voice_client_connect_lock = asyncio.Lock()
         self.voice_client_move_lock = asyncio.Lock()
@@ -732,6 +734,14 @@ class MusicBot(discord.Client):
                             if TITLE_URL_SEPARATOR in song_url:
                                 song_url = song_url.split(TITLE_URL_SEPARATOR)[1]
 
+                            #check if repeat song
+                            if song_url in self.list_Played:
+                                print("Song played too recently")
+                                counter = counter + 1
+                                continue
+                            if len(self.list_Played) >= self.len_list_Played:
+                                del self.list_Played[0:(len(self.list_Played) - self.len_list_Played)]
+                            self.list_Played.append(song_url)
                             print(song_url)
                             counter = 0
                         else:
@@ -740,6 +750,14 @@ class MusicBot(discord.Client):
                                 song_url = random.choice(self.dict_of_apls[author])
                                 if TITLE_URL_SEPARATOR in song_url:
                                     song_url = song_url.split(TITLE_URL_SEPARATOR)[1]
+                                #check if repeat song
+                                if song_url in self.list_Played:
+                                    print("Song played too recently")
+                                    counter = counter + 1
+                                    continue
+                                if len(self.list_Played) >= self.len_list_Played:
+                                    del self.list_Played[0:(len(self.list_Played) - self.len_list_Played)]
+                                self.list_Played.append(song_url)
                                 counter = 0
                             else:
                                 print("USER NOT IN CHANNEL!")
@@ -1400,6 +1418,27 @@ class MusicBot(discord.Client):
 
         return Response(longStr, delete_after=35)
 
+    async def cmd_trackcount(self, server, player, channel, author, leftover_args):
+        """
+        Usage:
+        {command_prefix}trackcount #
+
+        Adjusts the amount of songs that need to be played before a previous song can be played again
+
+        """
+
+        if len(leftover_args) > 1:
+            prntStr = "Too many arguments given for **adjrepeat** command."
+            return Response(prntStr, delete_after=20)
+        else if len(leftover_args) == 0:
+            prntStr = "Current allowed number of repeated songs is **" + str(self.len_list_Played) + "**."
+            return Response(prntStr, delete_after=20)
+        try:
+            self.len_list_Played = int(leftover_args[0])
+            prntStr = "Allowed number of repeated song changed to **" + leftover_args[0] + "**."
+        except:
+            prntStr = "Invalid value given. Please input a number."
+        return Response(prntStr, delete_after=20)
 
     async def cmd_stat(self, server, player, channel, author, leftover_args):
         """
@@ -1451,6 +1490,9 @@ class MusicBot(discord.Client):
 
 
     async def _cmd_stat(self, server, player, channel, author):
+        #Expended functions on stat
+        #   - compat
+
         t0 = time.clock()
         #If author no music printing
         if author.id not in self.dict_of_apls:
@@ -1492,10 +1534,11 @@ class MusicBot(discord.Client):
         #Check if it was a mention
         if '<@' in user_name and '>' in user_name:
             #Get all the info on the person
-            personObj = list(filter(lambda user_list: user_name[2:-1] == user_list.id, self.get_all_members()))[0]
+            deleteChars = str.maketrans(dict.fromkeys("<@!>"))
+            personObj = list(filter(lambda user_list: user_name.translate(deleteChars) == user_list.id, self.get_all_members()))[0]
 
             #Checking if person is currently in channel
-            if str(user_name[2:-1]) in channel_id_list:
+            if str(user_name.translate(deleteChars)) in channel_id_list:
                 prntStr = "**" + personObj.display_name + "** is currently in this voice channel."
                 return Response(prntStr, delete_after=20)
 
@@ -1548,7 +1591,7 @@ class MusicBot(discord.Client):
         if str(id) in self.ghost_list.keys():
             return self.ghost_list[str(id)]
         else:
-            return None
+            return []
 
 
     async def cmd_tag(self, player, author, channel, permissions, leftover_args):

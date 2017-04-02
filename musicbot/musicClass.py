@@ -7,6 +7,7 @@ class music:
         self.likers = [author]
         self.plays = plays
         self.tags = []
+        self.volume = None
 
     ###########################################################################
 
@@ -27,6 +28,9 @@ class music:
 
     def getTags(self):
         return self.tags
+
+    def getVolume(self):
+        return self.volume
 
     def getStore(self):
         temp = self.name + TITLE_URL_SEPARATOR + self.url + URL_LIKERS_SEPARATOR
@@ -64,6 +68,9 @@ class music:
 
     def addTag(self, tag):
         self.tags.append(tag)
+
+    def setVolume(self, volume):
+        self.volume = volume
 
     def __str__(self):
         return self.name + TITLE_URL_SEPARATOR + self.url
