@@ -667,6 +667,9 @@ class MusicBot(discord.Client):
 
     async def on_player_finished_playing(self, player, **_):
 
+        #reset volume
+        player.volume = self.config.default_volume;
+
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
             counter = 0
             while self.autoplaylist and counter < 100 and not player.is_paused:
@@ -677,7 +680,7 @@ class MusicBot(discord.Client):
                     if not (m.deaf or m.self_deaf):
                         people.append(m.id)
 
-                print(self.ghost_list)
+                print("Ghost list: ", self.ghost_list)
                 copy_ghost_list = self.ghost_list.copy()
                 for author_fakePPL in copy_ghost_list.keys():
                     #Check if the author of the list is still in the channel
@@ -721,7 +724,7 @@ class MusicBot(discord.Client):
                         continue
                     else:
                         if self._get_user(author, voice=True) and (self._get_channel(author, voice=True) == self._get_channel(self.user.id, voice=True)):
-                            print("USER IN CHANNEL!")
+                            #print("USER IN CHANNEL!")
                             #print(author)
                             print(self._get_user(author, voice=True))
 
@@ -776,6 +779,8 @@ class MusicBot(discord.Client):
                 if not info:
                     #self.remove_from_autoplaylist(song_url, author)
                     self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % song_url)
+                    for counter in range(0, 5):
+                    	print("\a")  # BEEPS
                     #write_file(self.config.auto_playlist_file, self.autoplaylist)
                     continue
 
@@ -1430,7 +1435,7 @@ class MusicBot(discord.Client):
         if len(leftover_args) > 1:
             prntStr = "Too many arguments given for **adjrepeat** command."
             return Response(prntStr, delete_after=20)
-        else if len(leftover_args) == 0:
+        elif len(leftover_args) == 0:
             prntStr = "Current allowed number of repeated songs is **" + str(self.len_list_Played) + "**."
             return Response(prntStr, delete_after=20)
         try:
@@ -2006,7 +2011,6 @@ class MusicBot(discord.Client):
 
         #print("CMD_LIKE ", str(author.id))
         #print(self.dict_of_apls)
-
 
         if self.add_to_autoplaylist(player.current_entry.title + TITLE_URL_SEPARATOR + player.current_entry.url, author.id):
             reply_text = "**%s**, the song **%s** has been added to your auto playlist."
@@ -3043,6 +3047,21 @@ class MusicBot(discord.Client):
 
         await self.send_message(author, '\n'.join(lines))
         return Response(":mailbox_with_mail:", delete_after=20)
+
+    async def cmd_patchnotes(self, leftover_args):
+        """
+        Usage:
+            {command_prefix}patchnotes
+
+        Displays the most recent commit message on the repository
+        """
+        file = load_file(self.config.last_commit_file)
+        textblock = ""
+        for each_line in file:
+            textblock += each_line;
+
+        return Response("```\n" + textblock + "\n```", delete_after=30)
+
 
     async def cmd_playnow(self, player, channel, author, permissions, leftover_args, song_url):
         """
