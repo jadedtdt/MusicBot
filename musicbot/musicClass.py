@@ -1,28 +1,41 @@
 from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH, TITLE_URL_SEPARATOR, URL_LIKERS_SEPARATOR, LIKERS_DELIMETER
+from .config import Config, ConfigDefaults
 
-class music:
-    def __init__(self, url, song_name, author, plays = 1):
+class Music:
+
+    def __init__(self, title, url, author=None):
+        config_file = ConfigDefaults.options_file
+        self.config = Config(config_file)
+
+        self.title = title
         self.url = url
-        self.name = song_name
-        self.likers = [author]
-        self.plays = plays
+        # check if already in list format
+        if (author == list(author)):
+            self.likers = author
+        else:
+            self.likers = [author]
+
+            # if "[" in author or "]" in author
+
+        self.plays = 1
         self.tags = []
-        self.volume = None
+        self.volume = self.config.default_volume
 
     ###########################################################################
 
     #   Getting from Class
 
     ###########################################################################
+    def getTitle(self):
+        return self.title
+
     def getURL(self):
         return self.url
-
-    def getSong(self):
-        return self.name
 
     def getLikers(self):
         return self.likers
 
+    # play count, number of times played
     def getPlays(self):
         return self.plays
 
@@ -32,8 +45,9 @@ class music:
     def getVolume(self):
         return self.volume
 
+    # do we really even need this?
     def getStore(self):
-        temp = self.name + TITLE_URL_SEPARATOR + self.url + URL_LIKERS_SEPARATOR
+        temp = self.title + TITLE_URL_SEPARATOR + self.url + URL_LIKERS_SEPARATOR
         for liker in self.likers:
             temp =+ str(liker) + LIKERS_DELIMETER
         return temp[:-2]
@@ -69,8 +83,31 @@ class music:
     def addTag(self, tag):
         self.tags.append(tag)
 
+    def setTitle(self, title):
+        self.title = title
+
+    def setURL(self, url):
+        self.url = url
+
     def setVolume(self, volume):
         self.volume = volume
 
     def __str__(self):
-        return self.name + TITLE_URL_SEPARATOR + self.url
+        return self.title + TITLE_URL_SEPARATOR + self.url
+
+    ###########################################################################
+
+    #   Removing from Class
+
+    ###########################################################################
+    def removePlay(self):
+        if self.plays > 0:
+            self.plays -= 1
+
+    def removeLiker(self, liker):
+        if self.hasLiker(liker):
+            self.likers.remove(liker)
+
+    def removeTag(self, tag):
+        if self.hasTag(tag):
+            self.tags.remove(tag)

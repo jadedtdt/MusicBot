@@ -81,6 +81,8 @@ class Config:
 
         self.blacklist_file = config.get('Files', 'BlacklistFile', fallback=ConfigDefaults.blacklist_file)
         self.auto_playlist_file = config.get('Files', 'AutoPlaylistFile', fallback=ConfigDefaults.auto_playlist_file)
+        self.auto_playlist_pickle = config.get('Files', 'AutoPlaylistPickle', fallback=ConfigDefaults.auto_playlist_pickle)
+        self.users_list_pickle = config.get('Files', 'UsersListPickle', fallback=ConfigDefaults.users_list_pickle)
         self.metadata_file = config.get('Files', 'MetaDataFile', fallback=ConfigDefaults.metadata_file)
         self.last_commit_file = config.get('Files', 'LastCommitFile', fallback=ConfigDefaults.last_commit_file)
 
@@ -193,7 +195,9 @@ class ConfigDefaults:
 
     options_file = 'config/options.ini'
     blacklist_file = 'config/blacklist.txt'
-    auto_playlist_file = 'config/autoplaylist.txt' # this will change when I add playlists
+    auto_playlist_file = 'config/autoplaylist.txt'
+    auto_playlist_pickle = 'config/autoplaylist.pickle'
+    users_list_pickle = 'config/users_list.pickle'
     metadata_file = 'config/metadata.txt'
     last_commit_file = '.git/COMMIT_EDITMSG'
 

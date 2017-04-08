@@ -3,6 +3,8 @@ import aiohttp
 import decimal
 import unicodedata
 
+import pickle
+
 from hashlib import md5
 from .constants import DISCORD_MSG_CHAR_LIMIT, LIKERS_DELIMETER
 
@@ -31,6 +33,11 @@ def write_file(filename, contents):
             f.write(str(item))
             f.write('\n')
 
+def update_pickle(filename, contents):
+    pickle.dump( contents, open ( filename, "wb" ) )
+
+def load_pickle(filename):
+    return pickle.load( open ( filename, "rb" ) )
 
 def slugify(value):
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
