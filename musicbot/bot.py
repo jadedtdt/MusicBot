@@ -170,9 +170,6 @@ class MusicBot(discord.Client):
         update_pickle(self.config.users_list_pickle, self.users_list)
         '''
 
-        print("HEY")
-        print(self.users_list)
-
         #Setting up the metaData tags
         if not self.wholeMetadata:
             print("Attention: Metadata tags are empty")
@@ -679,34 +676,27 @@ class MusicBot(discord.Client):
 
         if player.current_entry.meta.get('channel', False) and player.current_entry.meta.get('author', False):
             user_index = self.getUserIndex(player.current_entry.meta['author'].id)
-            print("A")
             if user_index != None:
-                print("B")
                 user = self.users_list[user_index]
 
         else:
             # AutoPlayList playing
 
-            print("C")
             likers = ""
             for each_user in self.get_likers(player.current_entry.url):
                 # strip off the unique identifiers
                 # I'm not using the meta data since technically it has no author so I wrote a get_likers function
                 if each_user == self._get_user(self.cur_author):
-                    print("D")
                     user_index = self.getUserIndex(each_user.id)
                     if user_index != None:
-                        print("E")
                         user = self.users_list[user_index]
 
 
         song_index = self.find_song(entry.url)
         if song_index != None:
-            print("F")
             song = self.autoplaylist[song_index]
 
             if user.hasSong(song):
-                print("G")
                 song = user.getSong(song)
                 song.addPlay()
 
@@ -1239,6 +1229,8 @@ class MusicBot(discord.Client):
 
     def add_to_autoplaylist(self, title, url, author=None):
 
+        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
+
         if not author.isnumeric():
             author = author.id
 
@@ -1275,6 +1267,8 @@ class MusicBot(discord.Client):
         return True
 
     def _add_to_autoplaylist(self, title, url, author=None):
+
+        self.users_list = load_pickle(self.config.users_list_pickle)
 
         if author == None:
 
@@ -1313,6 +1307,8 @@ class MusicBot(discord.Client):
         update_pickle(self.config.users_list_pickle, self.users_list)
 
     def remove_from_autoplaylist(self, title, url, author=None):
+
+        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
 
         if author == None:
             print("No Author... Don't know who to add to")
@@ -1357,6 +1353,8 @@ class MusicBot(discord.Client):
     # removes from our dictionary of lists
     def _remove_from_autoplaylist(self, title, url, author=None):
 
+        self.users_list = load_pickle(self.config.users_list_pickle)
+
         if author == None:
             likers = music_obj.getLikers()
             for liker in likers:
@@ -1387,6 +1385,7 @@ class MusicBot(discord.Client):
             print("The song isn't in here?")
             return False
 
+        update_pickle(self.config.users_list_pickle, self.users_list)
         return True
 
     # finds the first instance a song URL is found and returns the index
