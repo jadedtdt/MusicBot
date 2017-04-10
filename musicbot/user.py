@@ -15,13 +15,19 @@ class User:
         self.user_id = user_id
 
         self.song_list = []
-        self.mood = None
+        self.mood = ""
 
     ###########################################################################
 
     #   Getting from Class
 
     ###########################################################################
+
+    def getSong(self, music_obj):
+        for each_song in self.song_list:
+            if each_song.getURL() == music_obj.getURL() or each_song.getURL() == music_obj.getURL():
+                return each_song
+        return None
 
     def getSongList(self):
         return self.song_list
@@ -54,8 +60,7 @@ class User:
         for each_song in self.song_list:
             if each_song.getURL() == music_obj.getURL() or each_song.getURL() == music_obj.getURL():
                 return True
-            else:
-                return False
+        return False
 
     def hasMood(self, tag):
         return tag == self.mood
@@ -80,10 +85,16 @@ class User:
 
     def removeSong(self, music_obj):
         if self.hasSong(music_obj):
-            self.song_list.remove(music_obj)
+            toDelete = self.getSong(music_obj)
+            self.song_list.remove(toDelete)
             return True
         else:
             return False
 
-    def __str__(self):
-        return self.user_id + ": " + self.song_list + ". Mood: " + self.mood
+    def __repr__(self):
+        if self.song_list == None:
+            songs = ""
+        else:
+            songs = str(self.song_list)
+
+        return self.user_id + ": " + self.mood + ". Songs: " + songs

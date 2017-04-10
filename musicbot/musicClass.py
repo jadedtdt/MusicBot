@@ -3,7 +3,7 @@ from .config import Config, ConfigDefaults
 
 class Music:
 
-    def __init__(self, title, url, author=None):
+    def __init__(self, title="", url="", author=None):
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
@@ -17,7 +17,7 @@ class Music:
 
             # if "[" in author or "]" in author
 
-        self.plays = 1
+        self.plays = 0
         self.tags = []
         self.volume = self.config.default_volume
 
@@ -58,16 +58,10 @@ class Music:
 
     ###########################################################################
     def hasLiker(self, author):
-        if author in self.likers:
-            return True
-        else:
-            return False
+        return author in self.likers
 
     def hasTag(self, tag):
-        if tag in self.tags:
-            return True
-        else:
-            return False
+        return tag in self.tags
 
     ###########################################################################
 
@@ -92,8 +86,11 @@ class Music:
     def setVolume(self, volume):
         self.volume = volume
 
-    def __str__(self):
-        return self.title + TITLE_URL_SEPARATOR + self.url
+    def __repr__(self):
+        title_str = ""
+        if self.title != None:
+            title_str = self.title
+        return title_str + TITLE_URL_SEPARATOR + self.url
 
     ###########################################################################
 
