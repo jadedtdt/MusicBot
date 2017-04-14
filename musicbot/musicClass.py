@@ -7,7 +7,11 @@ class Music:
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
-        self.title = title
+        if (title == list(title)):
+            for each_word in title:
+                title += each_word + " "
+        else:
+            self.title = title
         self.url = url
         # check if already in list format
         if (author == list(author)):
@@ -89,7 +93,7 @@ class Music:
     def __repr__(self):
         title_str = ""
         if self.title != None:
-            title_str = self.title
+            title_str = str(self.title)
         return title_str + TITLE_URL_SEPARATOR + self.url
 
     ###########################################################################

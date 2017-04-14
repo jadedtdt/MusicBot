@@ -374,6 +374,25 @@ class MusicBot(discord.Client):
         #print("No user found with info: ", discord_user)
         return None
 
+    def check_songs(self, song_url, author):
+        orig = self.autoplaylist.copy()
+
+        matched_song = None
+        while self.find_song(song_url) != None and matched_song == None:
+            cached_song = self.find_song(song_url)
+            if author.id in cached_song.getLikers():
+                matched_song = cached_song
+            self.autoplaylist.remove(cached_song)
+
+        if matched_song != None:
+            song_url = matched_song.getURL()
+        else:
+            # none of them are our songs, so we'll try someone else's
+            if cached_song != None:
+                song_url = cached_song.getURL()
+
+        self.autoplaylist = orig
+
     # TODO: Add some sort of `denied` argument for a message to send when someone else tries to use it
     def owner_only(func):
         @wraps(func)
@@ -688,11 +707,13 @@ class MusicBot(discord.Client):
                     user = self.get_user(each_user.id)
 
 
+        # updates title if it's not there
         song = self.find_song(entry.url)
         if song != None:
-
-            if user.hasSong(song):
-                song.addPlay()
+            if song.getTitle() == None:
+                song.setTitle(player.current_entry.title)
+                user.getSong(song).setTitle(player.current_entry.title)
+            song.addPlay()
 
         if channel and author:
             last_np_msg = self.server_specific_data[channel.server]['last_np_msg']
@@ -726,7 +747,7 @@ class MusicBot(discord.Client):
         await self.update_now_playing()
 
     async def on_player_finished_playing(self, player, **_):
-        # updates our pickle
+        # updates our pickles
         update_pickle(self.config.users_list_pickle, self.users_list)
         update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
 
@@ -855,7 +876,6 @@ class MusicBot(discord.Client):
                     self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % playURL)
                     for counter in range(0, 5):
                     	print("\a")  # BEEPS
-                    #write_file(self.config.auto_playlist_file, self.autoplaylist)
                     continue
 
                 if info.get('entries', None):  # or .get('_type', '') == 'playlist'
@@ -1365,12 +1385,19 @@ class MusicBot(discord.Client):
         update_pickle(self.config.users_list_pickle, self.users_list)
         return True
 
-    # finds the first instance a song URL is found and returns the object
-    def find_song(self, song_url):
+    # finds the first instance a song URL is found or if a string is found in a title and returns the object
+    def find_song(self, args):
+
+        # forcing strings here
 
         for each_song in self.autoplaylist:
-            if song_url == each_song.getURL():
+
+            if args == each_song.getURL():
                 return each_song
+
+            if each_song.getTitle() != None:
+                if args in each_song.getTitle().lower():
+                    return each_song
         return None
 
     async def cmd_help(self, command=None):
@@ -1909,14 +1936,18 @@ class MusicBot(discord.Client):
             if len(prsnLists) == 0:
                 continue
             #Getting song name
-            print(prsnLists[0].getSongList())
+            #print(prsnLists[0].getSongList())
             song = list(filter(lambda songs: link in songs.getURL(), prsnLists[0].getSongList()))
 
             if len(song) == 0:
                 continue
 
             if len(prntStr + str(song[0])) < 2000:
-                prntStr += ":notes:" + song[0].getTitle() + "\n"
+                if song[0].getTitle() != None:
+                    prntStr += ":notes:" + song[0].getTitle() + "\n"
+                else:
+                    prntStr += ":notes:" + "[NO TITLE] " + song[0].getURL() + "\n"
+                    
         return Response(prntStr, delete_after=50)
 
     async def _cmd_msgtag(self, player, author, channel, permissions, leftover_args):
@@ -2287,8 +2318,14 @@ class MusicBot(discord.Client):
 
         await self.send_typing(channel)
 
+
         if leftover_args:
             song_url = ' '.join([song_url, *leftover_args])
+
+        # let's see if we already have this song or a similar one. i feel like this will help 70% of the time
+        # let's check the songs the user likes before looking at other people's
+
+        self.check_songs(song_url, author)
 
         try:
             info = await self.downloader.extract_info(player.playlist.loop, song_url, download=False, process=False)
@@ -3235,6 +3272,11 @@ class MusicBot(discord.Client):
 
         if leftover_args:
             song_url = ' '.join([song_url, *leftover_args])
+
+        # let's see if we already have this song or a similar one. i feel like this will help 70% of the time
+        # let's check the songs the user likes before looking at other people's
+
+        self.check_songs(song_url, author)
 
         try:
             info = await self.downloader.extract_info(player.playlist.loop, song_url, download=False, process=False)

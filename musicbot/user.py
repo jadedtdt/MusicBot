@@ -58,8 +58,12 @@ class User:
 
     def hasSong(self, music_obj):
         for each_song in self.song_list:
-            if each_song.getURL() == music_obj.getURL() or each_song.getURL() == music_obj.getURL():
+            if each_song.getURL() == music_obj.getURL():
                 return True
+
+            if music_obj.getTitle() != None and each_song.getTitle() != None:
+                if  music_obj.getTitle() in each_song.getTitle():
+                    return True
         return False
 
     def hasMood(self, tag):
