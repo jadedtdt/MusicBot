@@ -104,6 +104,8 @@ class MusicPlayer(EventEmitter):
 
         self.loop.create_task(self.websocket_check())
 
+        self._currently_playing = None
+
     @property
     def volume(self):
         return self._volume
@@ -114,6 +116,14 @@ class MusicPlayer(EventEmitter):
         if self._current_player:
             self._current_player.buff.volume = value
 
+    @property
+    def currently_playing(self):
+        return self._currently_playing
+
+    @currently_playing.setter
+    def currently_playing(self, value):
+        self._currently_playing = value
+
     def on_entry_added(self, playlist, entry):
         if self.is_stopped:
             self.loop.call_later(2, self.play)
@@ -122,7 +132,7 @@ class MusicPlayer(EventEmitter):
         if not self.bot.config.save_videos and entry:
             if any([entry.filename == e.filename for e in self.playlist.entries]):
                 print("[Config:SaveVideos] Skipping deletion, found song in queue")
-            elif entry.filename == self._current_entry.filename:                
+            elif entry.filename == self._current_entry.filename:
                 print("[Config:SaveVideos] Skipping deletion, song removed from queue is currently playing")
             else:
                 # print("[Config:SaveVideos] Deleting file: %s" % os.path.relpath(entry.filename))
