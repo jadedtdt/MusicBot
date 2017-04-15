@@ -294,7 +294,7 @@ class MusicBot(discord.Client):
                     except:
                         # song has probably been removed to copywright
                         # if we don't add it to the list, it's the same as removing it
-                        # notifyLikers()?
+                        # notify_likers()?
                         continue
 
                     print("Processing: ", song_title)
@@ -378,6 +378,7 @@ class MusicBot(discord.Client):
         orig = self.autoplaylist.copy()
 
         matched_song = None
+        cached_song = None
         while self.find_song(song_url) != None and matched_song == None:
             cached_song = self.find_song(song_url)
             if author.id in cached_song.getLikers():
@@ -392,6 +393,20 @@ class MusicBot(discord.Client):
                 song_url = cached_song.getURL()
 
         self.autoplaylist = orig
+
+    async def notify_likers(self, song):
+        if song == None:
+            print("Null song, no one to notify")
+            return
+
+        channel = self.get_channel(list(self.config.bound_channels)[0])
+
+        likers = song.getLikers()
+        likers_str = ""
+        for each_liker in likers:
+            likers_str += self._get_user(each_liker).mention + " "
+        msg = 'Hey! %s. It seems like your video has been made unavailable.\n%s, %s' % (likers_str, song.getTitle(), song.getURL())
+        await self.safe_send_message(channel, msg)
 
     # TODO: Add some sort of `denied` argument for a message to send when someone else tries to use it
     def owner_only(func):
@@ -864,19 +879,28 @@ class MusicBot(discord.Client):
                                 continue
 
                 try:
-                    if playURL == None:
+                    if playURL == None and song != None:
                         playURL = song.getURL()
-                    info = await self.downloader.safe_extract_info(player.playlist.loop, playURL, download=False, process=False)
-                except exceptions.ExtractionError as e:
-                    self.safe_print("[Error] Stripping created a corrupted song URL. Re-think sanitizing this way!")
-                    continue
-
-                if not info:
-                    #self.remove_from_autoplaylist(song_url, author)
-                    self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % playURL)
-                    for counter in range(0, 5):
-                    	print("\a")  # BEEPS
-                    continue
+                    info = await self.downloader.extract_info(player.playlist.loop, playURL, download=False, process=False)
+                except Exception as e:            
+                    if "Cannot identify player" not in str(e): 
+                        song = self.find_song(playURL)
+                        if song != None:
+                            await self.notify_likers(song)
+                            self.remove_from_autoplaylist(song.getTitle(), song.getURL())
+                            author = self._get_user(user.getID())
+                            channel = self._get_channel(author.id)
+                            #tags = song.getTags()
+                            #for tag in tags:
+                            #    await self._cmd_removetag(player, author, channel, tag, printing=False)
+                            #this doesn't work because there's currently no song playing.. not sure how to do this
+                            self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % playURL)
+                        print("\a")  # BEEPS
+                        continue
+                    else:
+                        print("???")
+                        print("ignore")
+                        print(e)
 
                 if info.get('entries', None):  # or .get('_type', '') == 'playlist'
                     pass  # Wooo playlist
@@ -1320,10 +1344,20 @@ class MusicBot(discord.Client):
         self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
 
         if author == None:
-            print("No Author... Don't know who to remove from")
-            return False
+            #check if we can grab the likers from the apl
+            song = self.find_song(url)
+            if song != None:
+                if len(song.getLikers()) == 0:
+                    return False
+                else:
+                    for each_liker in song.getLikers():
+                        self.remove_from_autoplaylist(title, url, each_liker)
+                    return True
+            else:
+                print("No Author... Don't know who to remove from")
+                return False
 
-        if not author.isnumeric():
+        if not str(author).isnumeric():
             author = author.id
 
         song = self.find_song(url)
@@ -1811,7 +1845,7 @@ class MusicBot(discord.Client):
         prntStr = "**" + player.current_entry.title + "** was added to the **[" + leftover_args + "]** tag"
         return Response(prntStr, delete_after=20)
 
-    async def _cmd_removetag(self, player, author, channel, leftover_args):
+    async def _cmd_removetag(self, player, author, channel, leftover_args, printing=True):
         """
         Usage:
             {command_prefix}removetag TAG
@@ -1832,7 +1866,11 @@ class MusicBot(discord.Client):
                 prntStr = "**" + player.current_entry.title + "** is removed from **[" + leftover_args + "]** tag"
             else:
                 prntStr = "**" + player.current_entry.title + "** was not in **[" + leftover_args + "]** tag"
-        return Response(prntStr, delete_after=20)
+
+        if printing == True:
+            return Response(prntStr, delete_after=20)
+        else:
+            return True
 
     async def _cmd_updatetags(self):
         """
