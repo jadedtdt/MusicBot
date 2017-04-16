@@ -11,3 +11,5 @@ config/permissions.ini
 config/autoplaylist.txt
 
 *.command
+
+*.pickle

@@ -2137,7 +2137,7 @@ class MusicBot(discord.Client):
                     prsnPrint += ":point_right:" + songObj.getTitle() + "(" + songObj.getURL() + ")" + "\n"
                 #Correcting for too many songs (sqrewing over ppl b/c i'm lazy)
                 if len(prntStr + prsnPrint) > DISCORD_MSG_CHAR_LIMIT:
-                    prsnPrint = "```Partial List - " + userName + "```" + prsnPrint[33:]
+                    prsnPrint = "\n```Partial List - " + userName + "```" + prsnPrint[27+len(userName):]
                     cut_index = prsnPrint[:DISCORD_MSG_CHAR_LIMIT - len(prntStr)].rfind('\n')
                     #Check if the holding print statment (prntStr) is close to the max limit and
                     #   doesn't give space to next list
