@@ -86,6 +86,7 @@ class MusicBot(discord.Client):
         #self.autoplaylist = load_file(self.config.auto_playlist_file)
         self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
         self.users_list = load_pickle(self.config.users_list_pickle)
+        #self.users_list = []
         self.wholeMetadata = load_file(self.config.metadata_file)
         self.downloader = downloader.Downloader(download_folder=AUDIO_CACHE_PATH)
 
@@ -121,8 +122,7 @@ class MusicBot(discord.Client):
             # if the URL_LIKERS delimeter is found, that means the song is liked by at least one person and we can split the string into URL and likers
 
             for each_song in self.autoplaylist:
-
-
+                
                 tuple_song_authors = each_song
                 if TITLE_URL_SEPARATOR not in tuple_song_authors:
                     tuple_song_authors = sanitize_string(tuple_song_authors)
@@ -156,9 +156,9 @@ class MusicBot(discord.Client):
                 #print("C. " + str(song.getLikers()))
 
 
-
                 # fills our dictionary of user ids=>songs
                 for each_author in each_song.getLikers():
+                    print(each_song)
                     self._add_to_autoplaylist(each_song.title, each_song.url, each_author)
 
             #self.autoplaylist_temp = load_pickle(self.config.auto_playlist_pickle)
@@ -168,6 +168,7 @@ class MusicBot(discord.Client):
         #print("2. " + str(self.users_list))
         update_pickle(self.config.users_list_pickle, self.users_list)
         '''
+        
 
         #Setting up the metaData tags
         if not self.wholeMetadata:
@@ -373,7 +374,7 @@ class MusicBot(discord.Client):
         #print("No user found with info: ", discord_user)
         return None
 
-    def check_songs(self, song_url, author):
+    async def check_songs(self, song_url, author):
         orig = self.autoplaylist.copy()
 
         matched_song = None
@@ -393,7 +394,9 @@ class MusicBot(discord.Client):
 
         self.autoplaylist = orig
 
-    async def notify_likers(self, song):
+        return song_url
+
+    async def notify_likers(self, song, emsg=""):
         if song == None:
             print("Null song, no one to notify")
             return
@@ -404,7 +407,7 @@ class MusicBot(discord.Client):
         likers_str = ""
         for each_liker in likers:
             likers_str += self._get_user(each_liker).mention + " "
-        msg = 'Hey! %s. It seems like your video has been made unavailable.\n%s, %s' % (likers_str, song.getTitle(), song.getURL())
+        msg = 'Hey! %s. It seems like your video has been made unavailable.\n%s, %s\nReason: %s' % (likers_str, song.getTitle(), song.getURL(), emsg)
         await self.safe_send_message(channel, msg)
 
     # TODO: Add some sort of `denied` argument for a message to send when someone else tries to use it
@@ -798,16 +801,11 @@ class MusicBot(discord.Client):
                             people.append(fakePPL)
                 del copy_ghost_list
 
-                #author = random.choice(list(self.users_list.keys()))
                 author = random.choice(people)
                 self.cur_author = author
                 print(author)
-                #print(list(self.users_list.keys()))
 
                 song_url = ""
-
-                #print(author)
-                #print(list(self.users_list.keys()))
 
                 user = self.get_user(author)
                 if user == None:
@@ -821,11 +819,11 @@ class MusicBot(discord.Client):
                         continue
                     else:
                         if self._get_user(author, voice=True) and (self._get_channel(author, voice=True) == self._get_channel(self.user.id, voice=True)):
-                            #print("USER IN CHANNEL!")
-                            #print(author)
                             print(self._get_user(author, voice=True))
 
+                            # apparently i dont have the links set up correctly
                             song = random.choice(user.getSongList())
+                            song = self.find_song(song.getURL())
 
                             # if user's mood isn't the default setting (None)
                             if user.getMood() != "" and user.getMood() != None:
@@ -840,9 +838,7 @@ class MusicBot(discord.Client):
                                     return Response(prntStr, delete_after=35)
                             else:
                                 song = random.choice(user.getSongList())
-
-                            #if TITLE_URL_SEPARATOR in song_url:
-                            #    song_url = song_url.split(TITLE_URL_SEPARATOR)[1]
+                                song = self.find_song(song.getURL())
 
                             #check if repeat song
                             if song.getURL() in self.list_Played:
@@ -863,6 +859,7 @@ class MusicBot(discord.Client):
                             if list(filter(lambda personID: author in self.ghost_list[personID], self.ghost_list.keys())):
                                 print("GHOST IN CHANNEL!")
                                 song = random.choice(user.getSongList())
+                                song = self.find_song(song.getURL())
                                 #check if repeat song
                                 if song.getURL() in self.list_Played:
                                     print("Song played too recently")
@@ -875,7 +872,6 @@ class MusicBot(discord.Client):
                             else:
                                 print("USER NOT IN CHANNEL!")
                                 print(author)
-                                #print(self._get_user(author, voice=True))
                                 print(TITLE_URL_SEPARATOR)
                                 counter = counter + 1
                                 continue
@@ -888,7 +884,7 @@ class MusicBot(discord.Client):
                     if "Cannot identify player" not in str(e):
                         song = self.find_song(playURL)
                         if song != None:
-                            await self.notify_likers(song)
+                            await self.notify_likers(song, str(e))
                             self.remove_from_autoplaylist(song.getTitle(), song.getURL())
                             author = self._get_user(user.getID())
                             channel = self._get_channel(author.id)
@@ -909,10 +905,14 @@ class MusicBot(discord.Client):
                     # Blarg how do I want to do this
 
                 # TODO: better checks here
-                if playURL == None:
-                    player.currently_playing = song
-                else:
-                    player.currently_playing = self.find_song(playURL)
+                if playURL != None:
+                    song = self.find_song(playURL)
+
+                player.currently_playing = song
+
+                # inc play count
+                #player.currently_playing.addPlay()
+
                 if player.currently_playing:
                     player.volume = player.currently_playing.getVolume();
                     print("Stored song volume: %s" % player.currently_playing.getVolume())
@@ -1299,9 +1299,7 @@ class MusicBot(discord.Client):
 
         self._add_to_autoplaylist(title, url, author)
 
-        #write_file(self.config.auto_playlist_file, self.autoplaylist)
         update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
-        #song = Music(title, url, author)
         return True
 
     def _add_to_autoplaylist(self, title, url, author=None):
@@ -1311,7 +1309,8 @@ class MusicBot(discord.Client):
         if author == None:
             song = self.find_song(url)
             if song == None:
-                song = Music(title, url, None)
+                # song not in our APL yet
+                self.add_to_autoplaylist(title, url, author)
 
             # trying to grab the likers from the apl
             likers = song.getLikers()
@@ -2349,6 +2348,8 @@ class MusicBot(discord.Client):
         user = self.get_user(author.id)
         if user != None:
             for song in user.getSongList():
+                # yikes
+                song = self.find_song(song.getURL())
                 data.append(str(song) + ", Playcount: " + str(song.getPlays()) + "\r\n")
 
             if len(user.getSongList()) == 0:
@@ -2510,7 +2511,9 @@ class MusicBot(discord.Client):
         # let's see if we already have this song or a similar one. i feel like this will help 70% of the time
         # let's check the songs the user likes before looking at other people's
 
-        self.check_songs(song_url, author)
+        temp_url = await self.check_songs(song_url, author)
+        if temp_url != None:
+            song_url = temp_url
 
         try:
             info = await self.downloader.extract_info(player.playlist.loop, song_url, download=False, process=False)
@@ -3462,7 +3465,9 @@ class MusicBot(discord.Client):
         # let's see if we already have this song or a similar one. i feel like this will help 70% of the time
         # let's check the songs the user likes before looking at other people's
 
-        self.check_songs(song_url, author)
+        temp_url = await self.check_songs(song_url, author)
+        if temp_url != None:
+            song_url = temp_url
 
         try:
             info = await self.downloader.extract_info(player.playlist.loop, song_url, download=False, process=False)
