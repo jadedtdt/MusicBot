@@ -765,8 +765,8 @@ class MusicBot(discord.Client):
 
     async def on_player_finished_playing(self, player, **_):
         # updates our pickles
-        update_pickle(self.config.users_list_pickle, self.users_list)
-        update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
+        self.users_list = load_pickle(self.config.users_list_pickle)
 
         # Clear song that was playing
         player.currently_playing = None
@@ -3642,6 +3642,10 @@ class MusicBot(discord.Client):
         if self.config.bound_channels and message.channel.id not in self.config.bound_channels and not message.channel.is_private:
             return  # if I want to log this I just move it under the prefix check
 
+
+        self.users_list = load_pickle(self.config.users_list_pickle)
+        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
+
         command, *args = message_content.split()  # Uh, doesn't this break prefixes with spaces in them (it doesn't, config parser already breaks them)
         command = command[len(self.config.command_prefix):].lower().strip()
 
@@ -3755,6 +3759,9 @@ class MusicBot(discord.Client):
                     expire_in=response.delete_after if self.config.delete_messages else 0,
                     also_delete=message if self.config.delete_invoking else None
                 )
+
+            update_pickle(self.config.users_list_pickle, self.users_list)
+            update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
 
         except (exceptions.CommandError, exceptions.HelpfulError, exceptions.ExtractionError) as e:
             print("{0.__class__}: {0.message}".format(e))
