@@ -876,6 +876,7 @@ class MusicBot(discord.Client):
                                 counter = counter + 1
                                 continue
 
+                info = None
                 try:
                     if playURL == None and song != None:
                         playURL = song.getURL()
@@ -899,6 +900,11 @@ class MusicBot(discord.Client):
                         print("???")
                         print("ignore")
                         print(e)
+
+                if info is None:
+                    print("???")
+                    print(author)
+                    continue
 
                 if info.get('entries', None):  # or .get('_type', '') == 'playlist'
                     pass  # Wooo playlist
