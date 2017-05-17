@@ -2356,7 +2356,8 @@ class MusicBot(discord.Client):
             for song in user.getSongList():
                 # yikes
                 song = self.find_song(song.getURL())
-                data.append(str(song) + ", Playcount: " + str(song.getPlays()) + "\r\n")
+                if (song != None):
+                    data.append(str(song) + ", Playcount: " + str(song.getPlays()) + "\r\n")
 
             if len(user.getSongList()) == 0:
                 data.append("Your auto playlist is empty.")
