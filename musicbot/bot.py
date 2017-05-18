@@ -882,7 +882,7 @@ class MusicBot(discord.Client):
                         playURL = song.getURL()
                     info = await self.downloader.extract_info(player.playlist.loop, playURL, download=False, process=False)
                 except Exception as e:
-                    if "Cannot identify player" not in str(e):
+                    if "Cannot identify player" not in str(e) or "Signature extraction failed" not in str(e):
                         song = self.find_song(playURL)
                         if song != None:
                             await self.notify_likers(song, str(e))
