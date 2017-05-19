@@ -838,14 +838,16 @@ class MusicBot(discord.Client):
                                     return Response(prntStr, delete_after=35)
                             else:
                                 song = random.choice(user.getSongList())
+                                if song == None:
+                                    counter = counter + 1
+                                    continue
                                 song = self.find_song(song.getURL())
 
                             #check if repeat song
-                            if song != None:
-                                if song.getURL() in self.list_Played:
-                                    print("Song played too recently")
-                                    counter = counter + 1
-                                    continue
+                            if song.getURL() in self.list_Played:
+                                print("Song played too recently")
+                                counter = counter + 1
+                                continue
                             if len(self.list_Played) >= self.len_list_Played:
                                 del self.list_Played[0:(len(self.list_Played) - self.len_list_Played)]
                             if playURL == None:
