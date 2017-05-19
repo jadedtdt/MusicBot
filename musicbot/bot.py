@@ -2432,6 +2432,8 @@ class MusicBot(discord.Client):
             cached_song = self.find_song(url)
             if cached_song != None:
                 title = cached_song.getTitle()
+            else:
+                title = None;
 
         if self.remove_from_autoplaylist(title, url, author.id):
             reply_text = "**%s**, the song **%s** has been removed from your auto playlist."
