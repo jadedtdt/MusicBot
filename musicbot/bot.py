@@ -841,10 +841,11 @@ class MusicBot(discord.Client):
                                 song = self.find_song(song.getURL())
 
                             #check if repeat song
-                            if song.getURL() in self.list_Played:
-                                print("Song played too recently")
-                                counter = counter + 1
-                                continue
+                            if song != None:
+                                if song.getURL() in self.list_Played:
+                                    print("Song played too recently")
+                                    counter = counter + 1
+                                    continue
                             if len(self.list_Played) >= self.len_list_Played:
                                 del self.list_Played[0:(len(self.list_Played) - self.len_list_Played)]
                             if playURL == None:
@@ -1260,8 +1261,9 @@ class MusicBot(discord.Client):
         likers = []
 
         for each_song in self.autoplaylist:
-            if each_song.getURL() == song_url:
-                likers = each_song.getLikers()
+            if each_song != None:
+                if each_song.getURL() == song_url:
+                    likers = each_song.getLikers()
 
         return self._get_likers(likers)
 
