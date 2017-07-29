@@ -2,6 +2,8 @@ import re
 import aiohttp
 import decimal
 import unicodedata
+import datetime
+import os.path
 
 import pickle
 
@@ -26,18 +28,64 @@ def load_file(filename, skip_commented_lines=True, comment_char='#'):
         print("Error loading", filename, e)
         return []
 
-
+#deprecated for autoplaylist
 def write_file(filename, contents):
     with open(filename, 'w', encoding='utf8') as f:
         for item in contents:
             f.write(str(item))
             f.write('\n')
 
-def update_pickle(filename, contents):
-    pickle.dump( contents, open ( filename, "wb" ) )
 
-def load_pickle(filename):
-    return pickle.load( open ( filename, "rb" ) )
+########################
+# is_latest_pickle
+# 
+# Checks if our pickle has changed since we last used it
+#
+# On change - return true
+# No change - return false! we already have the latest version :)
+#
+# Precondition: pickle file exists
+# Postcondition: n/a
+#
+# Returns: Boolean - True if lastest, false if not
+########################
+def is_latest_pickle(file_name, last_modified_ts):
+    if (os.path.exists(file_name) and os.access(file_name, os.W_OK)):
+        return os.path.getmtime(file_name) == last_modified_ts
+    raise FileNotFoundError('APL Pickle could not be found')
+    return False
+
+########################
+# store_pickle
+# 
+# Writes over our old pickle file, and returns the new apl and modified timestamp
+#
+# Precondition: have a local cache of a pickle file and the shared pickle exists
+# Postcondition: local cache copied to shared pickle
+#
+# Returns: 'Return the time of last modification of path. The return value is a number giving the number of seconds since the epoch (see the time module)'
+#           From https://docs.python.org/2/library/os.path.html
+########################
+def store_pickle(file_name, contents):
+    pickle.dump(contents, open(file_name, "wb"), 4)
+    return os.path.getmtime(file_name)
+
+########################
+# load_pickle
+# 
+# Loads the latest version of our pickle file
+# Note: You should check that you match the last mod time
+#       or you will overwrite any changes you have in your local APL!
+#
+# Precondition: have a local cache of a pickle file and the shared pickle exists
+# Postcondition: shared pickle copied to local cache
+########################
+def load_pickle(file_name):
+    if (os.path.exists(file_name) and os.access(file_name, os.W_OK)):
+        return pickle.load(open(file_name, "rb"))
+    else:
+        raise FileNotFoundError('APL Pickle could not be found')
+        return None
 
 def slugify(value):
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')

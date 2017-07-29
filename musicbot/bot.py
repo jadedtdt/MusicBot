@@ -21,8 +21,7 @@ from discord.ext.commands.bot import _get_variable
 from io import BytesIO
 from functools import wraps
 from textwrap import dedent
-from datetime import timedelta
-from datetime import datetime
+from datetime import timedelta, datetime
 from collections import defaultdict
 
 from musicbot.config import Config, ConfigDefaults
@@ -68,7 +67,7 @@ class Response:
 class MusicBot(discord.Client):
 
     def __init__(self, config_file=ConfigDefaults.options_file, perms_file=PermissionsDefaults.perms_file):
-        random.seed(datetime.now())
+        random.seed()
         self.players = {}
         self.the_voice_clients = {}
         self.metaData = {}
@@ -84,6 +83,8 @@ class MusicBot(discord.Client):
 
         self.blacklist = set(load_file(self.config.blacklist_file))
         #self.autoplaylist = load_file(self.config.auto_playlist_file)
+        self.last_modified_ts_apl = -1
+        self.last_modified_ts_users = -1
         self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
         self.users_list = load_pickle(self.config.users_list_pickle)
         #self.users_list = []
@@ -166,7 +167,8 @@ class MusicBot(discord.Client):
 
         #print("1. " + str(self.users_list))
         #print("2. " + str(self.users_list))
-        update_pickle(self.config.users_list_pickle, self.users_list)
+        if (is_latest_pickle == True):
+            self.last_modified_ts = store_pickle(self.config.users_list_pickle, self.users_list)
         '''
         
 
@@ -219,7 +221,8 @@ class MusicBot(discord.Client):
             i += 1
 
         #write_file(self.config.auto_playlist_file, self.autoplaylist)
-        update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.last_modified_ts_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
 
     ########################
     # remove_duplicates
@@ -258,7 +261,8 @@ class MusicBot(discord.Client):
 
         self.autoplaylist = list_found
         #write_file(self.config.auto_playlist_file, self.autoplaylist)
-        update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.last_modified_ts_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
 
     ########################
     # update_song_names
@@ -306,7 +310,8 @@ class MusicBot(discord.Client):
 
         self.autoplaylist = list_found
         #write_file(self.config.auto_playlist_file, self.autoplaylist)
-        update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.last_modified_ts_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
 
     ########################
     # updateMetaData
@@ -355,7 +360,8 @@ class MusicBot(discord.Client):
 
         self.autoplaylist = list_found
         #write_file(self.config.auto_playlist_file, self.autoplaylist)
-        update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.last_modified_ts_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
 
     def get_user(self, discord_user):
 
@@ -765,13 +771,17 @@ class MusicBot(discord.Client):
 
     async def on_player_finished_playing(self, player, **_):
         # updates our pickles
-        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
-        self.users_list = load_pickle(self.config.users_list_pickle)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
+        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+            self.users_list = load_pickle(self.config.users_list_pickle)
 
         # Clear song that was playing
         player.currently_playing = None
         #reset volume
         player.volume = self.config.default_volume;
+        #re-seeds random        
+        random.seed()
 
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
             counter = 0
@@ -1283,7 +1293,8 @@ class MusicBot(discord.Client):
 
     def add_to_autoplaylist(self, title, url, author=None):
 
-        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
 
         if author == None:
             print("No Author... Don't know who to add to")
@@ -1309,12 +1320,15 @@ class MusicBot(discord.Client):
 
         self._add_to_autoplaylist(title, url, author)
 
-        update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.last_modified_ts_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
         return True
 
     def _add_to_autoplaylist(self, title, url, author=None):
 
-        self.users_list = load_pickle(self.config.users_list_pickle)
+
+        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+            self.users_list = load_pickle(self.config.users_list_pickle)
 
         if author == None:
             song = self.find_song(url)
@@ -1354,11 +1368,13 @@ class MusicBot(discord.Client):
         if not user.hasSong(music_obj):
             user.addSong(music_obj)
 
-        update_pickle(self.config.users_list_pickle, self.users_list)
+        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+            self.last_modified_ts_users = store_pickle(self.config.users_list_pickle, self.users_list)
 
     def remove_from_autoplaylist(self, title, url, author=None):
 
-        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
 
         if author == None:
             #check if we can grab the likers from the apl
@@ -1395,7 +1411,8 @@ class MusicBot(discord.Client):
                 print("NO LIKERS, NOT REMOVING: ", song.getTitle())
                 return False
 
-            update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+            if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+                self.last_modified_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
             return self._remove_from_autoplaylist(title, url, author)
 
         else:
@@ -1405,7 +1422,8 @@ class MusicBot(discord.Client):
     # removes from our dictionary of lists
     def _remove_from_autoplaylist(self, title, url, author=None):
 
-        self.users_list = load_pickle(self.config.users_list_pickle)
+        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+            self.users_list = load_pickle(self.config.users_list_pickle)
 
         if author == None:
             likers = song.getLikers()
@@ -1433,7 +1451,8 @@ class MusicBot(discord.Client):
             print("The song isn't in the user's personal list")
             return False
 
-        update_pickle(self.config.users_list_pickle, self.users_list)
+        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+            self.last_modified_ts_users = store_pickle(self.config.users_list_pickle, self.users_list)
         return True
 
     # finds the first instance a song URL is found or if a string is found in a title and returns the object
@@ -1952,7 +1971,8 @@ class MusicBot(discord.Client):
             #Second push urls
             str_to_write.append(sanitize_string(self.metaData[metaTag]))
         write_file(self.config.metadata_file, str_to_write)
-        #update_pickle(self.config.metadata_file, self.metaData)
+        #if (is_latest_pickle == True):
+            #self.last_modified_ts = store_pickle(self.config.metadata_file, self.metaData)
 
     async def _cmd_playtag(self, player, author, channel, permissions, leftover_args):
         """
@@ -2341,7 +2361,7 @@ class MusicBot(discord.Client):
             if searchWords[0].strip().lower() in songObj.getTitle().lower():
                 foundSongs.append(songObj)
         # print(foundSongs)
-        if(len(searchWords) == 1):
+        if (len(searchWords) == 1):
             return foundSongs
         return await self.findSongsWithTitle(searchWords[1:], foundSongs)
 
@@ -3197,9 +3217,11 @@ class MusicBot(discord.Client):
         old_volume = int(player.volume * 100)
 
         if 0 < new_volume <= 100:
+
             player.volume = new_volume / 100.0
             if player.currently_playing:
                 player.currently_playing.setVolume(player.volume)
+
             return Response('updated volume from %d to %d' % (old_volume, new_volume), reply=True, delete_after=20)
 
         else:
@@ -3641,6 +3663,18 @@ class MusicBot(discord.Client):
         await self.disconnect_all_voice_clients()
         raise exceptions.TerminateSignal
 
+    async def cmd_execute(self, server, channel, author, message):
+
+        lines = message.content
+        print("COMMAND ===" + lines)
+        lines = lines.split("\n")
+
+        for each_line in lines:
+            if "```" not in each_line or "execute" not in each_line:
+                new_message = discord.Message(server=server, channel=channel, author=author, content=each_line)
+                await self.on_message(each_line)
+        return
+
     async def on_message(self, message):
         await self.wait_until_ready()
 
@@ -3656,8 +3690,10 @@ class MusicBot(discord.Client):
             return  # if I want to log this I just move it under the prefix check
 
 
-        self.users_list = load_pickle(self.config.users_list_pickle)
-        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
+        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+            self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
+        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+            self.users_list = load_pickle(self.config.users_list_pickle)
 
         command, *args = message_content.split()  # Uh, doesn't this break prefixes with spaces in them (it doesn't, config parser already breaks them)
         command = command[len(self.config.command_prefix):].lower().strip()
@@ -3773,8 +3809,10 @@ class MusicBot(discord.Client):
                     also_delete=message if self.config.delete_invoking else None
                 )
 
-            update_pickle(self.config.users_list_pickle, self.users_list)
-            update_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+            if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+                self.last_modified_ts_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+            if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+                self.last_modified_ts_users = store_pickle(self.config.users_list_pickle, self.users_list)
 
         except (exceptions.CommandError, exceptions.HelpfulError, exceptions.ExtractionError) as e:
             print("{0.__class__}: {0.message}".format(e))
@@ -3796,6 +3834,7 @@ class MusicBot(discord.Client):
             traceback.print_exc()
             if self.config.debug_mode:
                 await self.safe_send_message(message.channel, '```\n%s\n```' % traceback.format_exc())
+
 
     async def on_voice_state_update(self, before, after):
         if not all([before, after]):
