@@ -1,0 +1,81 @@
+[18.930912018] 2017-08-01 03:22:28,657 - INFO - launcher: Starting sanity checks
+[19.253969193] 2017-08-01 03:22:28,657 - INFO - launcher: Checking for python 3.5+
+[19.443035126] 2017-08-01 03:22:28,657 - INFO - launcher: Checking console encoding
+[19.618034363] 2017-08-01 03:22:28,658 - INFO - launcher: Ensuring we're in the right folder
+[20.058393478] 2017-08-01 03:22:28,658 - INFO - launcher: Checks passed.
+[20.261526108] 2017-08-01 03:22:28,658 - INFO - launcher: Moving old musicbot log
+
+######################### PRE-RUN SANITY CHECKS PASSED #########################
+
+[0.3931546211242676] 2017-08-01 03:22:29,031 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 330 in _setup_logging: Set logging level to INFO
+[0.4687004089355469] 2017-08-01 03:22:29,107 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 96 in __init__: Loaded autoplaylist with 2357 entries
+[0.469790220] launcher-INFO: Connecting
+[2.6334564685821533] 2017-08-01 03:22:31,271 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1256 in on_ready: Connection established, ready to go.
+[2.6336748600006104] 2017-08-01 03:22:31,272 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 440 in _cache_app_info: Caching app info
+[2.6614832878112793] 2017-08-01 03:22:31,299 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1079 in _scheck_ensure_env: Ensuring data folders exist
+[2.6619617938995361] 2017-08-01 03:22:31,300 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1089 in _scheck_ensure_env: Deleted old audio cache
+[2.6620497703552246] 2017-08-01 03:22:31,300 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1095 in _scheck_server_permissions: Checking server permissions
+[2.6621153354644775] 2017-08-01 03:22:31,300 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1099 in _scheck_autoplaylist: Auditing autoplaylist
+[2.6621732711791992] 2017-08-01 03:22:31,300 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1103 in _scheck_configs: Validating config
+[2.6622292995452881] 2017-08-01 03:22:31,300 - DEBUG - musicbot.config | In config.py::MainThread(140463949944576), line 176 in async_validate: Validating options...
+[2.6622881889343262] 2017-08-01 03:22:31,300 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1106 in _scheck_configs: Validating permissions config
+[2.6623439788818359] 2017-08-01 03:22:31,300 - DEBUG - musicbot.permissions | In permissions.py::MainThread(140463949944576), line 58 in async_validate: Validating permissions...
+[2.6625344753265381] 2017-08-01 03:22:31,300 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1267 in on_ready: Connected!  Musicbot v1.9.6-review
+
+[2.6628489494323730] 2017-08-01 03:22:31,301 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1277 in on_ready: Bot:   254089547447533569/Elegiggle#3010 [BOT]
+[2.6631107330322266] 2017-08-01 03:22:31,301 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1285 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
+
+[2.6633305549621582] 2017-08-01 03:22:31,301 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1288 in on_ready: Server List:
+[2.6635277271270752] 2017-08-01 03:22:31,301 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1289 in <listcomp>:  - Catch The Rainbow!
+[2.6637833118438721] 2017-08-01 03:22:31,302 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1320 in on_ready: Bound to text channels:
+[2.6639637947082520] 2017-08-01 03:22:31,302 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1321 in <listcomp>:  - Catch The Rainbow!/bot_commands
+[2.6641967296600342] 2017-08-01 03:22:31,302 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1359 in on_ready: Not autojoining any voice channels
+[2.6644041538238525] 2017-08-01 03:22:31,302 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1363 in on_ready: Options:
+[2.6645691394805908] 2017-08-01 03:22:31,303 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1365 in on_ready:   Command prefix: ~
+[2.6647489070892334] 2017-08-01 03:22:31,303 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1366 in on_ready:   Default volume: 25%
+[2.6649205684661865] 2017-08-01 03:22:31,303 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1368 in on_ready:   Skip threshold: 4 votes or 50%
+[2.6650865077972412] 2017-08-01 03:22:31,303 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1369 in on_ready:   Now Playing @mentions: Disabled
+[2.6652493476867676] 2017-08-01 03:22:31,303 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1370 in on_ready:   Auto-Summon: Enabled
+[2.6654095649719238] 2017-08-01 03:22:31,303 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1371 in on_ready:   Auto-Playlist: Enabled
+[2.6655704975128174] 2017-08-01 03:22:31,304 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1372 in on_ready:   Auto-Pause: Enabled
+[2.6657357215881348] 2017-08-01 03:22:31,304 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1373 in on_ready:   Delete Messages: Enabled
+[2.6658966541290283] 2017-08-01 03:22:31,304 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1375 in on_ready:   Delete Invoking: Disabled
+[2.6660561561584473] 2017-08-01 03:22:31,304 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1376 in on_ready:   Debug Mode: Disabled
+[2.6662206649780273] 2017-08-01 03:22:31,304 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 1377 in on_ready:   Downloaded songs will be deleted
+[2.6664612293243408] 2017-08-01 03:22:31,304 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 374 in _join_startup_channels: Found owner in "Pros"
+[2.6666359901428223] 2017-08-01 03:22:31,305 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 383 in _join_startup_channels: Attempting to join Catch The Rainbow!/Pros
+[2.6668899059295654] 2017-08-01 03:22:31,305 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 527 in get_voice_client: Connection attempt 1 to Pros
+[2.6669740676879883] 2017-08-01 03:22:31,305 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 467 in join_voice_channel: (join_voice_channel) creating futures
+[2.6672232151031494] 2017-08-01 03:22:31,305 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 473 in join_voice_channel: (join_voice_channel) setting voice state
+[2.6674778461456299] 2017-08-01 03:22:31,305 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 476 in join_voice_channel: (join_voice_channel) waiting for session id
+[2.6840081214904785] 2017-08-01 03:22:31,322 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 4125 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Pros -> [JOIN, CONNECT]
+[2.6841964721679688] 2017-08-01 03:22:31,322 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 4136 in on_voice_state_update: 254089547447533569/Elegiggle#3010 has joined Catch The Rainbow!/Pros
+[2.6846072673797607] 2017-08-01 03:22:31,323 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 480 in join_voice_channel: (join_voice_channel) waiting for voice data
+[2.7390375137329102] 2017-08-01 03:22:31,377 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 494 in join_voice_channel: (join_voice_channel) connecting...
+[3.1795051097869873] 2017-08-01 03:22:31,817 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 506 in join_voice_channel: (join_voice_channel) connection successful
+[3.1797001361846924] 2017-08-01 03:22:31,818 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 553 in get_voice_client: Connected in 0.5s
+[3.1797816753387451] 2017-08-01 03:22:31,818 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 554 in get_voice_client: Connected to Catch The Rainbow!/Pros
+[3.1802577972412109] 2017-08-01 03:22:31,818 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 399 in _join_startup_channels: Joined Catch The Rainbow!/Pros
+[3.2992496490478516] 2017-08-01 03:22:31,937 - VOICEDEBUG - musicbot.player | In player.py::MainThread(140463949944576), line 336 in websocket_check: Starting websocket check loop for Catch The Rainbow!
+[4.1062777042388916] 2017-08-01 03:22:32,744 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 932 in on_player_finished_playing: Stored song volume: 0.15
+[4.7277913093566895] 2017-08-01 03:22:33,366 - INFO - musicbot.entry | In entry.py::MainThread(140463949944576), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=87xa7w2QymA
+[5.6689398288726807] 2017-08-01 03:22:34,307 - INFO - musicbot.entry | In entry.py::MainThread(140463949944576), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=87xa7w2QymA
+[6.7284677028656006] 2017-08-01 03:22:35,366 - FFMPEG - musicbot.player | In player.py::MainThread(140463949944576), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/MusicBot/audio_cache/youtube-87xa7w2QymA-Redbone_Childish_Gambino_Lyrics.webm
+[6.7410006523132324] 2017-08-01 03:22:35,379 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1032 in serialize_queue: Serializing queue for 138532599181213696
+[8.3363058567047119] 2017-08-01 03:22:36,974 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 3952 in on_message: 181268300301336576/Jadedtdt#1164: ~np
+[333.8006050586700439] 2017-08-01 03:28:02,439 - DEBUG - musicbot.player | In player.py::MainThread(140463949944576), line 222 in _playback_finished: Deleting file: audio_cache/youtube-87xa7w2QymA-Redbone_Childish_Gambino_Lyrics.webm
+[334.5291020870208740] 2017-08-01 03:28:03,167 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 932 in on_player_finished_playing: Stored song volume: 0.15
+[335.1082427501678467] 2017-08-01 03:28:03,746 - INFO - musicbot.entry | In entry.py::MainThread(140463949944576), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=Dn8-4tjPxD8
+[335.9113988876342773] 2017-08-01 03:28:04,549 - INFO - musicbot.entry | In entry.py::MainThread(140463949944576), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=Dn8-4tjPxD8
+[337.1093249320983887] 2017-08-01 03:28:05,747 - FFMPEG - musicbot.player | In player.py::MainThread(140463949944576), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/MusicBot/audio_cache/youtube-Dn8-4tjPxD8-Stevie_Nicks_-_Edge_of_Seventeen.webm
+[337.1287646293640137] 2017-08-01 03:28:05,767 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1032 in serialize_queue: Serializing queue for 138532599181213696
+[378.8344438076019287] 2017-08-01 03:28:47,472 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 4125 in on_voice_state_update: Voice state update for 138532752038297600/Dynamic Menace#7801 on Catch The Rainbow!/Pros -> [JOIN, CONNECT]
+[378.8346531391143799] 2017-08-01 03:28:47,473 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 4136 in on_voice_state_update: 138532752038297600/Dynamic Menace#7801 has joined Catch The Rainbow!/Pros
+[414.8170895576477051] 2017-08-01 03:29:23,455 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 3952 in on_message: 136665080820400128/DevilGale#4957: ~np
+[665.4085650444030762] 2017-08-01 03:33:34,047 - DEBUG - musicbot.player | In player.py::MainThread(140463949944576), line 222 in _playback_finished: Deleting file: audio_cache/youtube-Dn8-4tjPxD8-Stevie_Nicks_-_Edge_of_Seventeen.webm
+[666.3240807056427002] 2017-08-01 03:33:34,962 - INFO - musicbot.bot | In bot.py::MainThread(140463949944576), line 932 in on_player_finished_playing: Stored song volume: 0.15
+[667.0007174015045166] 2017-08-01 03:33:35,639 - INFO - musicbot.entry | In entry.py::MainThread(140463949944576), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=dhZTNgAs4Fc
+[668.0821864604949951] 2017-08-01 03:33:36,720 - INFO - musicbot.entry | In entry.py::MainThread(140463949944576), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=dhZTNgAs4Fc
+[669.0016171932220459] 2017-08-01 03:33:37,640 - FFMPEG - musicbot.player | In player.py::MainThread(140463949944576), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/MusicBot/audio_cache/youtube-dhZTNgAs4Fc-My_Chemical_Romance_-_I_m_Not_Okay_I_Promise_Dialogue_MTV_Version.m4a
+[669.0168373584747314] 2017-08-01 03:33:37,655 - DEBUG - musicbot.bot | In bot.py::MainThread(140463949944576), line 1032 in serialize_queue: Serializing queue for 138532599181213696
+[696.1471302509307861] 2017-08-01 03:34:04,785 - DEBUG - musicbot.player | In player.py::MainThread(140463949944576), line 222 in _playback_finished: Deleting file: audio_cache/youtube-dhZTNgAs4Fc-My_Chemical_Romance_-_I_m_Not_Okay_I_Promise_Dialogue_MTV_Version.m4a

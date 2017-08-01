@@ -1,0 +1,20 @@
+[18.465757370] 2017-08-01 03:22:10,498 - INFO - launcher: Starting sanity checks
+[18.781900406] 2017-08-01 03:22:10,498 - INFO - launcher: Checking for python 3.5+
+[18.970489502] 2017-08-01 03:22:10,498 - INFO - launcher: Checking console encoding
+[19.146203995] 2017-08-01 03:22:10,499 - INFO - launcher: Ensuring we're in the right folder
+[19.547224045] 2017-08-01 03:22:10,499 - INFO - launcher: Checks passed.
+[19.752025604] 2017-08-01 03:22:10,499 - INFO - launcher: Moving old musicbot log
+
+######################### PRE-RUN SANITY CHECKS PASSED #########################
+
+[151.118516922] launcher-ERROR: Syntax error (this is a bug, not your fault)
+Traceback (most recent call last):
+  File "run.py", line 343, in main
+    from musicbot import MusicBot
+  File "/home/ubuntu/MusicBot/musicbot/__init__.py", line 74, in <module>
+    from .bot import MusicBot
+  File "/home/ubuntu/MusicBot/musicbot/bot.py", line 3125
+    else:
+        ^
+IndentationError: unindent does not match any outer indentation level
+[152.351617813] launcher-INFO: All done.

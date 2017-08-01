@@ -1,16 +1,24 @@
+import os.path
+import logging
 import datetime
-import traceback
-from collections import deque
-from itertools import islice
+
 from random import shuffle
+from itertools import islice
+from collections import deque
+
+from urllib.error import URLError
+from youtube_dl.utils import ExtractorError, DownloadError, UnsupportedError
 
 from .utils import get_header
-from .entry import URLPlaylistEntry
-from .exceptions import ExtractionError, WrongEntryTypeError
+from .constructs import Serializable
 from .lib.event_emitter import EventEmitter
+from .entry import URLPlaylistEntry, StreamPlaylistEntry
+from .exceptions import ExtractionError, WrongEntryTypeError
+
+log = logging.getLogger(__name__)
 
 
-class Playlist(EventEmitter):
+class Playlist(EventEmitter, Serializable):
     """
         A playlist is manages the list of songs that will be played.
     """
@@ -24,6 +32,9 @@ class Playlist(EventEmitter):
 
     def __iter__(self):
         return iter(self.entries)
+
+    def __len__(self):
+        return len(self.entries)
 
     def shuffle(self):
         shuffle(self.entries)
@@ -44,7 +55,6 @@ class Playlist(EventEmitter):
         entries_copy.rotate(-1 * rotDist)
 
         return entry
-
 
 
     async def add_entry(self, song_url, **meta):
@@ -69,25 +79,32 @@ class Playlist(EventEmitter):
         if info.get('_type', None) == 'playlist':
             raise WrongEntryTypeError("This is a playlist.", True, info.get('webpage_url', None) or info.get('url', None))
 
+        if info.get('is_live', False):
+            return await self.add_stream_entry(song_url, info=info, **meta)
+
+        # TODO: Extract this to its own function
         if info['extractor'] in ['generic', 'Dropbox']:
             try:
-                # unfortunately this is literally broken
-                # https://github.com/KeepSafe/aiohttp/issues/758
-                # https://github.com/KeepSafe/aiohttp/issues/852
-                content_type = await get_header(self.bot.aiosession, info['url'], 'CONTENT-TYPE')
-                print("Got content type", content_type)
+                headers = await get_header(self.bot.aiosession, info['url'])
+                content_type = headers.get('CONTENT-TYPE')
+                log.debug("Got content type {}".format(content_type))
 
             except Exception as e:
-                print("[Warning] Failed to get content type for url %s (%s)" % (song_url, e))
+                log.warning("Failed to get content type for url {} ({})".format(song_url, e))
                 content_type = None
 
             if content_type:
                 if content_type.startswith(('application/', 'image/')):
-                    if '/ogg' not in content_type:  # How does a server say `application/ogg` what the actual fuck
+                    if not any(x in content_type for x in ('/ogg', '/octet-stream')):
+                        # How does a server say `application/ogg` what the actual fuck
                         raise ExtractionError("Invalid content type \"%s\" for url %s" % (content_type, song_url))
 
+                elif content_type.startswith('text/html'):
+                    log.warning("Got text/html for content-type, this might be a stream")
+                    pass # TODO: Check for shoutcast/icecast
+
                 elif not content_type.startswith(('audio/', 'video/')):
-                    print("[Warning] Questionable content type \"%s\" for url %s" % (content_type, song_url))
+                    log.warning("Questionable content-type \"{}\" for url {}".format(content_type, song_url))
 
         entry = URLPlaylistEntry(
             self,
@@ -100,107 +117,51 @@ class Playlist(EventEmitter):
         self._add_entry(entry)
         return entry, len(self.entries)
 
-    async def remove_entry(self, position, **meta):
-        """
-            Validates and removes a song from the queue.
+    async def add_stream_entry(self, song_url, info=None, **meta):
+        if info is None:
+            info = {'title': song_url, 'extractor': None}
 
-            Returns the position it was in the queue.
+            try:
+                info = await self.downloader.extract_info(self.loop, song_url, download=False)
 
-            :param position: A string of either "last" or "end" or the position number in the queue
-        """
+            except DownloadError as e:
+                if e.exc_info[0] == UnsupportedError: # ytdl doesn't like it but its probably a stream
+                    log.debug("Assuming content is a direct stream")
 
-        # Check for popping from empty queue
-        if len(self.entries) == 0:
-            return None
+                elif e.exc_info[0] == URLError:
+                    if os.path.exists(os.path.abspath(song_url)):
+                        raise ExtractionError("This is not a stream, this is a file path.")
 
-        # Basically pop
-        if position == -1:
-            entry = self.entries.pop()
-            return entry
+                    else: # it might be a file path that just doesn't exist
+                        raise ExtractionError("Invalid input: {0.exc_info[0]}: {0.exc_info[1].reason}".format(e))
 
-        # Validating
-        if position < 1 or position >= len(self.entries):
-            reply_text = "[Error] Invalid ID. Available positions are between 1 and %s." 
-            reply_text %= len(self.entries)
+                else:
+                    # traceback.print_exc()
+                    raise ExtractionError("Unknown error: {}".format(e))
 
+            except Exception as e:
+                log.error('Could not extract information from {} ({}), falling back to direct'.format(song_url, e), exc_info=True)
 
-        # naive delete, no position returned
-        """
-        try:
-            self.entries.remove(search_string)
-        except Exception as e:
-            raise exceptions.CommandError(e, expire_in=30)
-        """
+        dest_url = song_url
+        if info.get('extractor'):
+            dest_url = info.get('url')
 
-        # Makes a copy so we don't modify original queue ?
-        entries_copy = self.entries
+        if info.get('extractor', None) == 'twitch:stream': # may need to add other twitch types
+            title = info.get('description')
+        else:
+            title = info.get('title', 'Untitled')
 
-        # Create an empty deque that we'll use to re-fill the copied queue
-        #entries_to_readd = deque()
+        # TODO: A bit more validation, "~stream some_url" should not just say :ok_hand:
 
-        """
-        for i in len(entries_copy):
-            entry_to_remove = entries_copy.pop()
-            if search_text in entry_to_remove.title:
-                # yay we found it
-                return
-            else:
-                # :( time to save it away so we can re add later...
-                entries_to_readd.append(entry_to_remove)
-        """
-
-        # My old remove, makes a copy and pops from end until position
-        """
-        # Pops until we reach position in queue
-        # Chooses to do len - pos because should be cheaper on average
-        for i in range(len(self.entries) - position):
-            entry_to_readd = entries_copy.pop()
-            entries_to_readd.append(entry_to_readd)
-
-        # This is the one we actually want to get rid of
-        entry = entries_copy.pop()
-
-        # Adds back the ones that we popped getting to our position
-        for i in range(len(entries_to_readd)):
-            entries_copy.append(entries_to_readd.pop())
-
-        self.entries = entries_copy
-        """
-        rotDist = -1 * (position - 1)
-        self.entries.rotate(rotDist)
-        entry = self.entries.popleft()
-        self.emit('entry-removed', playlist=self, entry=entry)
-        self.entries.rotate(-1 * rotDist)
-
-        return entry
-
-    def promote_position(self, position):
-        rotDist = -1 * (position - 1)
-        self.entries.rotate(rotDist)
-        entry = self.entries.popleft()
-        self.entries.rotate(-1 * rotDist)
-        self.entries.appendleft(entry)
-        self.emit('entry-added', playlist=self, entry=entry)
-        entry.get_ready_future()
-        return entry
-
-    def promote_last(self):
-        entry = self.entries.pop()
-        self.entries.appendleft(entry)
-        self.emit('entry-added', playlist=self, entry=entry)
-        entry.get_ready_future()
-        return entry
-
-    def remove_first(self):
-        entry = self.entries.popleft()
-        self.emit('entry-removed', playlist=self, entry=entry)
-        entryNext = None
-        entryNext = self.peek()
-        
-        if entryNext:
-            entryNext.get_ready_future()
-
-        return entry
+        entry = StreamPlaylistEntry(
+            self,
+            song_url,
+            title,
+            destination = dest_url,
+            **meta
+        )
+        self._add_entry(entry)
+        return entry, len(self.entries)
 
     async def import_from(self, playlist_url, **meta):
         """
@@ -229,31 +190,29 @@ class Playlist(EventEmitter):
             url_field = 'webpage_url'
 
         baditems = 0
-        for items in info['entries']:
-            if items:
+        for item in info['entries']:
+            if item:
                 try:
                     entry = URLPlaylistEntry(
                         self,
-                        items[url_field],
-                        items.get('title', 'Untitled'),
-                        items.get('duration', 0) or 0,
-                        self.downloader.ytdl.prepare_filename(items),
+                        item[url_field],
+                        item.get('title', 'Untitled'),
+                        item.get('duration', 0) or 0,
+                        self.downloader.ytdl.prepare_filename(item),
                         **meta
                     )
 
                     self._add_entry(entry)
                     entry_list.append(entry)
-                except:
+                except Exception as e:
                     baditems += 1
-                    # Once I know more about what's happening here I can add a proper message
-                    traceback.print_exc()
-                    print(items)
-                    print("Could not add item")
+                    log.warning("Could not add item", exc_info=e)
+                    log.debug("Item: {}".format(item), exc_info=True)
             else:
                 baditems += 1
 
         if baditems:
-            print("Skipped %s bad entries" % baditems)
+            log.info("Skipped {} bad entries".format(baditems))
 
         return entry_list, position
 
@@ -275,6 +234,7 @@ class Playlist(EventEmitter):
 
         gooditems = []
         baditems = 0
+
         for entry_data in info['entries']:
             if entry_data:
                 baseurl = info['webpage_url'].split('playlist?list=')[0]
@@ -283,23 +243,24 @@ class Playlist(EventEmitter):
                 try:
                     entry, elen = await self.add_entry(song_url, **meta)
                     gooditems.append(entry)
+
                 except ExtractionError:
                     baditems += 1
+
                 except Exception as e:
                     baditems += 1
-                    print("There was an error adding the song {}: {}: {}\n".format(
-                        entry_data['id'], e.__class__.__name__, e))
+                    log.error("Error adding entry {}".format(entry_data['id']), exc_info=e)
             else:
                 baditems += 1
 
         if baditems:
-            print("Skipped %s bad entries" % baditems)
+            log.info("Skipped {} bad entries".format(baditems))
 
         return gooditems
 
     async def async_process_sc_bc_playlist(self, playlist_url, **meta):
         """
-            Processes soundcloud set and bandcamp album links from `playlist_url` in a questionable, async fashion.
+            Processes soundcloud set and bancdamp album links from `playlist_url` in a questionable, async fashion.
 
             :param playlist_url: The playlist url to be cut into individual urls and added to the playlist
             :param meta: Any additional metadata to add to the playlist entry
@@ -315,6 +276,7 @@ class Playlist(EventEmitter):
 
         gooditems = []
         baditems = 0
+
         for entry_data in info['entries']:
             if entry_data:
                 song_url = entry_data['url']
@@ -322,30 +284,28 @@ class Playlist(EventEmitter):
                 try:
                     entry, elen = await self.add_entry(song_url, **meta)
                     gooditems.append(entry)
+
                 except ExtractionError:
                     baditems += 1
+
                 except Exception as e:
                     baditems += 1
-                    print("There was an error adding the song {}: {}: {}\n".format(
-                        entry_data['id'], e.__class__.__name__, e))
+                    log.error("Error adding entry {}".format(entry_data['id']), exc_info=e)
             else:
                 baditems += 1
 
         if baditems:
-            print("Skipped %s bad entries" % baditems)
+            log.info("Skipped {} bad entries".format(baditems))
 
         return gooditems
 
-    def _add_entry(self, entry):
-        self.entries.append(entry)
+    def _add_entry(self, entry, *, head=False):
+        if head:
+            self.entries.appendleft(entry)
+        else:
+            self.entries.append(entry)
+
         self.emit('entry-added', playlist=self, entry=entry)
-
-        if self.peek() is entry:
-            entry.get_ready_future()
-
-    def _remove_entry(self, entry):
-        self.entries.remove(entry)
-        self.emit('entry-removed', playlist=self, entry=entry)
 
         if self.peek() is entry:
             entry.get_ready_future()
@@ -376,18 +336,11 @@ class Playlist(EventEmitter):
         if self.entries:
             return self.entries[0]
 
-    def tail(self):
-        """
-            Returns the last entry that should be scheduled to be played.
-        """
-        if self.entries:
-            return self.entries[len(self.entries) - 1]
-
     async def estimate_time_until(self, position, player):
         """
             (very) Roughly estimates the time till the queue will 'position'
         """
-        estimated_time = sum([e.duration for e in islice(self.entries, position - 1)])
+        estimated_time = sum(e.duration for e in islice(self.entries, position - 1))
 
         # When the player plays a song, it eats the first playlist item, so we just have to add the time back
         if not player.is_stopped and player.current_entry:
@@ -398,4 +351,21 @@ class Playlist(EventEmitter):
     def count_for_user(self, user):
         return sum(1 for e in self.entries if e.meta.get('author', None) == user)
 
+
+    def __json__(self):
+        return self._enclose_json({
+            'entries': list(self.entries)
+        })
+
+    @classmethod
+    def _deserialize(cls, raw_json, bot=None):
+        assert bot is not None, cls._bad('bot')
+        # log.debug("Deserializing playlist")
+        pl = cls(bot)
+
+        for entry in raw_json['entries']:
+            pl.entries.append(entry)
+
+        # TODO: create a function to init downloading (since we don't do it here)?
+        return pl
 
