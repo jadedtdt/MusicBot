@@ -15,7 +15,6 @@ class User:
         self.user_id = user_id
 
         self.song_list = []
-        self.mood = ""
 
     ###########################################################################
 
@@ -90,15 +89,16 @@ class User:
     def removeSong(self, music_obj):
         if self.hasSong(music_obj):
             toDelete = self.getSong(music_obj)
-            self.song_list.remove(toDelete)
-            return True
-        else:
-            return False
+            if (toDelete in self.song_list):
+                self.song_list.remove(toDelete)
+                return True
+        return False
 
     def __repr__(self):
+
         if self.song_list == None:
             songs = ""
         else:
             songs = str(self.song_list)
 
-        return self.user_id + ": " + self.mood + ". Songs: " + songs
+        return (self.user_id if self.user_id != None else "") + ": " + (self.mood if self.mood != None else "") + ". Songs: " + songs

@@ -45,11 +45,12 @@ def write_file(filename, contents):
 # Precondition: pickle file exists
 # Postcondition: n/a
 #
-# Returns: Boolean - True if lastest, false if not
+# Returns: 'Return the time of last modification of path. The return value is a number giving the number of seconds since the epoch (see the time module)'
+#           From https://docs.python.org/2/library/os.path.html
 ########################
-def is_latest_pickle(file_name, last_modified_ts):
+def get_latest_pickle_mtime(file_name):
     if (os.path.exists(file_name) and os.access(file_name, os.W_OK)):
-        return os.path.getmtime(file_name) == last_modified_ts
+        return float(os.path.getmtime(file_name))
     raise FileNotFoundError('APL Pickle could not be found')
 
 ########################
@@ -60,12 +61,9 @@ def is_latest_pickle(file_name, last_modified_ts):
 # Precondition: have a local cache of a pickle file and the shared pickle exists
 # Postcondition: local cache copied to shared pickle
 #
-# Returns: 'Return the time of last modification of path. The return value is a number giving the number of seconds since the epoch (see the time module)'
-#           From https://docs.python.org/2/library/os.path.html
 ########################
 def store_pickle(file_name, contents):
     pickle.dump(contents, open(file_name, "wb"), 4)
-    return os.path.getmtime(file_name)
 
 ########################
 # load_pickle

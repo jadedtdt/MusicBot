@@ -7,11 +7,12 @@ class Music:
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
-        if (title == list(title)):
-            for each_word in title:
-                title += each_word + " "
-        else:
-            self.title = title
+        if (title != None):
+            if (title == list(title)):
+                for each_word in title:
+                    title += each_word + " "
+            else:
+                self.title = title
         self.url = url
         # check if already in list format
         if (author == list(author)):
@@ -19,7 +20,7 @@ class Music:
         else:
             self.likers = [author]
 
-            # if "[" in author or "]" in author
+        # if "[" in author or "]" in author
 
         self.plays = 0
         self.tags = []

@@ -117,6 +117,109 @@ class Playlist(EventEmitter, Serializable):
         self._add_entry(entry)
         return entry, len(self.entries)
 
+    async def remove_entry(self, position, **meta):
+        """
+            Validates and removes a song from the queue.
+        
+            Returns the position it was in the queue.     
+        
+            :param position: A string of either "last" or "end" or the position number in the queue       
+        """
+       
+        # Check for popping from empty queue
+        if len(self.entries) == 0:
+            return None
+      
+        # Basically pop
+        if position == -1:
+            entry = self.entries.pop()
+            return entry
+      
+        # Validating
+        if position < 1 or position >= len(self.entries):
+            reply_text = "[Error] Invalid ID. Available positions are between 1 and %s."
+            reply_text %= len(self.entries)
+      
+      
+        # naive delete, no position returned      
+        """       
+        try:      
+            self.entries.remove(search_string)        
+        except Exception as e:        
+            raise exceptions.CommandError(e, expire_in=30)        
+        """       
+      
+        # Makes a copy so we don't modify original queue ?        
+        entries_copy = self.entries       
+      
+        # Create an empty deque that we'll use to re-fill the copied queue        
+        #entries_to_readd = deque()
+
+        """
+        for i in len(entries_copy): 
+            entry_to_remove = entries_copy.pop()      
+            if search_text in entry_to_remove.title:      
+                # yay we found it     
+                return        
+            else:     
+                # :( time to save it away so we can re add later...       
+                entries_to_readd.append(entry_to_remove)      
+        """
+
+        # My old remove, makes a copy and pops from end until position
+        """
+        # Pops until we reach position in queue
+        # Chooses to do len - pos because should be cheaper on average
+
+        for i in range(len(self.entries) - position):
+            entry_to_readd = entries_copy.pop()
+            entries_to_readd.append(entry_to_readd)
+
+        # This is the one we actually want to get rid of
+        entry = entries_copy.pop()
+
+        # Adds back the ones that we popped getting to our position
+        for i in range(len(entries_to_readd)):
+            entries_copy.append(entries_to_readd.pop())
+
+        self.entries = entries_copy
+        """
+        rotDist = -1 * (position - 1)
+        self.entries.rotate(rotDist)        
+        entry = self.entries.popleft()        
+        self.emit('entry-removed', playlist=self, entry=entry)        
+        self.entries.rotate(-1 * rotDist)
+
+        return entry
+
+    def promote_position(self, position):
+        rotDist = -1 * (position - 1)
+        self.entries.rotate(rotDist)
+        entry = self.entries.popleft()
+        self.entries.rotate(-1 * rotDist)
+        self.entries.appendleft(entry)
+        self.emit('entry-added', playlist=self, entry=entry)
+        entry.get_ready_future()
+        return entry
+          
+    def promote_last(self):
+        entry = self.entries.pop()
+        self.entries.appendleft(entry)
+        self.emit('entry-added', playlist=self, entry=entry)
+        entry.get_ready_future()
+        return entry
+          
+    def remove_first(self):
+        entry = self.entries.popleft()
+        self.emit('entry-removed', playlist=self, entry=entry)
+        entryNext = None
+        entryNext = self.peek()
+              
+        if entryNext:
+            entryNext.get_ready_future()
+          
+        return entry
+
     async def add_stream_entry(self, song_url, info=None, **meta):
         if info is None:
             info = {'title': song_url, 'extractor': None}

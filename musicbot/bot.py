@@ -9,6 +9,7 @@ import logging
 import asyncio
 import pathlib
 import traceback
+import datetime
 
 import aiohttp
 import discord
@@ -36,7 +37,7 @@ from .permissions import Permissions, PermissionsDefaults
 from .player import MusicPlayer
 from .playlist import Playlist
 from .user import User
-from .utils import load_file, write_file, sane_round_int, fixg, ftimedelta, is_latest_pickle, load_pickle, store_pickle, sanitize_string, join_str
+from .utils import load_file, write_file, sane_round_int, fixg, ftimedelta, get_latest_pickle_mtime, load_pickle, store_pickle, sanitize_string, join_str
 
 from .constants import VERSION as BOTVERSION
 from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH, TITLE_URL_SEPARATOR, URL_LIKERS_SEPARATOR, LIKERS_DELIMETER
@@ -75,11 +76,11 @@ class MusicBot(discord.Client):
         self._setup_logging()
 
         # Autoplaylist
-        self.last_modified_ts_apl = -1
-        self.last_modified_ts_users = -1
+        self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
         self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
 
         # Users
+        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
         self.users_list = load_pickle(self.config.users_list_pickle)
         self.ghost_list = {}
 
@@ -90,13 +91,13 @@ class MusicBot(discord.Client):
         self.len_list_Played = 20
 
         if not self.autoplaylist:
-            print("Warning: Autoplaylist is empty, disabling.")
+            log.warning("[__INIT__] Autoplaylist is empty, disabling.")
             self.config.auto_playlist = False
         else:
-            log.info("Loaded autoplaylist with {} entries".format(len(self.autoplaylist)))            
+            log.info("[__INIT__] Loaded autoplaylist with {} entries".format(len(self.autoplaylist)))            
 
         if self.blacklist:
-            log.debug("Loaded blacklist with {} entries".format(len(self.blacklist)))
+            log.debug("[__INIT__] Loaded blacklist with {} entries".format(len(self.blacklist)))
 
         #Setting up the metaData tags
         if not self.wholeMetadata:
@@ -709,6 +710,7 @@ class MusicBot(discord.Client):
         song = self.find_song(entry.url)
         if song is not None:
             if song.getTitle() == None:
+                log.debug("[ON_PLAYER_PLAY] Updating title for {\"url\": \"" + entry.url + "\", \"title\": \"" + entry.title + "\"}")
                 song.setTitle(player.current_entry.title)
                 user.getSong(song).setTitle(player.current_entry.title)
             song.addPlay()
@@ -749,17 +751,19 @@ class MusicBot(discord.Client):
 
     async def on_player_finished_playing(self, player, **_):
         # updates our pickles
-        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+        if (get_latest_pickle_mtime(self.config.auto_playlist_pickle) < self.last_modified_ts_apl):
+            log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest APL pickle file")
             self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
-        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+            self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
+        if (get_latest_pickle_mtime(self.config.users_list_pickle) < self.last_modified_ts_users):
+            log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest users pickle file")
             self.users_list = load_pickle(self.config.users_list_pickle)
+            self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
         # Clear song that was playing
         player.currently_playing = None
         #reset volume
         player.volume = self.config.default_volume;
-        #re-seeds random        
-        random.seed()
 
         if not player.playlist.entries and not player.current_entry and self.config.auto_playlist:
             counter = 0
@@ -880,7 +884,7 @@ class MusicBot(discord.Client):
                         # Probably an error from a different extractor, but I've only seen youtube's
                         log.error("Error processing \"{url}\": {ex}".format(url=playURL, ex=e))
 
-                    await self.remove_from_autoplaylist(song.getTitle(), song.getURL())
+                    self.remove_from_autoplaylist(song.getTitle(), song.getURL())
                     continue
                 except Exception as e:
 
@@ -891,7 +895,7 @@ class MusicBot(discord.Client):
                         song = self.find_song(playURL)
                         if song != None:
                             await self.notify_likers(song, str(e))
-                            await self.remove_from_autoplaylist(song.getTitle(), song.getURL())
+                            self.remove_from_autoplaylist(song.getTitle(), song.getURL())
                             author = self._get_user(user.getID())
                             channel = self._get_channel(author.id)
                             #tags = song.getTags()
@@ -902,9 +906,7 @@ class MusicBot(discord.Client):
                         print("\a")  # BEEPS
                         continue
                     else:
-                        print("???")
-                        print("ignore")
-                        print(e)
+                        log.error(e)
 
                 if info is None:
                     print("???")
@@ -928,8 +930,8 @@ class MusicBot(discord.Client):
                 #player.currently_playing.addPlay()
 
                 if player.currently_playing:
-                    player.volume = player.currently_playing.getVolume();
-                    log.info("Stored song volume: %s" % player.currently_playing.getVolume())
+                    player.volume = player.currently_playing.getVolume()
+                    log.info("Stored song volume: %s" % player.volume)
 
                 try:
                     await player.playlist.add_entry(playURL, channel=None, author=None)
@@ -946,6 +948,8 @@ class MusicBot(discord.Client):
                 self.config.auto_playlist = False
 
         else: # Don't serialize for autoplaylist events
+
+            log.debug("serializing queue")
             await self.serialize_queue(player.voice_client.channel.server)
 
     async def on_player_entry_added(self, player, playlist, entry, **_):
@@ -967,21 +971,27 @@ class MusicBot(discord.Client):
         if self.user.bot:
             activeplayers = sum(1 for p in self.players.values() if p.is_playing)
             if activeplayers > 1:
+                log.debug("More than 1 bot")
                 game = discord.Game(name="music on %s servers" % activeplayers)
                 entry = None
 
             elif activeplayers == 1:
+                log.debug("Yes only one bot")
                 player = discord.utils.get(self.players.values(), is_playing=True)
                 entry = player.current_entry
 
         if entry:
+            log.debug("Yes entry")
             prefix = u'\u275A\u275A ' if is_paused else ''
 
             name = u'{}{}'.format(prefix, entry.title)[:128]
-            game = discord.Game(name=name)
+            game = discord.Game(name=name, type=0)
+
+        log.debug("No, maybe yes entry")
 
         async with self.aiolocks[_func_()]:
             if game != self.last_status:
+                log.debug("Please")
                 await self.change_presence(game=game)
                 self.last_status = game
 
@@ -1408,11 +1418,8 @@ class MusicBot(discord.Client):
 
     def add_to_autoplaylist(self, title, url, author=None):
 
-        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
-            self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
-
         if author == None:
-            print("No Author... Don't know who to add to")
+            log.warning("[ADD_TO_AUTOPLAYLIST] No Author... Don't know who to add to")
             return False
 
         if not author.isnumeric():
@@ -1422,40 +1429,38 @@ class MusicBot(discord.Client):
 
         # if not on anyone's list, let's add it to someone's
         if song == None:
+            log.debug("[ADD_TO_AUTOPLAYLIST] Creating new song object " + title)
             song = Music(title, url, author)
             self.autoplaylist.append(song)
         # otherwise we just want to add this liker to the list
         else:
             if song.hasLiker(author):
-                print("Song already added", url)
+                log.debug("[ADD_TO_AUTOPLAYLIST] Song already added " + url)
                 return False
             else:
                 # appends current author to the end of the likers list
+                log.debug("[ADD_TO_AUTOPLAYLIST] Adding liker to song" + url)
                 song.addLiker(author)
 
         self._add_to_autoplaylist(title, url, author)
 
-        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
-            self.last_modified_ts_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
         return True
 
     def _add_to_autoplaylist(self, title, url, author=None):
 
-        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
-            self.users_list = load_pickle(self.config.users_list_pickle)
-
         if author == None:
             song = self.find_song(url)
             if song == None:
-                # song not in our APL yet
+                log.debug("[_ADD_TO_AUTOPLAYLIST] Tried to add a song that's not in our APL yet")
                 self.add_to_autoplaylist(title, url, author)
 
             # trying to grab the likers from the apl
             likers = song.getLikers()
             if likers == None:
-                print("Really don't know who to add to!")
+                log.error("[_ADD_TO_AUTOPLAYLIST] No author and no likers. Can't add this song!")
                 return
             else:
+                log.warning("[_ADD_TO_AUTOPLAYLIST] No author but we have list of likers, trying again!")
                 for liker in likers:
                     author = self._get_user(liker)
                     self._add_autoplaylist(title, url, author)
@@ -1475,6 +1480,7 @@ class MusicBot(discord.Client):
 
         # add a new music obj and tries again (this should never fail unless _add_to_autoplaylist was explicitly called)
         if music_obj == None:
+            log.warning("[_ADD_TO_AUTOPLAYLIST] Null Music object, trying again!")
             music_obj = Music(title, url, author)
             self.add_to_autoplaylist(title, url, author)
             return
@@ -1482,13 +1488,7 @@ class MusicBot(discord.Client):
         if not user.hasSong(music_obj):
             user.addSong(music_obj)
 
-        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
-            self.last_modified_ts_users = store_pickle(self.config.users_list_pickle, self.users_list)
-
     def remove_from_autoplaylist(self, title, url, author=None):
-
-        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
-            self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
 
         if author == None:
             #check if we can grab the likers from the apl
@@ -1501,7 +1501,7 @@ class MusicBot(discord.Client):
                         self.remove_from_autoplaylist(title, url, each_liker)
                     return True
             else:
-                print("No Author... Don't know who to remove from")
+                log.warning("[REMOVE_FROM_AUTOPLAYLIST] No Author... Don't know who to remove from")
                 return False
 
         if not str(author).isnumeric():
@@ -1512,32 +1512,27 @@ class MusicBot(discord.Client):
         if song != None:
 
             if not song.hasLiker(author):
-                print("Hey! You can't remove a song that's not even yours!")
+                log.debug("[REMOVE_FROM_AUTOPLAYLIST] Hey! You can't remove a song that's not even yours!")
                 return False
 
             if len(song.getLikers()) > 1:
-                #self.autoplaylist[song_index].removeLiker(author)
+                log.debug("[REMOVE_FROM_AUTOPLAYLIST] MULTIPLE LIKERS, REMOVING: " + song.getTitle())
                 song.removeLiker(author)
             elif len(song.getLikers()) == 1:
-                print("ONE LIKER, REMOVING: ", song.getTitle())
+                log.debug("[REMOVE_FROM_AUTOPLAYLIST] ONE LIKER, REMOVING: " + song.getTitle())
                 self.autoplaylist.remove(song)
             else:
-                print("NO LIKERS, NOT REMOVING: ", song.getTitle())
+                log.warning("[REMOVE_FROM_AUTOPLAYLIST] NO LIKERS, NOT REMOVING: " + song.getTitle())
                 return False
 
-            if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
-                self.last_modified_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
             return self._remove_from_autoplaylist(title, url, author)
 
         else:
-            print("Can't remove a song that's not in the auto playlist")
+            log.warning("[REMOVE_FROM_AUTOPLAYLIST] Can't remove a song that's not in the auto playlist")
             return False
 
     # removes from our dictionary of lists
     def _remove_from_autoplaylist(self, title, url, author=None):
-
-        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
-            self.users_list = load_pickle(self.config.users_list_pickle)
 
         if author == None:
             likers = song.getLikers()
@@ -1550,23 +1545,19 @@ class MusicBot(discord.Client):
         user = self.get_user(author)
 
         if user == None:
-            print("User is not in our server, can't remove from your list!")
+            log.warning("[_REMOVE_FROM_AUTOPLAYLIST] User is not in our server, can't remove from your list!")
             return False
 
         song = self.find_song(url)
         if song == None:
             song = Music(title, url, author)
-            print("Just a heads up, this isn't in our APL.")
-            #return False
 
         if user.hasSong(song):
             user.removeSong(song)
         else:
-            print("The song isn't in the user's personal list")
+            log.warning("[_REMOVE_FROM_AUTOPLAYLIST] The song isn't in the user's personal list")
             return False
 
-        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
-            self.last_modified_ts_users = store_pickle(self.config.users_list_pickle, self.users_list)
         return True
 
     # finds the first instance a song URL is found or if a string is found in a title and returns the object
@@ -2083,8 +2074,6 @@ class MusicBot(discord.Client):
             #Second push urls
             str_to_write.append(sanitize_string(self.metaData[metaTag]))
         write_file(self.config.metadata_file, str_to_write)
-        #if (is_latest_pickle == True):
-            #self.last_modified_ts = store_pickle(self.config.metadata_file, self.metaData)
 
     async def _cmd_playtag(self, player, author, channel, permissions, leftover_args):
         """
@@ -2510,7 +2499,7 @@ class MusicBot(discord.Client):
 
         return Response(":mailbox_with_mail:", delete_after=20)
 
-    async def cmd_like(self, player, channel, author, permissions, leftover_args):
+    async def cmd_like(self, player, channel, author, permissions, leftover_args, song_url=None):
         """
         Usage:
             {command_prefix}like
@@ -2521,17 +2510,40 @@ class MusicBot(discord.Client):
         #print("CMD_LIKE ", str(author.id))
         #print(self.users_list)
 
-        if self.add_to_autoplaylist(player.current_entry.title, player.current_entry.url, author.id):
+        reply_text = ""
+        user = ""
+
+        if song_url is None:
+            url = player.current_entry.url
+            title = player.current_entry.title
+        elif song_url.isnumeric():
+            position = int(song_url)
+            entry = await player.playlist.get_entry(position)
+
+            if entry == None:
+                url = player.current_entry.url
+                title = player.current_entry.url
+            else:
+                url = entry.url
+                title = entry.title
+        else:
+            url = song_url
+            cached_song = self.find_song(url)
+            if cached_song != None:
+                title = cached_song.getTitle()
+            else:
+                title = None
+
+        if self.add_to_autoplaylist(title, url, author.id):
             reply_text = "**%s**, the song **%s** has been added to your auto playlist."
         else:
             reply_text = "**%s**, this song **%s** is already added to your auto playlist."
 
         user = str(author)[:-5]
-        song_name = player.current_entry.title
+        if title == None:
+            title = url
 
-        #print(self.users_list)
-
-        reply_text %= (user, song_name)
+        reply_text %= (user, title)
 
         return Response(reply_text, delete_after=30)
 
@@ -2548,14 +2560,14 @@ class MusicBot(discord.Client):
         reply_text = ""
         user = ""
 
-        if song_url is None:
+        if song_url == None:
             url = player.current_entry.url
             title = player.current_entry.title
         elif song_url.isnumeric():
             position = int(song_url)
             entry = await player.playlist.get_entry(position)
 
-            if entry is None:
+            if entry == None:
                 url = player.current_entry.url
                 title = player.current_entry.url
             else:
@@ -2571,14 +2583,18 @@ class MusicBot(discord.Client):
 
         if self.remove_from_autoplaylist(title, url, author.id):
             reply_text = "**%s**, the song **%s** has been removed from your auto playlist."
-            player.current_entry.disliked = True
+            if (player.current_entry.url == url):
+                player.current_entry.disliked = True
         else:
             reply_text = "**%s**, the song **%s** wasn't in your auto playlist or something went wrong."
 
         user = str(author)[:-5]
 
         if title is None:
-            title = player.current_entry.title
+            if player.current_entry.url == url:
+                title = player.current_entry.title
+            else:
+                title = url
 
         reply_text %= (user, title)
 
@@ -2626,7 +2642,7 @@ class MusicBot(discord.Client):
         if position == -1:
             position = len(player.playlist.entries)
 
-        reply_text %= (btext, position+1)
+        reply_text %= (btext, position)
 
         return Response(reply_text, delete_after=30)
 
@@ -2733,7 +2749,7 @@ class MusicBot(discord.Client):
                     raise
                 except Exception as e:
                     log.error("Error queuing playlist", exc_info=True)
-                    raise exceptions.CommandError("Error queuing playlist:\n%s" % e, expire_in=30)
+                    raise exceptions.CommandError("Error queueing playlist:\n%s" % e, expire_in=30)
 
             t0 = time.time()
 
@@ -2821,11 +2837,6 @@ class MusicBot(discord.Client):
             position = 'Up next!'
             reply_text %= (btext, position)
 
-            try:
-                self.add_to_autoplaylist(entry.title, song_url, author.id)
-            except:
-                print("Failed to add song to apl in play command")
-
         else:
             try:
                 time_until = await player.playlist.estimate_time_until(position, player)
@@ -2835,6 +2846,13 @@ class MusicBot(discord.Client):
                 time_until = ''
 
             reply_text %= (btext, position, ftimedelta(time_until))
+
+
+        try:
+            log.info("[PLAY] " + author.name + ": " + entry.title)
+            self.add_to_autoplaylist(entry.title, song_url, author.id)
+        except:
+            log.warning("Failed to add song to apl in play command " + entry.title)
 
         return Response(reply_text, delete_after=30)
 
@@ -3395,7 +3413,10 @@ class MusicBot(discord.Client):
             player.volume = new_volume / 100.0
 
             if player.currently_playing:
-                player.currently_playing.setVolume(player.volume)
+                song = self.find_song(player.currently_playing.url)
+                if song != None:
+                    log.debug("Updating stored volume to " + str(player.volume))
+                    song.setVolume(player.volume)
 
             return Response('updated volume from %d to %d' % (old_volume, new_volume), reply=True, delete_after=20)
 
@@ -3913,6 +3934,34 @@ class MusicBot(discord.Client):
 
         return Response(codeblock.format(result))
 
+    @dev_only
+    async def cmd_dumplist(self, author, user_id):
+
+        data = []
+
+        user = self.get_user(user_id)
+        if user != None:
+            for song in user.getSongList():
+                # yikes
+                song = self.find_song(song.getURL())
+                if (song != None):
+                    data.append(str(song) + ", Playcount: " + str(song.getPlays()) + "\r\n")
+
+            if len(user.getSongList()) == 0:
+                data.append("Your auto playlist is empty.")
+
+            # sorts the mylist alphabetically Note: only works for ASCII characters
+            data.sort(key=str.lower)
+
+            with BytesIO() as sdata:
+                sdata.writelines(d.encode('utf8') for d in data)
+                sdata.seek(0)
+
+                # TODO: Fix naming (Discord20API-ids.txt)
+                await self.send_file(author, sdata, filename='%s-autoplaylist.txt' % self._get_user(user_id).name)
+        else:
+            return Response("There's no one with that id in this channel!")
+
     async def on_message(self, message):
         await self.wait_until_ready()
 
@@ -3926,13 +3975,17 @@ class MusicBot(discord.Client):
 
         if self.config.bound_channels and message.channel.id not in self.config.bound_channels and not message.channel.is_private:
             return  # if I want to log this I just move it under the prefix check
-
-        if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
+        
+        if (get_latest_pickle_mtime(self.config.auto_playlist_pickle) < self.last_modified_ts_apl):
+            log.debug("[ON_MESSAGE] Loading latest APL pickle file")
             self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
-        if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
+            self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
+        if (get_latest_pickle_mtime(self.config.users_list_pickle) < self.last_modified_ts_users):
+            log.debug("[ON_MESSAGE] Loading latest users pickle file")
             self.users_list = load_pickle(self.config.users_list_pickle)
+            self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
-        command, *args = message_content.split(' ')  # Uh, doesn't this break prefixes with spaces in them (it doesn't, config parser already breaks them)
+        command, *args = message_content.split(' ') # Uh, doesn't this break prefixes with spaces in them (it doesn't, config parser already breaks them)
         command = command[len(self.config.command_prefix):].lower().strip()
 
         handler = getattr(self, 'cmd_' + command, None)
@@ -4068,10 +4121,14 @@ class MusicBot(discord.Client):
                     also_delete=message if self.config.delete_invoking else None
                 )
 
-            if (is_latest_pickle(self.config.auto_playlist_pickle, self.last_modified_ts_apl) == False):
-                self.last_modified_ts_apl = store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
-            if (is_latest_pickle(self.config.users_list_pickle, self.last_modified_ts_users) == False):
-                self.last_modified_ts_users = store_pickle(self.config.users_list_pickle, self.users_list)
+            log.info("[" + str(datetime.datetime.now()) + "][" + command.upper() + "] " + str(message.author))
+
+            log.debug("[ON_MESSAGE] Storing latest APL pickle file")
+            store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+            self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
+            log.debug("[ON_MESSAGE] Storing latest users pickle file")
+            store_pickle(self.config.users_list_pickle, self.users_list)
+            self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
         except (exceptions.CommandError, exceptions.HelpfulError, exceptions.ExtractionError) as e:
             log.error("Error in {0}: {1.__class__.__name__}: {1.message}".format(command, e), exc_info=True)
