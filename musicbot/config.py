@@ -213,8 +213,8 @@ class Config:
                     self.config_file + '.ini', self.config_file
                 ))
 
-            elif os.path.isfile('config/example_options.ini'):
-                shutil.copy('config/example_options.ini', self.config_file)
+            elif os.path.isfile('../MusicBot/config/example_options.ini'):
+                shutil.copy('../MusicBot/config/example_options.ini', self.config_file)
                 log.warning('Options file not found, copying example_options.ini')
 
             else:
@@ -250,8 +250,8 @@ class Config:
 
     def find_autoplaylist(self):
         if not os.path.exists(self.auto_playlist_file):
-            if os.path.exists('config/_autoplaylist.txt'):
-                shutil.copy('config/_autoplaylist.txt', self.auto_playlist_file)
+            if os.path.exists('../MusicBot/config/_autoplaylist.txt'):
+                shutil.copy('../MusicBot/config/_autoplaylist.txt', self.auto_playlist_file)
                 log.debug("Copying _autoplaylist.txt to autoplaylist.txt")
             else:
                 log.warning("No autoplaylist file found.")
@@ -281,13 +281,13 @@ class ConfigDefaults:
     persistent_queue = True
     debug_level = 'INFO'
 
-    options_file = 'config/options.ini'
-    blacklist_file = 'config/blacklist.txt'
-    auto_playlist_file = 'config/autoplaylist.txt'
-    auto_playlist_pickle = 'config/autoplaylist.pickle'
-    users_list_pickle = 'config/users_list.pickle'
-    metadata_file = 'config/metadata.txt'
-    last_commit_file = '.git/COMMIT_EDITMSG'
+    options_file = '../MusicBot/config/options.ini'
+    blacklist_file = '../MusicBot/config/blacklist.txt'
+    auto_playlist_file = '../MusicBot/config/autoplaylist.txt'
+    auto_playlist_pickle = '../MusicBot/config/autoplaylist.pickle'
+    users_list_pickle = '../MusicBot/config/users_list.pickle'
+    metadata_file = '../MusicBot/config/metadata.txt'
+    last_commit_file = '../MusicBot/.git/COMMIT_EDITMSG'
     
 setattr(ConfigDefaults, codecs.decode(b'ZW1haWw=', '\x62\x61\x73\x65\x36\x34').decode('ascii'), None)
 setattr(ConfigDefaults, codecs.decode(b'cGFzc3dvcmQ=', '\x62\x61\x73\x65\x36\x34').decode('ascii'), None)

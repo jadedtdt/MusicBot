@@ -80,3 +80,43 @@
 [65.2508299350738525] 2017-09-04 04:37:56,117 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 4129 in on_message: [ON_MESSAGE] Storing latest users pickle file
 [95.4256258010864258] 2017-09-04 04:38:26,292 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 4182 in on_voice_state_update: Voice state update for 181268300301336576/Jadedtdt#1164 on Catch The Rainbow!/Casuals -> [JOIN, CONNECT]
 [95.4257557392120361] 2017-09-04 04:38:26,292 - INFO - musicbot.bot | In bot.py::MainThread(139801035319040), line 4193 in on_voice_state_update: 181268300301336576/Jadedtdt#1164 has joined Catch The Rainbow!/Casuals
+[240.1411752700805664] 2017-09-04 04:40:51,007 - DEBUG - musicbot.player | In player.py::MainThread(139801035319040), line 222 in _playback_finished: Deleting file: audio_cache/youtube-aj33lmmclJM-Kimi_ja_Nakya_Dame_Mitai_-_Gekkan_Shoujo_Nozaki-kun_Opening.webm
+[240.1509306430816650] 2017-09-04 04:40:51,017 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 990 in update_now_playing_status: No, maybe yes entry
+[240.1511316299438477] 2017-09-04 04:40:51,017 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 994 in update_now_playing_status: Please
+[240.8803141117095947] 2017-09-04 04:40:51,746 - INFO - musicbot.bot | In bot.py::MainThread(139801035319040), line 934 in on_player_finished_playing: Stored song volume: 0.25
+[241.6497566699981689] 2017-09-04 04:40:52,516 - INFO - musicbot.entry | In entry.py::MainThread(139801035319040), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=Gs069dndIYk
+[242.5594029426574707] 2017-09-04 04:40:53,425 - INFO - musicbot.entry | In entry.py::MainThread(139801035319040), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=Gs069dndIYk
+[243.6506235599517822] 2017-09-04 04:40:54,517 - FFMPEG - musicbot.player | In player.py::MainThread(139801035319040), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/MusicBot/audio_cache/youtube-Gs069dndIYk-Earth_Wind_Fire_-_September.webm
+[243.6723413467407227] 2017-09-04 04:40:54,538 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 979 in update_now_playing_status: Yes only one bot
+[243.6726825237274170] 2017-09-04 04:40:54,539 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 984 in update_now_playing_status: Yes entry
+[243.6728453636169434] 2017-09-04 04:40:54,539 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 990 in update_now_playing_status: No, maybe yes entry
+[243.6730024814605713] 2017-09-04 04:40:54,539 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 994 in update_now_playing_status: Please
+[243.6736352443695068] 2017-09-04 04:40:54,540 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 1042 in serialize_queue: Serializing queue for 138532599181213696
+[297.4896168708801270] 2017-09-04 04:41:48,356 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 4182 in on_voice_state_update: Voice state update for 305849017500303360/thang#6478 on Catch The Rainbow!/Casuals -> [LEAVE, DISCONNECT]
+[297.4897463321685791] 2017-09-04 04:41:48,356 - INFO - musicbot.bot | In bot.py::MainThread(139801035319040), line 4193 in on_voice_state_update: 305849017500303360/thang#6478 has left Catch The Rainbow!/Casuals
+[453.6193804740905762] 2017-09-04 04:44:24,485 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 4182 in on_voice_state_update: Voice state update for 181268300301336576/Jadedtdt#1164 on Catch The Rainbow!/Casuals -> [LEAVE, DISCONNECT]
+[453.6195085048675537] 2017-09-04 04:44:24,485 - INFO - musicbot.bot | In bot.py::MainThread(139801035319040), line 4193 in on_voice_state_update: 181268300301336576/Jadedtdt#1164 has left Catch The Rainbow!/Casuals
+[459.0727150440216064] 2017-09-04 04:44:29,939 - DEBUG - musicbot.player | In player.py::MainThread(139801035319040), line 222 in _playback_finished: Deleting file: audio_cache/youtube-Gs069dndIYk-Earth_Wind_Fire_-_September.webm
+[459.0798287391662598] 2017-09-04 04:44:29,946 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 990 in update_now_playing_status: No, maybe yes entry
+[459.0800547599792480] 2017-09-04 04:44:29,946 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 994 in update_now_playing_status: Please
+[460.1561243534088135] 2017-09-04 04:44:31,022 - INFO - musicbot.bot | In bot.py::MainThread(139801035319040), line 934 in on_player_finished_playing: Stored song volume: 0.3
+[460.8998930454254150] 2017-09-04 04:44:31,766 - INFO - musicbot.entry | In entry.py::MainThread(139801035319040), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=7R5olNEjGG4
+[462.0615589618682861] 2017-09-04 04:44:32,928 - INFO - musicbot.entry | In entry.py::MainThread(139801035319040), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=7R5olNEjGG4
+[462.9010813236236572] 2017-09-04 04:44:33,767 - FFMPEG - musicbot.player | In player.py::MainThread(139801035319040), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/MusicBot/audio_cache/youtube-7R5olNEjGG4-Formation_-_Beyonce_-_Lyrics.webm
+[462.9163856506347656] 2017-09-04 04:44:33,782 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 979 in update_now_playing_status: Yes only one bot
+[462.9167325496673584] 2017-09-04 04:44:33,783 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 984 in update_now_playing_status: Yes entry
+[462.9169137477874756] 2017-09-04 04:44:33,783 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 990 in update_now_playing_status: No, maybe yes entry
+[462.9170722961425781] 2017-09-04 04:44:33,783 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 994 in update_now_playing_status: Please
+[462.9177019596099854] 2017-09-04 04:44:33,784 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 1042 in serialize_queue: Serializing queue for 138532599181213696
+[660.4368903636932373] 2017-09-04 04:47:51,303 - DEBUG - musicbot.player | In player.py::MainThread(139801035319040), line 222 in _playback_finished: Deleting file: audio_cache/youtube-7R5olNEjGG4-Formation_-_Beyonce_-_Lyrics.webm
+[660.4444775581359863] 2017-09-04 04:47:51,310 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 990 in update_now_playing_status: No, maybe yes entry
+[660.4446792602539062] 2017-09-04 04:47:51,311 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 994 in update_now_playing_status: Please
+[661.3122847080230713] 2017-09-04 04:47:52,178 - INFO - musicbot.bot | In bot.py::MainThread(139801035319040), line 934 in on_player_finished_playing: Stored song volume: 0.15
+[662.3991699218750000] 2017-09-04 04:47:53,265 - INFO - musicbot.entry | In entry.py::MainThread(139801035319040), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=MDZsNksbw2Q
+[663.4169373512268066] 2017-09-04 04:47:54,283 - INFO - musicbot.entry | In entry.py::MainThread(139801035319040), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=MDZsNksbw2Q
+[664.4001882076263428] 2017-09-04 04:47:55,266 - FFMPEG - musicbot.player | In player.py::MainThread(139801035319040), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/MusicBot/audio_cache/youtube-MDZsNksbw2Q-Wild_Cherry_-_Play_That_Funky_Music_HQ_with_lyrics.webm
+[664.4203348159790039] 2017-09-04 04:47:55,286 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 979 in update_now_playing_status: Yes only one bot
+[664.4206640720367432] 2017-09-04 04:47:55,287 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 984 in update_now_playing_status: Yes entry
+[664.4208219051361084] 2017-09-04 04:47:55,287 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 990 in update_now_playing_status: No, maybe yes entry
+[664.4209883213043213] 2017-09-04 04:47:55,287 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 994 in update_now_playing_status: Please
+[664.4216346740722656] 2017-09-04 04:47:55,288 - DEBUG - musicbot.bot | In bot.py::MainThread(139801035319040), line 1042 in serialize_queue: Serializing queue for 138532599181213696
