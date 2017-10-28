@@ -1,70 +1,154 @@
-[20.999431610] 2017-09-04 04:36:14,537 - INFO - launcher: Starting sanity checks
-[21.332979202] 2017-09-04 04:36:14,538 - INFO - launcher: Checking for python 3.5+
-[21.538972855] 2017-09-04 04:36:14,538 - INFO - launcher: Checking console encoding
-[21.718025208] 2017-09-04 04:36:14,538 - INFO - launcher: Ensuring we're in the right folder
-[22.130489349] 2017-09-04 04:36:14,539 - INFO - launcher: Checks passed.
-[22.330284119] 2017-09-04 04:36:14,539 - INFO - launcher: Moving old musicbot log
+[30.529022217] 2017-10-28 16:07:00,951 - INFO - launcher: Starting sanity checks
+[31.029224396] 2017-10-28 16:07:00,952 - INFO - launcher: Checking for python 3.5+
+[31.029224396] 2017-10-28 16:07:00,952 - INFO - launcher: Checking console encoding
+[31.029224396] 2017-10-28 16:07:00,952 - INFO - launcher: Setting console encoding to UTF-8
+[31.529903412] 2017-10-28 16:07:00,952 - INFO - launcher: Ensuring we're in the right folder
+[32.530546188] 2017-10-28 16:07:00,953 - INFO - launcher: Adding local bins/ folder to path
+[33.030986786] 2017-10-28 16:07:00,954 - INFO - launcher: Checks passed.
+[33.030986786] 2017-10-28 16:07:00,954 - INFO - launcher: Moving old musicbot log
 
 ######################### PRE-RUN SANITY CHECKS PASSED #########################
 
-[0.4359898567199707] 2017-09-04 04:36:14,952 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 331 in _setup_logging: Set logging level to DEBUG
-[0.5270748138427734] 2017-09-04 04:36:15,044 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 97 in __init__: [__INIT__] Loaded autoplaylist with 2592 entries
-[0.528156519] launcher-INFO: Connecting
-[2.6695559024810791] 2017-09-04 04:36:17,186 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 1266 in on_ready: Connection established, ready to go.
-[2.6698338985443115] 2017-09-04 04:36:17,186 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 441 in _cache_app_info: Caching app info
-[2.6986374855041504] 2017-09-04 04:36:17,215 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 1089 in _scheck_ensure_env: Ensuring data folders exist
-[2.6992595195770264] 2017-09-04 04:36:17,216 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 1099 in _scheck_ensure_env: Deleted old audio cache
-[2.6994988918304443] 2017-09-04 04:36:17,216 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 1105 in _scheck_server_permissions: Checking server permissions
-[2.6997270584106445] 2017-09-04 04:36:17,216 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 1109 in _scheck_autoplaylist: Auditing autoplaylist
-[2.6999399662017822] 2017-09-04 04:36:17,216 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 1113 in _scheck_configs: Validating config
-[2.7001459598541260] 2017-09-04 04:36:17,217 - DEBUG - musicbot.config | In config.py::MainThread(140352854001408), line 176 in async_validate: Validating options...
-[2.7003533840179443] 2017-09-04 04:36:17,217 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 1116 in _scheck_configs: Validating permissions config
-[2.7005405426025391] 2017-09-04 04:36:17,217 - DEBUG - musicbot.permissions | In permissions.py::MainThread(140352854001408), line 58 in async_validate: Validating permissions...
-[2.7007656097412109] 2017-09-04 04:36:17,217 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1277 in on_ready: Connected!  Musicbot v1.9.6-review
+[1.5669906139373779] 2017-10-28 16:07:02,488 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 402 in _setup_logging: Set logging level to DEBUG
+[1.6540739536285400] 2017-10-28 16:07:02,575 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 98 in __init__: [__INIT__] Loaded autoplaylist with 2529 entries
+[1.657577515] launcher-INFO: Connecting
+[3.8782854080200195] 2017-10-28 16:07:04,799 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 1351 in on_ready: Connection established, ready to go.
+[3.8787848949432373] 2017-10-28 16:07:04,800 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 512 in _cache_app_info: Caching app info
+[3.9133164882659912] 2017-10-28 16:07:04,834 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 1174 in _scheck_ensure_env: Ensuring data folders exist
+[3.9173200130462646] 2017-10-28 16:07:04,838 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 1184 in _scheck_ensure_env: Deleted old audio cache
+[3.9188215732574463] 2017-10-28 16:07:04,840 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 1190 in _scheck_server_permissions: Checking server permissions
+[3.9193217754364014] 2017-10-28 16:07:04,840 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 1194 in _scheck_autoplaylist: Auditing autoplaylist
+[3.9198222160339355] 2017-10-28 16:07:04,841 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 1198 in _scheck_configs: Validating config
+[3.9203228950500488] 2017-10-28 16:07:04,841 - DEBUG - musicbot.config | In config.py::MainThread(10700), line 176 in async_validate: Validating options...
+[3.9203228950500488] 2017-10-28 16:07:04,841 - DEBUG - musicbot.config | In config.py::MainThread(10700), line 190 in async_validate: Aquired owner id via API
+[3.9208235740661621] 2017-10-28 16:07:04,842 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 1201 in _scheck_configs: Validating permissions config
+[3.9213237762451172] 2017-10-28 16:07:04,842 - DEBUG - musicbot.permissions | In permissions.py::MainThread(10700), line 58 in async_validate: Validating permissions...
+[3.9213237762451172] 2017-10-28 16:07:04,842 - DEBUG - musicbot.permissions | In permissions.py::MainThread(10700), line 62 in async_validate: Fixing automatic owner group
+[3.9233264923095703] 2017-10-28 16:07:04,844 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1362 in on_ready: Connected! Musicbot v1.9.6-review
 
-[2.7009730339050293] 2017-09-04 04:36:17,217 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1287 in on_ready: Bot:   254089547447533569/Elegiggle#3010 [BOT]
-[2.7011730670928955] 2017-09-04 04:36:17,218 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1295 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
+[3.9238262176513672] 2017-10-28 16:07:04,845 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1372 in on_ready: Bot:   254089547447533569/Elegiggle#3010 [BOT]
+[3.9238262176513672] 2017-10-28 16:07:04,845 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1380 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
 
-[2.7013738155364990] 2017-09-04 04:36:17,218 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1298 in on_ready: Server List:
-[2.7015678882598877] 2017-09-04 04:36:17,218 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1299 in <listcomp>:  - Catch The Rainbow!
-[2.7017998695373535] 2017-09-04 04:36:17,218 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1330 in on_ready: Bound to text channels:
-[2.7019727230072021] 2017-09-04 04:36:17,218 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1331 in <listcomp>:  - Catch The Rainbow!/bot_commands
-[2.7021706104278564] 2017-09-04 04:36:17,219 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1369 in on_ready: Not autojoining any voice channels
-[2.7023677825927734] 2017-09-04 04:36:17,219 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1373 in on_ready: Options:
-[2.7025403976440430] 2017-09-04 04:36:17,219 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1375 in on_ready:   Command prefix: ~
-[2.7027108669281006] 2017-09-04 04:36:17,219 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1376 in on_ready:   Default volume: 25%
-[2.7028815746307373] 2017-09-04 04:36:17,219 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1378 in on_ready:   Skip threshold: 4 votes or 50%
-[2.7030439376831055] 2017-09-04 04:36:17,220 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1379 in on_ready:   Now Playing @mentions: Disabled
-[2.7032065391540527] 2017-09-04 04:36:17,220 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1380 in on_ready:   Auto-Summon: Enabled
-[2.7033677101135254] 2017-09-04 04:36:17,220 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1381 in on_ready:   Auto-Playlist: Enabled
-[2.7035841941833496] 2017-09-04 04:36:17,220 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1382 in on_ready:   Auto-Pause: Enabled
-[2.7037503719329834] 2017-09-04 04:36:17,220 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1383 in on_ready:   Delete Messages: Enabled
-[2.7039391994476318] 2017-09-04 04:36:17,220 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1385 in on_ready:   Delete Invoking: Disabled
-[2.7041468620300293] 2017-09-04 04:36:17,221 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1386 in on_ready:   Debug Mode: Enabled
-[2.7043547630310059] 2017-09-04 04:36:17,221 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 1387 in on_ready:   Downloaded songs will be deleted
-[2.7046518325805664] 2017-09-04 04:36:17,221 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 375 in _join_startup_channels: Found owner in "Casuals"
-[2.7048785686492920] 2017-09-04 04:36:17,221 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 384 in _join_startup_channels: Attempting to join Catch The Rainbow!/Casuals
-[2.7051744461059570] 2017-09-04 04:36:17,222 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 528 in get_voice_client: Connection attempt 1 to Casuals
-[2.7054011821746826] 2017-09-04 04:36:17,222 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 468 in join_voice_channel: (join_voice_channel) creating futures
-[2.7056734561920166] 2017-09-04 04:36:17,222 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 474 in join_voice_channel: (join_voice_channel) setting voice state
-[2.7059097290039062] 2017-09-04 04:36:17,222 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 477 in join_voice_channel: (join_voice_channel) waiting for session id
-[2.7629351615905762] 2017-09-04 04:36:17,279 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 4182 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Casuals -> [JOIN, CONNECT]
-[2.7630653381347656] 2017-09-04 04:36:17,280 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 4193 in on_voice_state_update: 254089547447533569/Elegiggle#3010 has joined Catch The Rainbow!/Casuals
-[2.7634599208831787] 2017-09-04 04:36:17,280 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 481 in join_voice_channel: (join_voice_channel) waiting for voice data
-[2.7809276580810547] 2017-09-04 04:36:17,297 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 495 in join_voice_channel: (join_voice_channel) connecting...
-[2.9529151916503906] 2017-09-04 04:36:17,469 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 507 in join_voice_channel: (join_voice_channel) connection successful
-[2.9530246257781982] 2017-09-04 04:36:17,469 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 554 in get_voice_client: Connected in 0.2s
-[2.9533159732818604] 2017-09-04 04:36:17,470 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 555 in get_voice_client: Connected to Catch The Rainbow!/Casuals
-[2.9537281990051270] 2017-09-04 04:36:17,470 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 400 in _join_startup_channels: Joined Catch The Rainbow!/Casuals
-[2.9661636352539062] 2017-09-04 04:36:17,483 - VOICEDEBUG - musicbot.player | In player.py::MainThread(140352854001408), line 336 in websocket_check: Starting websocket check loop for Catch The Rainbow!
-[2.9665825366973877] 2017-09-04 04:36:17,483 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 990 in update_now_playing_status: No, maybe yes entry
-[4.2118859291076660] 2017-09-04 04:36:18,728 - INFO - musicbot.bot | In bot.py::MainThread(140352854001408), line 934 in on_player_finished_playing: Stored song volume: 0.25
-[5.1915235519409180] 2017-09-04 04:36:19,708 - INFO - musicbot.entry | In entry.py::MainThread(140352854001408), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=z-kyv6nponI
-[6.3499305248260498] 2017-09-04 04:36:20,866 - INFO - musicbot.entry | In entry.py::MainThread(140352854001408), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=z-kyv6nponI
-[7.1917011737823486] 2017-09-04 04:36:21,708 - FFMPEG - musicbot.player | In player.py::MainThread(140352854001408), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/MusicBot/audio_cache/youtube-z-kyv6nponI-HD_UNDEAD_CORPORATION_-.webm
-[7.2020032405853271] 2017-09-04 04:36:21,718 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 979 in update_now_playing_status: Yes only one bot
-[7.2024676799774170] 2017-09-04 04:36:21,719 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 984 in update_now_playing_status: Yes entry
-[7.2027161121368408] 2017-09-04 04:36:21,719 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 990 in update_now_playing_status: No, maybe yes entry
-[7.2029631137847900] 2017-09-04 04:36:21,719 - DEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 994 in update_now_playing_status: Please
-[11.9110083580017090] 2017-09-04 04:36:26,427 - DEBUG - musicbot.player | In player.py::MainThread(140352854001408), line 222 in _playback_finished: Deleting file: audio_cache/youtube-z-kyv6nponI-HD_UNDEAD_CORPORATION_-.webm
-[11.9488222599029541] 2017-09-04 04:36:26,465 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140352854001408), line 4182 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Casuals -> [DISCONNECT]
+[3.9243268966674805] 2017-10-28 16:07:04,845 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1383 in on_ready: Server List:
+[3.9243268966674805] 2017-10-28 16:07:04,845 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1384 in <listcomp>:  - Catch The Rainbow!
+[3.9248273372650146] 2017-10-28 16:07:04,846 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1415 in on_ready: Bound to text channels:
+[3.9253275394439697] 2017-10-28 16:07:04,846 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1416 in <listcomp>:  - Catch The Rainbow!/bot_commands
+[3.9258286952972412] 2017-10-28 16:07:04,847 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1454 in on_ready: Not autojoining any voice channels
+[3.9258286952972412] 2017-10-28 16:07:04,847 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1458 in on_ready: Options:
+[3.9263284206390381] 2017-10-28 16:07:04,847 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1460 in on_ready:   Command prefix: ~
+[3.9268290996551514] 2017-10-28 16:07:04,848 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1461 in on_ready:   Default volume: 15%
+[3.9273295402526855] 2017-10-28 16:07:04,848 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1463 in on_ready:   Skip threshold: 4 votes or 50%
+[3.9273295402526855] 2017-10-28 16:07:04,848 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1464 in on_ready:   Now Playing @mentions: Disabled
+[3.9278299808502197] 2017-10-28 16:07:04,849 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1465 in on_ready:   Auto-Summon: Enabled
+[3.9278299808502197] 2017-10-28 16:07:04,849 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1466 in on_ready:   Auto-Playlist: Enabled
+[3.9283306598663330] 2017-10-28 16:07:04,849 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1467 in on_ready:   Auto-Pause: Enabled
+[3.9283306598663330] 2017-10-28 16:07:04,849 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1468 in on_ready:   Delete Messages: Enabled
+[3.9288318157196045] 2017-10-28 16:07:04,850 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1470 in on_ready:   Delete Invoking: Disabled
+[3.9293324947357178] 2017-10-28 16:07:04,850 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1471 in on_ready:   Debug Mode: Enabled
+[3.9293324947357178] 2017-10-28 16:07:04,850 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1472 in on_ready:   Downloaded songs will be deleted
+[3.9298319816589355] 2017-10-28 16:07:04,851 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 446 in _join_startup_channels: Found owner in "Nerds"
+[3.9303321838378906] 2017-10-28 16:07:04,851 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 455 in _join_startup_channels: Attempting to join Catch The Rainbow!/Nerds
+[3.9303321838378906] 2017-10-28 16:07:04,851 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 599 in get_voice_client: Connection attempt 1 to Nerds
+[3.9308328628540039] 2017-10-28 16:07:04,852 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(10700), line 539 in join_voice_channel: (join_voice_channel) creating futures
+[3.9308328628540039] 2017-10-28 16:07:04,852 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(10700), line 545 in join_voice_channel: (join_voice_channel) setting voice state
+[3.9313340187072754] 2017-10-28 16:07:04,852 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(10700), line 548 in join_voice_channel: (join_voice_channel) waiting for session id
+[3.9517459869384766] 2017-10-28 16:07:04,873 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(10700), line 4205 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Nerds -> [JOIN, CONNECT]
+[3.9517459869384766] 2017-10-28 16:07:04,873 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 4216 in on_voice_state_update: 254089547447533569/Elegiggle#3010 has joined Catch The Rainbow!/Nerds
+[3.9522466659545898] 2017-10-28 16:07:04,873 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(10700), line 552 in join_voice_channel: (join_voice_channel) waiting for voice data
+[3.9747676849365234] 2017-10-28 16:07:04,896 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(10700), line 566 in join_voice_channel: (join_voice_channel) connecting...
+[4.0953121185302734] 2017-10-28 16:07:05,016 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(10700), line 578 in join_voice_channel: (join_voice_channel) connection successful
+[4.0953121185302734] 2017-10-28 16:07:05,016 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 625 in get_voice_client: Connected in 0.2s
+[4.0958130359649658] 2017-10-28 16:07:05,017 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 626 in get_voice_client: Connected to Catch The Rainbow!/Nerds
+[4.0963122844696045] 2017-10-28 16:07:05,017 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 471 in _join_startup_channels: Joined Catch The Rainbow!/Nerds
+[4.0973136425018311] 2017-10-28 16:07:05,018 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 847 in on_player_finished_playing: Past played: 0 of 20
+[4.0978143215179443] 2017-10-28 16:07:05,019 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 876 in on_player_finished_playing: 138532752038297600
+[4.0978143215179443] 2017-10-28 16:07:05,019 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 891 in on_player_finished_playing: Dynamic Menace#7801
+[4.0998160839080811] 2017-10-28 16:07:05,021 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 931 in on_player_finished_playing: Sixpence None The Richer - Kiss Me Official HQ
+[4.1053211688995361] 2017-10-28 16:07:05,026 - VOICEDEBUG - musicbot.player | In player.py::MainThread(10700), line 336 in websocket_check: Starting websocket check loop for Catch The Rainbow!
+[4.9608378410339355] 2017-10-28 16:07:05,882 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 1025 in on_player_finished_playing: Stored song volume: 0.15
+[5.8222336769104004] 2017-10-28 16:07:06,743 - INFO - musicbot.entry | In entry.py::MainThread(10700), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=8N-qO3sPMjc
+[7.0777871608734131] 2017-10-28 16:07:07,999 - INFO - musicbot.entry | In entry.py::MainThread(10700), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=8N-qO3sPMjc
+[7.8152902126312256] 2017-10-28 16:07:08,736 - FFMPEG - musicbot.player | In player.py::MainThread(10700), line 293 in _play: Creating player with options: -nostdin -vn c:\Users\Gene\MusicBot\audio_cache\youtube-8N-qO3sPMjc-Sixpence_None_The_Richer_-_Kiss_Me_Official_HQ.webm
+[7.8217966556549072] 2017-10-28 16:07:08,743 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 1127 in serialize_queue: Serializing queue for 138532599181213696
+[9.5653905868530273] 2017-10-28 16:07:10,486 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 4028 in on_message: 181268300301336576/Jadedtdt#1164: ~debug self.dump_songs_with_swaps()
+[9.7020196914672852] 2017-10-28 16:07:10,623 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 168 in dump_songs_with_swaps: #######DEBUG SONG SWAPS START########
+[9.7045211791992188] 2017-10-28 16:07:10,625 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=8PvebsWcpto --- Florida Georgia Line - Cruise
+[9.7045211791992188] 2017-10-28 16:07:10,625 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=hZE9ImMYeCA --- Foxsky - Oatmeal Smash
+[9.7060232162475586] 2017-10-28 16:07:10,627 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=0rkXugbXaog --- Miss Kobayashi's Weed Dragon
+[9.7070236206054688] 2017-10-28 16:07:10,628 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=mx4y8ijVUFo --- Bombs Away - Halloween Remix 2015!
+[9.7070236206054688] 2017-10-28 16:07:10,628 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=EHQ43ObPMHQ --- Main Theme - Luigi's Mansion
+[9.7075242996215820] 2017-10-28 16:07:10,628 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=c71RCAyLS1M --- Tiny Tim - Living In the Sunlight
+[9.7075242996215820] 2017-10-28 16:07:10,628 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=beXwzHwTRCQ --- The Boogie Monster
+[9.7080247402191162] 2017-10-28 16:07:10,629 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=m9We2XsVZfc --- Original GhostBusters Theme Song
+[9.7080247402191162] 2017-10-28 16:07:10,629 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=GCtQmwJ1WAY&list=WL&index=33 --- Tiny Tim - Living In The Sunlight, Loving In The Moonlight [LYRICS]
+[9.7085249423980713] 2017-10-28 16:07:10,629 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=Z0lLvTGDX90 --- Migos - Antidope (No Label 2)
+[9.7085249423980713] 2017-10-28 16:07:10,629 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=pJ0I9LQ2EOA --- Gatchaman Crowds OST (Full) - 01 Gotchaman ~ In the name of Love
+[9.7095270156860352] 2017-10-28 16:07:10,630 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.facebook.com/PixelsAndMusic/videos/1882218121990005/?hc_ref=NEWSFEED --- Windmill, windmill for the land Turn forever hand in hand...  (Source for the...
+[9.7100276947021484] 2017-10-28 16:07:10,631 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=QNzIKoAy2pk --- Rage Against The Machine: Killing In The Name
+[9.7105269432067871] 2017-10-28 16:07:10,631 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=ac3HkriqdGQ --- Lifehouse - You And Me
+[9.7120292186737061] 2017-10-28 16:07:10,633 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=dZLfasMPOU4 --- Fountains of Wayne - Stacy's Mom
+[9.7125296592712402] 2017-10-28 16:07:10,633 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=K38xNqZvBJI --- Bowling For Soup - 1985
+[9.7125296592712402] 2017-10-28 16:07:10,633 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=emGri7i8Y2Y --- Sum 41 - In Too Deep
+[9.7130308151245117] 2017-10-28 16:07:10,634 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=PWgvGjAhvIw --- OutKast - Hey Ya!
+[9.7130308151245117] 2017-10-28 16:07:10,634 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=TIy3n2b7V9k --- Avril Lavigne - Sk8er Boi
+[9.7135303020477295] 2017-10-28 16:07:10,634 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=1V_xRb0x9aw --- Gorillaz - Clint Eastwood (Official Video)
+[9.7135303020477295] 2017-10-28 16:07:10,634 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=6f7pgA0riU8 --- Bloodhound Gang - The Bad Touch (Explicit)
+[9.7140307426452637] 2017-10-28 16:07:10,635 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=RRKJiM9Njr8 --- My Chemical Romance - "Welcome To The Black Parade" [Official Music Video]
+[9.7140307426452637] 2017-10-28 16:07:10,635 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=onzL0EM1pKY --- Fall Out Boy - Thnks fr th Mmrs
+[9.7145311832427979] 2017-10-28 16:07:10,635 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=sBzrzS1Ag_g --- Tame Impala - The Less I Know The Better
+[9.7145311832427979] 2017-10-28 16:07:10,635 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=krpm0v_486k --- She's Out Of Her Mind - blink-182 [MUSIC VIDEO]
+[9.7150313854217529] 2017-10-28 16:07:10,636 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=vVy9Lgpg1m8 --- blink-182 - First Date
+[9.7150313854217529] 2017-10-28 16:07:10,636 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=qYkbTyHXwbs --- Rick Springfield - Jessie's Girl
+[9.7155318260192871] 2017-10-28 16:07:10,636 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=NUTGr5t3MoY --- Green Day - Basket Case [Official Music Video]
+[9.7155318260192871] 2017-10-28 16:07:10,636 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=xPU8OAjjS4k --- 3 Doors Down - Kryptonite
+[9.7160322666168213] 2017-10-28 16:07:10,637 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=tuK6n2Lkza0 --- Jet - Are You Gonna Be My Girl
+[9.7160322666168213] 2017-10-28 16:07:10,637 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=uhG-vLZrb-g --- Fall Out Boy - Sugar, We're Goin Down (Concept Version)
+[9.7165329456329346] 2017-10-28 16:07:10,637 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=dTAAsCNK7RA --- OK Go - Here It Goes Again
+[9.7165329456329346] 2017-10-28 16:07:10,637 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: http://www.youtube.com/watch?v=6FOUqQt3Kg0 --- Aretha Franklin - Respect [1967] (Original Version)
+[9.7170338630676270] 2017-10-28 16:07:10,638 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: http://www.youtube.com/watch?v=XCWmONajkOg --- Hailee Steinfeld, Alesso - Let Me Go (Lyric Video) ft. Florida Georgia Line, watt
+[9.7170338630676270] 2017-10-28 16:07:10,638 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=kIoRUVMlTIw --- We Like to Party! (Six Flags Theme Song) with lyrics!!!
+[9.7175333499908447] 2017-10-28 16:07:10,638 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=hd1Rlk5NAJw --- Somebody Told Me
+[9.7175333499908447] 2017-10-28 16:07:10,638 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=xqk-hpFGX6c --- Santa - Time to Attack [Breakbeat] (Rayden Remix)
+[9.7180345058441162] 2017-10-28 16:07:10,639 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=jgNvzc-ZdME --- Neutral Milk Hotel - The King Of Carrot Flowers, Pts. 2-3
+[9.7180345058441162] 2017-10-28 16:07:10,639 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=owx3ao42kwI --- "Jesus Loves Me" by Listener Kids
+[9.7180345058441162] 2017-10-28 16:07:10,639 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=hD6_QXwKesU --- Neutral Milk Hotel - In The Aeroplane Over The Sea
+[9.7185347080230713] 2017-10-28 16:07:10,639 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=XLaFLztnL84 --- Neutral Milk Hotel - Holland, 1945
+[9.7185347080230713] 2017-10-28 16:07:10,639 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=LULmbLlPvVk --- Neutral Milk Hotel - The King Of Carrot Flowers, Pt. 1
+[9.7190353870391846] 2017-10-28 16:07:10,640 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=NHdwcsvGf6k&list=RDNHdwcsvGf6k --- Teddyloid Ft. Bonjour Suzuki - Pipo Password (Pearl Grey Remix)
+[9.7190353870391846] 2017-10-28 16:07:10,640 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=r4adizbMg5A --- Uchuu Patrol Luluco-ED-1 (Sub)
+[9.7195353507995605] 2017-10-28 16:07:10,640 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=pInrJ72eeUU --- Welcome To The Black Parade - My Chemical Romance Lyrics
+[9.7195353507995605] 2017-10-28 16:07:10,640 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=g9j5UzxEhEM --- In The End (Official Lyric Video) - Linkin Park
+[9.7200357913970947] 2017-10-28 16:07:10,641 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=nKs9V5OEA8E --- Lauv – Reforget (Lyrics) [CC]
+[9.7200357913970947] 2017-10-28 16:07:10,641 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=eJcLCTumtMg --- Gatchaman Crowds - 22. Innocent Note ED
+[9.7210369110107422] 2017-10-28 16:07:10,642 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=5dmQ3QWpy1Q --- Heavy (Official Video) - Linkin Park (feat. Kiiara)
+[9.7215378284454346] 2017-10-28 16:07:10,642 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=AcplQ-zyca0 --- Miss Kobayashi's Dragon Maid - Opening [FULL]
+[9.7220380306243896] 2017-10-28 16:07:10,643 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=4dRixTb0GV0 --- Miss Kobayashi's Dragon Maid - Ending [FULL]
+[9.7225391864776611] 2017-10-28 16:07:10,643 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=ocnuOcwHNaM --- NF - Green Lights
+[9.7225391864776611] 2017-10-28 16:07:10,643 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=Akrq-TO9EvU --- NF - Dreams (Audio)
+[9.7230393886566162] 2017-10-28 16:07:10,644 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=r9bp50MHLZM --- NF - If You Want Love (Audio)
+[9.7230393886566162] 2017-10-28 16:07:10,644 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=My5lL0_sURw --- NF - 10 Feet Down (Audio) ft. Ruelle
+[9.7235400676727295] 2017-10-28 16:07:10,644 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=iI9Gpjv2LQQ --- Destiny 2 - NEWS UPDATE! DLC LEAK! 4th SUBCLASS?!
+[9.7235400676727295] 2017-10-28 16:07:10,644 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=DvAhj9z1bVc --- NF - Outro
+[9.7240402698516846] 2017-10-28 16:07:10,645 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=qn6PReHUq6Y --- Neffex Destiny Lyrics
+[9.7240402698516846] 2017-10-28 16:07:10,645 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=qls3OGpOfwY --- NF - Destiny (Audio)
+[9.7245409488677979] 2017-10-28 16:07:10,645 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=bzAGZT_XTAk&list=RDbzAGZT_XTAk --- Guns N' Roses-Sweet Child O' Mine w/Lyrics
+[9.7245409488677979] 2017-10-28 16:07:10,645 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=O1fHxPY3TJo --- Guns N' Roses-Civil War  w/Lyrics
+[9.7250416278839111] 2017-10-28 16:07:10,646 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=7MkrFUz5xFQ --- New year's eve - mal blum
+[9.7250416278839111] 2017-10-28 16:07:10,646 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=9Ht5RZpzPqw --- blink-182 - All The Small Things
+[9.7255415916442871] 2017-10-28 16:07:10,646 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=JS33V1L7G4I --- Gives You Hell
+[9.7255415916442871] 2017-10-28 16:07:10,646 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=k6HNF4qhRSM --- 【Sayonara Zetsubou】Ending Zessei Bijin Full
+[9.7260422706604004] 2017-10-28 16:07:10,647 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=4Q46xYqUwZQ --- Legends Never Die (ft. Against The Current) [OFFICIAL AUDIO] | Worlds 2017 - League of Legends
+[9.7265422344207764] 2017-10-28 16:07:10,647 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=LJ9vkt7BHYI --- 「トレイン to トレイン」 AKA Trainroll
+[9.7265422344207764] 2017-10-28 16:07:10,647 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=SE7AzfX6nQ8 --- Dokuro-chan Opening
+[9.7270426750183105] 2017-10-28 16:07:10,648 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=KY6QCX0HPxg --- Dokuro-chan opening 2
+[9.7270426750183105] 2017-10-28 16:07:10,648 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=o0Pt7M0weUI --- The Revivalists - Wish I Knew You
+[9.7275433540344238] 2017-10-28 16:07:10,648 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=7YAAyUFL1GQ --- Fall Out Boy - The Last Of The Real Ones
+[9.7280440330505371] 2017-10-28 16:07:10,649 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=qIt6KCwlFPw --- TAEYANG - WEDDING DRESS M/V [HD]
+[9.7280440330505371] 2017-10-28 16:07:10,649 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 172 in dump_songs_with_swaps: https://www.youtube.com/watch?v=S7GicjI8fcw --- Demi Lovato- La La Land (With Lyrics) HQ
+[9.7285439968109131] 2017-10-28 16:07:10,649 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 173 in dump_songs_with_swaps: ########DEBUG SONG SWAPS END#########
+[9.8214981555938721] 2017-10-28 16:07:10,742 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 4147 in on_message: [2017-10-28 16:07:10.742906][DEBUG] Jadedtdt#1164
+[9.8224995136260986] 2017-10-28 16:07:10,743 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 4149 in on_message: [ON_MESSAGE] Storing latest APL pickle file
+[9.8485245704650879] 2017-10-28 16:07:10,769 - DEBUG - musicbot.bot | In bot.py::MainThread(10700), line 4152 in on_message: [ON_MESSAGE] Storing latest users pickle file
+[130.1671171188354492] 2017-10-28 16:09:11,088 - INFO - musicbot.bot | In bot.py::MainThread(10700), line 4028 in on_message: 181268300301336576/Jadedtdt#1164: ~restart
+[130.3002231121063232] 2017-10-28 16:09:11,221 - DEBUG - musicbot.player | In player.py::MainThread(10700), line 222 in _playback_finished: Deleting file: audio_cache\youtube-8N-qO3sPMjc-Sixpence_None_The_Richer_-_Kiss_Me_Official_HQ.webm
+[130.3482673168182373] 2017-10-28 16:09:11,269 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(10700), line 4205 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Nerds -> [DISCONNECT]

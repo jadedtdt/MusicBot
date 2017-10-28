@@ -316,7 +316,7 @@ def pyexec(pycom, *args, pycom2=None):
     os.execlp(pycom, pycom2, *args)
 
 def restart(*args):
-    pyexec(sys.executable, *args, *sys.argv, pycom2='python3')
+    pyexec(sys.executable, *args, *sys.argv, pycom2=None)
 
 def main():
     # TODO: *actual* argparsing
