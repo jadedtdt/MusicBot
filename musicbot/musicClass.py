@@ -3,7 +3,7 @@ from .config import Config, ConfigDefaults
 
 class Music:
 
-    def __init__(self, title="", url="", author=None):
+    def __init__(self, url, title="", author=None):
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
