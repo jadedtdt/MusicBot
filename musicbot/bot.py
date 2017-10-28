@@ -164,6 +164,62 @@ class MusicBot(discord.Client):
                 log.debug(each_song.getURL())
         log.debug("########DEBUG SONG TITLES END#########")
 
+    async def repair_songs_with_dupes(self):
+        cached_list = list()
+        duped_list = list()
+        for each_song in self.autoplaylist:
+            if each_song.getURL() in cached_list:
+                duped_list.append(each_song.getURL())
+            else:
+                cached_list.append(each_song.getURL())
+
+        for each_duped_url in duped_list:
+            zzz = list()
+            for each_song in self.autoplaylist:
+                if each_song.getURL() == each_duped_url:
+                    log.debug(each_song)
+                    log.debug(str(each_song.getLikers()))
+                    zzz.append(each_song)
+
+            while len(zzz) > 2:
+                new_song = await self.merge_dupes(zzz[0], zzz[1])
+                if new_song != None:
+                    zzz[0] = new_song
+                    zzz.remove(1)
+            new_song = await self.merge_dupes(zzz[0], zzz[1])
+
+            if new_song != None:
+                for each_song in self.autoplaylist:
+                    if each_song.getURL() == new_song.getURL():
+                        self.autoplaylist.remove(each_song)
+                self.autoplaylist.append(new_song)
+
+
+    async def merge_dupes(self, song1, song2):
+        if type(song1) != Music and type(song2) != Music:
+            log.warning("Either Song1 or Song2 aren't music types!")
+            return None
+        likers2 = song2.getLikers()
+        for each_liker in likers2:
+            if each_liker not in song1.getLikers():
+                song1.addLiker(each_liker)
+        return song1
+
+    async def dump_songs_with_dupes(self):
+        log.debug("#######DEBUG SONG DUPES START########")
+
+        cached_list = list()
+        duped_list = list()
+        for each_song in self.autoplaylist:
+            if each_song.getURL() in cached_list:
+                duped_list.append(each_song)
+            else:
+                cached_list.append(each_song.getURL())
+
+        for each_song in duped_list:
+            log.debug(each_song)
+
+        log.debug("########DEBUG SONG DUPES END#########")
 
     async def repair_songs_with_swaps(self):
         log.debug("#######DEBUG SONG SWAPS START########")
@@ -1530,29 +1586,26 @@ class MusicBot(discord.Client):
             self.autoplaylist.append(song)
         # otherwise we just want to add this liker to the list
         else:
-            if song.hasLiker(author):
+            if song.hasLiker(author):                
                 log.debug("!!!")
-                log.debug(song.getTitle())
-                log.debug(str(song.getLikers()))
-                log.debug(song.getURL())
                 log.debug("[ADD_TO_AUTOPLAYLIST] Song already added " + url)
                 return False
             else:
                 # appends current author to the end of the likers list
-                log.debug("[ADD_TO_AUTOPLAYLIST] Adding liker to song" + url)
+                log.debug("[ADD_TO_AUTOPLAYLIST] Adding liker to song " + url)
                 song.addLiker(author)
 
-        self._add_to_autoplaylist(title, url, author)
+        self._add_to_autoplaylist(url, title, author)
 
         return True
 
-    def _add_to_autoplaylist(self, title, url, author=None):
+    def _add_to_autoplaylist(self, url, title, author=None):
 
         if author == None:
             song = self.find_song(url)
             if song == None:
                 log.debug("[_ADD_TO_AUTOPLAYLIST] Tried to add a song that's not in our APL yet")
-                self.add_to_autoplaylist(title, url, author)
+                self.add_to_autoplaylist(url, title, author)
 
             # trying to grab the likers from the apl
             likers = song.getLikers()
@@ -1563,7 +1616,7 @@ class MusicBot(discord.Client):
                 log.warning("[_ADD_TO_AUTOPLAYLIST] No author but we have list of likers, trying again!")
                 for liker in likers:
                     author = self._get_user(liker)
-                    self._add_autoplaylist(title, url, author)
+                    self._add_autoplaylist(url, title, author)
                     return
 
         user = self.get_user(author)
@@ -1582,13 +1635,13 @@ class MusicBot(discord.Client):
         if music_obj == None:
             log.warning("[_ADD_TO_AUTOPLAYLIST] Null Music object, trying again!")
             music_obj = Music(url, title, author)
-            self.add_to_autoplaylist(title, url, author)
+            self.add_to_autoplaylist(url, title, author)
             return
 
         if not user.hasSong(music_obj):
             user.addSong(music_obj)
 
-    def remove_from_autoplaylist(self, title, url, author=None):
+    def remove_from_autoplaylist(self, url, title, author=None):
 
         if author == None:
             #check if we can grab the likers from the apl
@@ -1598,7 +1651,7 @@ class MusicBot(discord.Client):
                     return False
                 else:
                     for each_liker in song.getLikers():
-                        self.remove_from_autoplaylist(title, url, each_liker)
+                        self.remove_from_autoplaylist(url, title, each_liker)
                     return True
             else:
                 log.warning("[REMOVE_FROM_AUTOPLAYLIST] No Author... Don't know who to remove from")
@@ -1625,14 +1678,14 @@ class MusicBot(discord.Client):
                 log.warning("[REMOVE_FROM_AUTOPLAYLIST] NO LIKERS, NOT REMOVING: " + song.getTitle())
                 return False
 
-            return self._remove_from_autoplaylist(title, url, author)
+            return self._remove_from_autoplaylist(url, title, author)
 
         else:
             log.warning("[REMOVE_FROM_AUTOPLAYLIST] Can't remove a song that's not in the auto playlist")
             return False
 
     # removes from our dictionary of lists
-    def _remove_from_autoplaylist(self, title, url, author=None):
+    def _remove_from_autoplaylist(self, url, title, author=None):
 
         if author == None:
             likers = song.getLikers()
@@ -2647,7 +2700,7 @@ class MusicBot(discord.Client):
             else:
                 title = None
 
-        if self.add_to_autoplaylist(title, url, author.id):
+        if self.add_to_autoplaylist(url, title, author.id):
             reply_text = "**%s**, the song **%s** has been added to your auto playlist."
         else:
             reply_text = "**%s**, this song **%s** is already added to your auto playlist."
@@ -2694,7 +2747,7 @@ class MusicBot(discord.Client):
             else:
                 title = None;
 
-        if self.remove_from_autoplaylist(title, url, author.id):
+        if self.remove_from_autoplaylist(url, title, author.id):
             reply_text = "**%s**, the song **%s** has been removed from your auto playlist."
             if (player.current_entry.url == url):
                 player.current_entry.disliked = True
@@ -2970,7 +3023,7 @@ class MusicBot(discord.Client):
 
         try:
             log.info("[PLAY] " + author.name + ": " + entry.title)
-            self.add_to_autoplaylist(entry.title, song_url, author.id)
+            self.add_to_autoplaylist(song_url, entry.title, author.id)
         except:
             log.warning("Failed to add song to apl in play command " + entry.title)
 

@@ -52,7 +52,7 @@ class Music:
 
     # do we really even need this?
     def getStore(self):
-        temp = self.title + TITLE_URL_SEPARATOR + self.url + URL_LIKERS_SEPARATOR
+        temp = self.url + TITLE_URL_SEPARATOR + self.title + URL_LIKERS_SEPARATOR
         for liker in self.likers:
             temp =+ str(liker) + LIKERS_DELIMETER
         return temp[:-2]
@@ -95,7 +95,7 @@ class Music:
         title_str = ""
         if self.title != None:
             title_str = str(self.title)
-        return title_str + TITLE_URL_SEPARATOR + self.url
+        return self.url + TITLE_URL_SEPARATOR + title_str
 
     ###########################################################################
 
