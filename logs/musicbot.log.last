@@ -1,398 +1,78 @@
-[33.533096313] 2017-10-28 17:46:50,523 - INFO - launcher: Starting sanity checks
-[34.032821655] 2017-10-28 17:46:50,523 - INFO - launcher: Checking for python 3.5+
-[34.032821655] 2017-10-28 17:46:50,523 - INFO - launcher: Checking console encoding
-[34.533262253] 2017-10-28 17:46:50,524 - INFO - launcher: Setting console encoding to UTF-8
-[34.533262253] 2017-10-28 17:46:50,524 - INFO - launcher: Ensuring we're in the right folder
-[35.534143448] 2017-10-28 17:46:50,525 - INFO - launcher: Adding local bins/ folder to path
-[36.035537720] 2017-10-28 17:46:50,525 - INFO - launcher: Checks passed.
-[36.035537720] 2017-10-28 17:46:50,525 - INFO - launcher: Moving old musicbot log
+[33.031463623] 2017-10-29 23:34:23,548 - INFO - launcher: Starting sanity checks
+[33.531904221] 2017-10-29 23:34:23,549 - INFO - launcher: Checking for python 3.5+
+[33.531904221] 2017-10-29 23:34:23,549 - INFO - launcher: Checking console encoding
+[33.531904221] 2017-10-29 23:34:23,549 - INFO - launcher: Setting console encoding to UTF-8
+[34.032583237] 2017-10-29 23:34:23,549 - INFO - launcher: Ensuring we're in the right folder
+[35.033226013] 2017-10-29 23:34:23,550 - INFO - launcher: Adding local bins/ folder to path
+[35.534143448] 2017-10-29 23:34:23,551 - INFO - launcher: Checks passed.
+[35.534143448] 2017-10-29 23:34:23,551 - INFO - launcher: Moving old musicbot log
 
 ######################### PRE-RUN SANITY CHECKS PASSED #########################
 
-[1.3097474575042725] 2017-10-28 17:46:51,799 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 475 in _setup_logging: Set logging level to DEBUG
-[1.3863203525543213] 2017-10-28 17:46:51,876 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 98 in __init__: [__INIT__] Loaded autoplaylist with 2536 entries
-[1.388328314] launcher-INFO: Connecting
-[3.7478139400482178] 2017-10-28 17:46:54,237 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1424 in on_ready: Connection established, ready to go.
-[3.7483146190643311] 2017-10-28 17:46:54,238 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 585 in _cache_app_info: Caching app info
-[3.7814998626708984] 2017-10-28 17:46:54,271 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1247 in _scheck_ensure_env: Ensuring data folders exist
-[3.7845027446746826] 2017-10-28 17:46:54,274 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1257 in _scheck_ensure_env: Deleted old audio cache
-[3.7845027446746826] 2017-10-28 17:46:54,274 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1263 in _scheck_server_permissions: Checking server permissions
-[3.7850031852722168] 2017-10-28 17:46:54,274 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1267 in _scheck_autoplaylist: Auditing autoplaylist
-[3.7855036258697510] 2017-10-28 17:46:54,275 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1271 in _scheck_configs: Validating config
-[3.7855036258697510] 2017-10-28 17:46:54,275 - DEBUG - musicbot.config | In config.py::MainThread(19900), line 176 in async_validate: Validating options...
-[3.7860040664672852] 2017-10-28 17:46:54,275 - DEBUG - musicbot.config | In config.py::MainThread(19900), line 190 in async_validate: Aquired owner id via API
-[3.7865047454833984] 2017-10-28 17:46:54,276 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1274 in _scheck_configs: Validating permissions config
-[3.7865047454833984] 2017-10-28 17:46:54,276 - DEBUG - musicbot.permissions | In permissions.py::MainThread(19900), line 58 in async_validate: Validating permissions...
-[3.7870049476623535] 2017-10-28 17:46:54,276 - DEBUG - musicbot.permissions | In permissions.py::MainThread(19900), line 62 in async_validate: Fixing automatic owner group
-[3.7875053882598877] 2017-10-28 17:46:54,277 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1435 in on_ready: Connected! Musicbot v1.9.6-review
+[1.3948283195495605] 2017-10-29 23:34:24,910 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 477 in _setup_logging: Set logging level to DEBUG
+[1.4799082279205322] 2017-10-29 23:34:24,995 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 98 in __init__: [__INIT__] Loaded autoplaylist with 2511 entries
+[1.481909752] launcher-INFO: Connecting
+[3.7135272026062012] 2017-10-29 23:34:27,229 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1426 in on_ready: Connection established, ready to go.
+[3.7140269279479980] 2017-10-29 23:34:27,229 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 587 in _cache_app_info: Caching app info
+[3.7455849647521973] 2017-10-29 23:34:27,261 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1249 in _scheck_ensure_env: Ensuring data folders exist
+[3.7485873699188232] 2017-10-29 23:34:27,264 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1259 in _scheck_ensure_env: Deleted old audio cache
+[3.7485873699188232] 2017-10-29 23:34:27,264 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1265 in _scheck_server_permissions: Checking server permissions
+[3.7490882873535156] 2017-10-29 23:34:27,264 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1269 in _scheck_autoplaylist: Auditing autoplaylist
+[3.7490882873535156] 2017-10-29 23:34:27,264 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1273 in _scheck_configs: Validating config
+[3.7495882511138916] 2017-10-29 23:34:27,265 - DEBUG - musicbot.config | In config.py::MainThread(8720), line 176 in async_validate: Validating options...
+[3.7500896453857422] 2017-10-29 23:34:27,265 - DEBUG - musicbot.config | In config.py::MainThread(8720), line 190 in async_validate: Aquired owner id via API
+[3.7505893707275391] 2017-10-29 23:34:27,266 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1276 in _scheck_configs: Validating permissions config
+[3.7505893707275391] 2017-10-29 23:34:27,266 - DEBUG - musicbot.permissions | In permissions.py::MainThread(8720), line 58 in async_validate: Validating permissions...
+[3.7510898113250732] 2017-10-29 23:34:27,266 - DEBUG - musicbot.permissions | In permissions.py::MainThread(8720), line 62 in async_validate: Fixing automatic owner group
+[3.7515902519226074] 2017-10-29 23:34:27,267 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1437 in on_ready: Connected! Musicbot v1.9.6-review
 
-[3.7875053882598877] 2017-10-28 17:46:54,277 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1445 in on_ready: Bot:   254089547447533569/Elegiggle#3010 [BOT]
-[3.7880060672760010] 2017-10-28 17:46:54,277 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1453 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
+[3.7515902519226074] 2017-10-29 23:34:27,267 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1447 in on_ready: Bot:   254089547447533569/Elegiggle#3010 [BOT]
+[3.7525916099548340] 2017-10-29 23:34:27,268 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1455 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
 
-[3.7880060672760010] 2017-10-28 17:46:54,277 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1456 in on_ready: Server List:
-[3.7885065078735352] 2017-10-28 17:46:54,278 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1457 in <listcomp>:  - Catch The Rainbow!
-[3.7890069484710693] 2017-10-28 17:46:54,278 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1488 in on_ready: Bound to text channels:
-[3.7895073890686035] 2017-10-28 17:46:54,279 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1489 in <listcomp>:  - Catch The Rainbow!/bot_commands
-[3.7900087833404541] 2017-10-28 17:46:54,279 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1527 in on_ready: Not autojoining any voice channels
-[3.7910096645355225] 2017-10-28 17:46:54,280 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1531 in on_ready: Options:
-[3.7915136814117432] 2017-10-28 17:46:54,281 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1533 in on_ready:   Command prefix: ~
-[3.7920100688934326] 2017-10-28 17:46:54,281 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1534 in on_ready:   Default volume: 15%
-[3.7920100688934326] 2017-10-28 17:46:54,281 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1536 in on_ready:   Skip threshold: 4 votes or 50%
-[3.7925100326538086] 2017-10-28 17:46:54,282 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1537 in on_ready:   Now Playing @mentions: Disabled
-[3.7925100326538086] 2017-10-28 17:46:54,282 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1538 in on_ready:   Auto-Summon: Enabled
-[3.7930109500885010] 2017-10-28 17:46:54,282 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1539 in on_ready:   Auto-Playlist: Enabled
-[3.7930109500885010] 2017-10-28 17:46:54,282 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1540 in on_ready:   Auto-Pause: Enabled
-[3.7935111522674561] 2017-10-28 17:46:54,283 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1541 in on_ready:   Delete Messages: Enabled
-[3.7935111522674561] 2017-10-28 17:46:54,283 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1543 in on_ready:   Delete Invoking: Disabled
-[3.7940123081207275] 2017-10-28 17:46:54,283 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1544 in on_ready:   Debug Mode: Enabled
-[3.7940123081207275] 2017-10-28 17:46:54,283 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1545 in on_ready:   Downloaded songs will be deleted
-[3.7945120334625244] 2017-10-28 17:46:54,284 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 519 in _join_startup_channels: Found owner in "Nerds"
-[3.7945120334625244] 2017-10-28 17:46:54,284 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 528 in _join_startup_channels: Attempting to join Catch The Rainbow!/Nerds
-[3.7950124740600586] 2017-10-28 17:46:54,284 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 672 in get_voice_client: Connection attempt 1 to Nerds
-[3.7955131530761719] 2017-10-28 17:46:54,285 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19900), line 612 in join_voice_channel: (join_voice_channel) creating futures
-[3.7955131530761719] 2017-10-28 17:46:54,285 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19900), line 618 in join_voice_channel: (join_voice_channel) setting voice state
-[3.7960135936737061] 2017-10-28 17:46:54,285 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19900), line 621 in join_voice_channel: (join_voice_channel) waiting for session id
-[3.8345084190368652] 2017-10-28 17:46:54,324 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4275 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Nerds -> [JOIN, CONNECT]
-[3.8345084190368652] 2017-10-28 17:46:54,324 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4286 in on_voice_state_update: 254089547447533569/Elegiggle#3010 has joined Catch The Rainbow!/Nerds
-[3.8355093002319336] 2017-10-28 17:46:54,325 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19900), line 625 in join_voice_channel: (join_voice_channel) waiting for voice data
-[3.8545572757720947] 2017-10-28 17:46:54,344 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19900), line 639 in join_voice_channel: (join_voice_channel) connecting...
-[3.9847438335418701] 2017-10-28 17:46:54,474 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19900), line 651 in join_voice_channel: (join_voice_channel) connection successful
-[3.9847438335418701] 2017-10-28 17:46:54,474 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 698 in get_voice_client: Connected in 0.2s
-[3.9852435588836670] 2017-10-28 17:46:54,474 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 699 in get_voice_client: Connected to Catch The Rainbow!/Nerds
-[3.9857442378997803] 2017-10-28 17:46:54,475 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 544 in _join_startup_channels: Joined Catch The Rainbow!/Nerds
-[3.9867455959320068] 2017-10-28 17:46:54,476 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 920 in on_player_finished_playing: Past played: 0 of 20
-[3.9867455959320068] 2017-10-28 17:46:54,476 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 949 in on_player_finished_playing: 127966571300651008
-[3.9872462749481201] 2017-10-28 17:46:54,476 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 964 in on_player_finished_playing: Toaxt#9949
-[3.9897484779357910] 2017-10-28 17:46:54,479 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1004 in on_player_finished_playing: Sixpence None The Richer - Breathe Your Name (Video)
-[4.0002582073211670] 2017-10-28 17:46:54,490 - VOICEDEBUG - musicbot.player | In player.py::MainThread(19900), line 336 in websocket_check: Starting websocket check loop for Catch The Rainbow!
-[4.8990736007690430] 2017-10-28 17:46:55,388 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1098 in on_player_finished_playing: Stored song volume: 0.15
-[5.6403658390045166] 2017-10-28 17:46:56,130 - INFO - musicbot.entry | In entry.py::MainThread(19900), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=Nwo-xezj7Ts
-[6.8089764118194580] 2017-10-28 17:46:57,298 - INFO - musicbot.entry | In entry.py::MainThread(19900), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=Nwo-xezj7Ts
-[7.6420865058898926] 2017-10-28 17:46:58,131 - FFMPEG - musicbot.player | In player.py::MainThread(19900), line 293 in _play: Creating player with options: -nostdin -vn c:\Users\Gene\MusicBot\audio_cache\youtube-Nwo-xezj7Ts-Sixpence_None_The_Richer_-_Breathe_Your_Name_Video.webm
-[7.6455898284912109] 2017-10-28 17:46:58,135 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1200 in serialize_queue: Serializing queue for 138532599181213696
-[85.9044873714447021] 2017-10-28 17:48:16,394 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~debug self.repair_songs_with_dupes()
-[86.1086812019348145] 2017-10-28 17:48:16,598 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1101825237274170] 2017-10-28 17:48:16,599 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=hZE9ImMYeCA --- Foxsky - Oatmeal Smash
-[86.1106834411621094] 2017-10-28 17:48:16,600 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127966571300651008', '85618365707587584']
-[86.1106834411621094] 2017-10-28 17:48:16,600 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=hZE9ImMYeCA --- Foxsky - Oatmeal Smash
-[86.1111836433410645] 2017-10-28 17:48:16,600 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['85618365707587584']
-[86.1111836433410645] 2017-10-28 17:48:16,600 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1116836071014404] 2017-10-28 17:48:16,601 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1116836071014404] 2017-10-28 17:48:16,601 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=hZE9ImMYeCA --- Foxsky - Oatmeal Smash
-[86.1121842861175537] 2017-10-28 17:48:16,601 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['127966571300651008', '85618365707587584']
-[86.1121842861175537] 2017-10-28 17:48:16,601 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1136858463287354] 2017-10-28 17:48:16,603 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1141862869262695] 2017-10-28 17:48:16,603 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=EHQ43ObPMHQ --- Main Theme - Luigis Mansion
-[86.1146864891052246] 2017-10-28 17:48:16,604 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1156878471374512] 2017-10-28 17:48:16,605 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=EHQ43ObPMHQ --- Main Theme - Luigi's Mansion
-[86.1161885261535645] 2017-10-28 17:48:16,605 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1161885261535645] 2017-10-28 17:48:16,605 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1166887283325195] 2017-10-28 17:48:16,606 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1166887283325195] 2017-10-28 17:48:16,606 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=EHQ43ObPMHQ --- Main Theme - Luigis Mansion
-[86.1171894073486328] 2017-10-28 17:48:16,606 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576']
-[86.1171894073486328] 2017-10-28 17:48:16,606 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1201920509338379] 2017-10-28 17:48:16,609 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1201920509338379] 2017-10-28 17:48:16,609 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=GCtQmwJ1WAY&list=WL&index=33 --- Tiny Tim - Living In The Sunlight, Loving In The Moonlight LYRICS
-[86.1206924915313721] 2017-10-28 17:48:16,610 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['136665080820400128', '138532752038297600', '181268300301336576']
-[86.1216936111450195] 2017-10-28 17:48:16,611 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=GCtQmwJ1WAY&list=WL&index=33 --- Tiny Tim - Living In The Sunlight, Loving In The Moonlight [LYRICS]
-[86.1221940517425537] 2017-10-28 17:48:16,611 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1221940517425537] 2017-10-28 17:48:16,611 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1226944923400879] 2017-10-28 17:48:16,612 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1226944923400879] 2017-10-28 17:48:16,612 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=GCtQmwJ1WAY&list=WL&index=33 --- Tiny Tim - Living In The Sunlight, Loving In The Moonlight LYRICS
-[86.1226944923400879] 2017-10-28 17:48:16,612 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['136665080820400128', '138532752038297600', '181268300301336576']
-[86.1231951713562012] 2017-10-28 17:48:16,612 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1246962547302246] 2017-10-28 17:48:16,614 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1251969337463379] 2017-10-28 17:48:16,614 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=Z0lLvTGDX90 --- Migos - Antidope (No Label 2)
-[86.1256973743438721] 2017-10-28 17:48:16,615 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1261978149414062] 2017-10-28 17:48:16,615 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=Z0lLvTGDX90 --- Migos - Antidope (No Label 2)
-[86.1261978149414062] 2017-10-28 17:48:16,615 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1276993751525879] 2017-10-28 17:48:16,617 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1276993751525879] 2017-10-28 17:48:16,617 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1281995773315430] 2017-10-28 17:48:16,617 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=Z0lLvTGDX90 --- Migos - Antidope (No Label 2)
-[86.1281995773315430] 2017-10-28 17:48:16,617 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576']
-[86.1287002563476562] 2017-10-28 17:48:16,618 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1302015781402588] 2017-10-28 17:48:16,619 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1307020187377930] 2017-10-28 17:48:16,620 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=pJ0I9LQ2EOA --- Gatchaman Crowds OST Full - 01 Gotchaman ~ In the name of Love
-[86.1307020187377930] 2017-10-28 17:48:16,620 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127966571300651008', '181268300301336576']
-[86.1317033767700195] 2017-10-28 17:48:16,621 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=pJ0I9LQ2EOA --- Gatchaman Crowds OST (Full) - 01 Gotchaman ~ In the name of Love
-[86.1322038173675537] 2017-10-28 17:48:16,621 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1322038173675537] 2017-10-28 17:48:16,621 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1327040195465088] 2017-10-28 17:48:16,622 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1327040195465088] 2017-10-28 17:48:16,622 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=pJ0I9LQ2EOA --- Gatchaman Crowds OST Full - 01 Gotchaman ~ In the name of Love
-[86.1332044601440430] 2017-10-28 17:48:16,622 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['127966571300651008', '181268300301336576']
-[86.1332044601440430] 2017-10-28 17:48:16,622 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1352066993713379] 2017-10-28 17:48:16,624 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1372101306915283] 2017-10-28 17:48:16,626 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.facebook.com/PixelsAndMusic/videos/1882218121990005/?hc_ref=NEWSFEED --- Windmill, windmill for the land Turn forever hand in hand...  - ｂａｎｓｈｅｅ
-[86.1382110118865967] 2017-10-28 17:48:16,627 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['136665080820400128', '153637062787072001']
-[86.1387114524841309] 2017-10-28 17:48:16,628 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.facebook.com/PixelsAndMusic/videos/1882218121990005/?hc_ref=NEWSFEED --- Windmill, windmill for the land Turn forever hand in hand...  (Source for the...
-[86.1392111778259277] 2017-10-28 17:48:16,628 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['153637062787072001']
-[86.1392111778259277] 2017-10-28 17:48:16,628 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1392111778259277] 2017-10-28 17:48:16,628 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1397118568420410] 2017-10-28 17:48:16,629 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.facebook.com/PixelsAndMusic/videos/1882218121990005/?hc_ref=NEWSFEED --- Windmill, windmill for the land Turn forever hand in hand...  - ｂａｎｓｈｅｅ
-[86.1402113437652588] 2017-10-28 17:48:16,629 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['136665080820400128', '153637062787072001']
-[86.1402113437652588] 2017-10-28 17:48:16,629 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1422133445739746] 2017-10-28 17:48:16,631 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1432144641876221] 2017-10-28 17:48:16,632 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=emGri7i8Y2Y --- Sum 41 - In Too Deep
-[86.1437146663665771] 2017-10-28 17:48:16,633 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['250042474435706880', '138532752038297600']
-[86.1443152427673340] 2017-10-28 17:48:16,634 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=emGri7i8Y2Y --- Sum 41 - In Too Deep
-[86.1447150707244873] 2017-10-28 17:48:16,634 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['138532752038297600']
-[86.1447150707244873] 2017-10-28 17:48:16,634 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1462168693542480] 2017-10-28 17:48:16,635 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1467173099517822] 2017-10-28 17:48:16,636 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=emGri7i8Y2Y --- Sum 41 - In Too Deep
-[86.1467173099517822] 2017-10-28 17:48:16,636 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['250042474435706880', '138532752038297600']
-[86.1472177505493164] 2017-10-28 17:48:16,636 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1492197513580322] 2017-10-28 17:48:16,638 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1502208709716797] 2017-10-28 17:48:16,639 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=PWgvGjAhvIw --- OutKast - Hey Ya!
-[86.1502208709716797] 2017-10-28 17:48:16,639 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['153637062787072001', '138532752038297600']
-[86.1512217521667480] 2017-10-28 17:48:16,640 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=PWgvGjAhvIw --- OutKast - Hey Ya!
-[86.1517221927642822] 2017-10-28 17:48:16,641 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['138532752038297600']
-[86.1517221927642822] 2017-10-28 17:48:16,641 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1522223949432373] 2017-10-28 17:48:16,641 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1522223949432373] 2017-10-28 17:48:16,641 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=PWgvGjAhvIw --- OutKast - Hey Ya!
-[86.1527230739593506] 2017-10-28 17:48:16,642 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['153637062787072001', '138532752038297600']
-[86.1527230739593506] 2017-10-28 17:48:16,642 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1542246341705322] 2017-10-28 17:48:16,643 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1547250747680664] 2017-10-28 17:48:16,644 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=TIy3n2b7V9k --- Avril Lavigne - Sk8er Boi
-[86.1557259559631348] 2017-10-28 17:48:16,645 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['212329923568861185', '138532752038297600']
-[86.1567268371582031] 2017-10-28 17:48:16,646 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=TIy3n2b7V9k --- Avril Lavigne - Sk8er Boi
-[86.1567268371582031] 2017-10-28 17:48:16,646 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['138532752038297600']
-[86.1572272777557373] 2017-10-28 17:48:16,646 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1572272777557373] 2017-10-28 17:48:16,646 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1577277183532715] 2017-10-28 17:48:16,647 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=TIy3n2b7V9k --- Avril Lavigne - Sk8er Boi
-[86.1582286357879639] 2017-10-28 17:48:16,647 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['212329923568861185', '138532752038297600']
-[86.1582286357879639] 2017-10-28 17:48:16,647 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1602303981781006] 2017-10-28 17:48:16,649 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1607306003570557] 2017-10-28 17:48:16,650 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=sBzrzS1Ag_g --- Tame Impala - The Less I Know The Better
-[86.1612310409545898] 2017-10-28 17:48:16,650 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['194279933378428938', '153637062787072001', '138532752038297600']
-[86.1617317199707031] 2017-10-28 17:48:16,651 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=sBzrzS1Ag_g --- Tame Impala - The Less I Know The Better
-[86.1622321605682373] 2017-10-28 17:48:16,651 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['138532752038297600']
-[86.1627326011657715] 2017-10-28 17:48:16,652 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1627326011657715] 2017-10-28 17:48:16,652 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1627326011657715] 2017-10-28 17:48:16,652 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=sBzrzS1Ag_g --- Tame Impala - The Less I Know The Better
-[86.1632328033447266] 2017-10-28 17:48:16,652 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['194279933378428938', '153637062787072001', '138532752038297600']
-[86.1632328033447266] 2017-10-28 17:48:16,652 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1662359237670898] 2017-10-28 17:48:16,655 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1667363643646240] 2017-10-28 17:48:16,656 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=vVy9Lgpg1m8 --- blink-182 - First Date
-[86.1672370433807373] 2017-10-28 17:48:16,656 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['153637062787072001', '138532752038297600']
-[86.1682376861572266] 2017-10-28 17:48:16,657 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=vVy9Lgpg1m8 --- blink-182 - First Date
-[86.1687378883361816] 2017-10-28 17:48:16,658 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['138532752038297600']
-[86.1687378883361816] 2017-10-28 17:48:16,658 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1692388057708740] 2017-10-28 17:48:16,658 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1692388057708740] 2017-10-28 17:48:16,658 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=vVy9Lgpg1m8 --- blink-182 - First Date
-[86.1697390079498291] 2017-10-28 17:48:16,659 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['153637062787072001', '138532752038297600']
-[86.1697390079498291] 2017-10-28 17:48:16,659 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1712408065795898] 2017-10-28 17:48:16,660 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1722419261932373] 2017-10-28 17:48:16,661 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=xPU8OAjjS4k --- 3 Doors Down - Kryptonite
-[86.1722419261932373] 2017-10-28 17:48:16,661 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['136665080820400128', '138532752038297600']
-[86.1732425689697266] 2017-10-28 17:48:16,662 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=xPU8OAjjS4k --- 3 Doors Down - Kryptonite
-[86.1742434501647949] 2017-10-28 17:48:16,663 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['138532752038297600']
-[86.1742434501647949] 2017-10-28 17:48:16,663 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1747443675994873] 2017-10-28 17:48:16,664 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1747443675994873] 2017-10-28 17:48:16,664 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=xPU8OAjjS4k --- 3 Doors Down - Kryptonite
-[86.1752443313598633] 2017-10-28 17:48:16,664 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['136665080820400128', '138532752038297600']
-[86.1752443313598633] 2017-10-28 17:48:16,664 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1772460937500000] 2017-10-28 17:48:16,666 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1772460937500000] 2017-10-28 17:48:16,666 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=uhG-vLZrb-g --- Fall Out Boy - Sugar, Were Goin Down Concept Version
-[86.1777467727661133] 2017-10-28 17:48:16,667 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['212329923568861185', '153637062787072001', '138532752038297600']
-[86.1787478923797607] 2017-10-28 17:48:16,668 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=uhG-vLZrb-g --- Fall Out Boy - Sugar, We're Goin Down (Concept Version)
-[86.1792480945587158] 2017-10-28 17:48:16,668 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['138532752038297600']
-[86.1792480945587158] 2017-10-28 17:48:16,668 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1792480945587158] 2017-10-28 17:48:16,668 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1797487735748291] 2017-10-28 17:48:16,669 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=uhG-vLZrb-g --- Fall Out Boy - Sugar, Were Goin Down Concept Version
-[86.1797487735748291] 2017-10-28 17:48:16,669 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['212329923568861185', '153637062787072001', '138532752038297600']
-[86.1802492141723633] 2017-10-28 17:48:16,669 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1817507743835449] 2017-10-28 17:48:16,671 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1837525367736816] 2017-10-28 17:48:16,673 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=xqk-hpFGX6c --- Santa - Time to Attack Breakbeat Rayden Remix
-[86.1837525367736816] 2017-10-28 17:48:16,673 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127966571300651008']
-[86.1847531795501709] 2017-10-28 17:48:16,674 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=xqk-hpFGX6c --- Santa - Time to Attack [Breakbeat] (Rayden Remix)
-[86.1852540969848633] 2017-10-28 17:48:16,675 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127966571300651008']
-[86.1852540969848633] 2017-10-28 17:48:16,675 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1857547760009766] 2017-10-28 17:48:16,675 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1857547760009766] 2017-10-28 17:48:16,675 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=xqk-hpFGX6c --- Santa - Time to Attack Breakbeat Rayden Remix
-[86.1862545013427734] 2017-10-28 17:48:16,676 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['127966571300651008']
-[86.1867554187774658] 2017-10-28 17:48:16,676 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1882567405700684] 2017-10-28 17:48:16,678 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1887576580047607] 2017-10-28 17:48:16,678 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=pInrJ72eeUU --- Welcome To The Black Parade - My Chemical Romance Lyrics
-[86.1892578601837158] 2017-10-28 17:48:16,679 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['153637062787072001', '181268300301336576']
-[86.1902592182159424] 2017-10-28 17:48:16,680 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=pInrJ72eeUU --- Welcome To The Black Parade - My Chemical Romance Lyrics
-[86.1907622814178467] 2017-10-28 17:48:16,680 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1907622814178467] 2017-10-28 17:48:16,680 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1917600631713867] 2017-10-28 17:48:16,681 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1922605037689209] 2017-10-28 17:48:16,682 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=pInrJ72eeUU --- Welcome To The Black Parade - My Chemical Romance Lyrics
-[86.1927628517150879] 2017-10-28 17:48:16,682 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['153637062787072001', '181268300301336576']
-[86.1927628517150879] 2017-10-28 17:48:16,682 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.1947629451751709] 2017-10-28 17:48:16,684 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.1952648162841797] 2017-10-28 17:48:16,685 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=g9j5UzxEhEM --- In The End Official Lyric Video - Linkin Park
-[86.1957726478576660] 2017-10-28 17:48:16,685 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1967658996582031] 2017-10-28 17:48:16,686 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=g9j5UzxEhEM --- In The End (Official Lyric Video) - Linkin Park
-[86.1972658634185791] 2017-10-28 17:48:16,687 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.1977660655975342] 2017-10-28 17:48:16,687 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.1987683773040771] 2017-10-28 17:48:16,688 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.1992685794830322] 2017-10-28 17:48:16,689 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=g9j5UzxEhEM --- In The End Official Lyric Video - Linkin Park
-[86.1992685794830322] 2017-10-28 17:48:16,689 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576']
-[86.1997680664062500] 2017-10-28 17:48:16,689 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2012691497802734] 2017-10-28 17:48:16,691 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2022705078125000] 2017-10-28 17:48:16,692 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=eJcLCTumtMg --- Gatchaman Crowds - 22. Innocent Note ED
-[86.2027704715728760] 2017-10-28 17:48:16,692 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127159254611263489', '181268300301336576']
-[86.2027704715728760] 2017-10-28 17:48:16,692 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=eJcLCTumtMg --- Gatchaman Crowds - 22. Innocent Note ED
-[86.2032711505889893] 2017-10-28 17:48:16,693 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.2032711505889893] 2017-10-28 17:48:16,693 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2037711143493652] 2017-10-28 17:48:16,693 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2037711143493652] 2017-10-28 17:48:16,693 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=eJcLCTumtMg --- Gatchaman Crowds - 22. Innocent Note ED
-[86.2042717933654785] 2017-10-28 17:48:16,694 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['127159254611263489', '181268300301336576']
-[86.2042717933654785] 2017-10-28 17:48:16,694 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2057735919952393] 2017-10-28 17:48:16,695 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2062740325927734] 2017-10-28 17:48:16,696 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=5dmQ3QWpy1Q --- Heavy (Official Video) - Linkin Park (feat. Kiiara)
-[86.2067742347717285] 2017-10-28 17:48:16,696 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.2072746753692627] 2017-10-28 17:48:16,697 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=5dmQ3QWpy1Q --- Heavy (Official Video) - Linkin Park (feat. Kiiara)
-[86.2072746753692627] 2017-10-28 17:48:16,697 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.2077753543853760] 2017-10-28 17:48:16,697 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2082762718200684] 2017-10-28 17:48:16,698 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2082762718200684] 2017-10-28 17:48:16,698 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=5dmQ3QWpy1Q --- Heavy (Official Video) - Linkin Park (feat. Kiiara)
-[86.2087764739990234] 2017-10-28 17:48:16,698 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576']
-[86.2087764739990234] 2017-10-28 17:48:16,698 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2117791175842285] 2017-10-28 17:48:16,701 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2127802371978760] 2017-10-28 17:48:16,702 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=Akrq-TO9EvU --- NF - Dreams (Audio)
-[86.2132806777954102] 2017-10-28 17:48:16,703 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.2132806777954102] 2017-10-28 17:48:16,703 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=Akrq-TO9EvU --- NF - Dreams (Audio)
-[86.2137808799743652] 2017-10-28 17:48:16,703 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.2137808799743652] 2017-10-28 17:48:16,703 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2137808799743652] 2017-10-28 17:48:16,703 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2142815589904785] 2017-10-28 17:48:16,704 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=Akrq-TO9EvU --- NF - Dreams (Audio)
-[86.2147829532623291] 2017-10-28 17:48:16,704 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576']
-[86.2147829532623291] 2017-10-28 17:48:16,704 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2167840003967285] 2017-10-28 17:48:16,706 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2177846431732178] 2017-10-28 17:48:16,707 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=DvAhj9z1bVc --- NF - Outro
-[86.2187857627868652] 2017-10-28 17:48:16,708 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.2192864418029785] 2017-10-28 17:48:16,709 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=DvAhj9z1bVc --- NF - Outro
-[86.2192864418029785] 2017-10-28 17:48:16,709 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576']
-[86.2197868824005127] 2017-10-28 17:48:16,709 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2202873229980469] 2017-10-28 17:48:16,710 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2202873229980469] 2017-10-28 17:48:16,710 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=DvAhj9z1bVc --- NF - Outro
-[86.2207875251770020] 2017-10-28 17:48:16,710 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576']
-[86.2207875251770020] 2017-10-28 17:48:16,710 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2227897644042969] 2017-10-28 17:48:16,712 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2232902050018311] 2017-10-28 17:48:16,713 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=7MkrFUz5xFQ --- New years eve - mal blum
-[86.2232902050018311] 2017-10-28 17:48:16,713 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['194279933378428938', '212329923568861185', '181268300301336576']
-[86.2242910861968994] 2017-10-28 17:48:16,714 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=7MkrFUz5xFQ --- New year's eve - mal blum
-[86.2242910861968994] 2017-10-28 17:48:16,714 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['212329923568861185']
-[86.2247917652130127] 2017-10-28 17:48:16,714 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2247917652130127] 2017-10-28 17:48:16,714 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2252919673919678] 2017-10-28 17:48:16,715 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=7MkrFUz5xFQ --- New years eve - mal blum
-[86.2252919673919678] 2017-10-28 17:48:16,715 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['194279933378428938', '212329923568861185', '181268300301336576']
-[86.2257926464080811] 2017-10-28 17:48:16,715 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2267932891845703] 2017-10-28 17:48:16,716 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2287955284118652] 2017-10-28 17:48:16,718 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=9Ht5RZpzPqw --- blink-182 - All The Small Things
-[86.2287955284118652] 2017-10-28 17:48:16,718 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576', '212329923568861185']
-[86.2297961711883545] 2017-10-28 17:48:16,719 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=9Ht5RZpzPqw --- blink-182 - All The Small Things
-[86.2297961711883545] 2017-10-28 17:48:16,719 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['212329923568861185']
-[86.2302968502044678] 2017-10-28 17:48:16,720 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2302968502044678] 2017-10-28 17:48:16,720 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2307972908020020] 2017-10-28 17:48:16,720 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=9Ht5RZpzPqw --- blink-182 - All The Small Things
-[86.2307972908020020] 2017-10-28 17:48:16,720 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576', '212329923568861185']
-[86.2312979698181152] 2017-10-28 17:48:16,721 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2332994937896729] 2017-10-28 17:48:16,723 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2343006134033203] 2017-10-28 17:48:16,724 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=k6HNF4qhRSM --- 【Sayonara Zetsubou】Ending Zessei Bijin Full
-[86.2348010540008545] 2017-10-28 17:48:16,724 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127159254611263489', '127966571300651008']
-[86.2348010540008545] 2017-10-28 17:48:16,724 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=k6HNF4qhRSM --- 【Sayonara Zetsubou】Ending Zessei Bijin Full
-[86.2353017330169678] 2017-10-28 17:48:16,725 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127966571300651008']
-[86.2353017330169678] 2017-10-28 17:48:16,725 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2358021736145020] 2017-10-28 17:48:16,725 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2358021736145020] 2017-10-28 17:48:16,725 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=k6HNF4qhRSM --- 【Sayonara Zetsubou】Ending Zessei Bijin Full
-[86.2363028526306152] 2017-10-28 17:48:16,726 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['127159254611263489', '127966571300651008']
-[86.2363028526306152] 2017-10-28 17:48:16,726 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2388050556182861] 2017-10-28 17:48:16,728 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2398056983947754] 2017-10-28 17:48:16,729 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=o0Pt7M0weUI --- The Revivalists - Wish I Knew You
-[86.2403063774108887] 2017-10-28 17:48:16,730 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127159254611263489', '136665080820400128']
-[86.2403063774108887] 2017-10-28 17:48:16,730 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=o0Pt7M0weUI --- The Revivalists - Wish I Knew You
-[86.2408068180084229] 2017-10-28 17:48:16,730 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['127159254611263489']
-[86.2408068180084229] 2017-10-28 17:48:16,730 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2413072586059570] 2017-10-28 17:48:16,731 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2413072586059570] 2017-10-28 17:48:16,731 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=o0Pt7M0weUI --- The Revivalists - Wish I Knew You
-[86.2418076992034912] 2017-10-28 17:48:16,731 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['127159254611263489', '136665080820400128']
-[86.2418076992034912] 2017-10-28 17:48:16,731 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2438094615936279] 2017-10-28 17:48:16,733 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2448115348815918] 2017-10-28 17:48:16,734 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=7YAAyUFL1GQ --- Fall Out Boy - The Last Of The Real Ones
-[86.2453124523162842] 2017-10-28 17:48:16,735 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['212329923568861185', '138532752038297600']
-[86.2468197345733643] 2017-10-28 17:48:16,736 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=7YAAyUFL1GQ --- Fall Out Boy - The Last Of The Real Ones
-[86.2473132610321045] 2017-10-28 17:48:16,737 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['138532752038297600']
-[86.2478146553039551] 2017-10-28 17:48:16,737 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2483141422271729] 2017-10-28 17:48:16,738 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2488157749176025] 2017-10-28 17:48:16,738 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=7YAAyUFL1GQ --- Fall Out Boy - The Last Of The Real Ones
-[86.2493150234222412] 2017-10-28 17:48:16,739 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['212329923568861185', '138532752038297600']
-[86.2493150234222412] 2017-10-28 17:48:16,739 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.2513170242309570] 2017-10-28 17:48:16,741 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[86.2518174648284912] 2017-10-28 17:48:16,741 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=YTnWoMl0Jew --- World of Warcraft Burning Crusade Login Music
-[86.2518174648284912] 2017-10-28 17:48:16,741 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576', '85618365707587584']
-[86.2523176670074463] 2017-10-28 17:48:16,742 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=YTnWoMl0Jew --- World of Warcraft Burning Crusade Login Music
-[86.2528183460235596] 2017-10-28 17:48:16,742 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576', '85618365707587584']
-[86.2528183460235596] 2017-10-28 17:48:16,742 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[86.2533187866210938] 2017-10-28 17:48:16,743 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[86.2533187866210938] 2017-10-28 17:48:16,743 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=YTnWoMl0Jew --- World of Warcraft Burning Crusade Login Music
-[86.2538189888000488] 2017-10-28 17:48:16,743 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576', '85618365707587584']
-[86.2538189888000488] 2017-10-28 17:48:16,743 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[86.3978316783905029] 2017-10-28 17:48:16,887 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4217 in on_message: [2017-10-28 17:48:16.887081][DEBUG] Jadedtdt#1164
-[86.3983323574066162] 2017-10-28 17:48:16,888 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4219 in on_message: [ON_MESSAGE] Storing latest APL pickle file
-[86.4238562583923340] 2017-10-28 17:48:16,913 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4222 in on_message: [ON_MESSAGE] Storing latest users pickle file
-[94.7365939617156982] 2017-10-28 17:48:25,226 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~listhas burning
-[94.8128497600555420] 2017-10-28 17:48:25,302 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 2628 in find_songs_with_title: Looking for ['burning']
-[95.0271880626678467] 2017-10-28 17:48:25,516 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4217 in on_message: [2017-10-28 17:48:25.516936][LISTHAS] Jadedtdt#1164
-[95.0281887054443359] 2017-10-28 17:48:25,517 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4219 in on_message: [ON_MESSAGE] Storing latest APL pickle file
-[95.0527114868164062] 2017-10-28 17:48:25,542 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4222 in on_message: [ON_MESSAGE] Storing latest users pickle file
-[112.5834655761718750] 2017-10-28 17:48:43,073 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~debug self.dump_songs_with_dupes()
-[112.5864686965942383] 2017-10-28 17:48:43,076 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 215 in dump_songs_with_dupes: #######DEBUG SONG DUPES START########
-[112.6585371494293213] 2017-10-28 17:48:43,148 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 228 in dump_songs_with_dupes: ########DEBUG SONG SWAPS END#########
-[112.7854261398315430] 2017-10-28 17:48:43,275 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4217 in on_message: [2017-10-28 17:48:43.275174][DEBUG] Jadedtdt#1164
-[112.7859296798706055] 2017-10-28 17:48:43,275 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4219 in on_message: [ON_MESSAGE] Storing latest APL pickle file
-[112.8104486465454102] 2017-10-28 17:48:43,300 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4222 in on_message: [ON_MESSAGE] Storing latest users pickle file
-[136.6509242057800293] 2017-10-28 17:49:07,140 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~debug self.dump_songs_with_swaps()
-[136.6539275646209717] 2017-10-28 17:49:07,143 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 241 in dump_songs_with_swaps: #######DEBUG SONG SWAPS START########
-[136.6559293270111084] 2017-10-28 17:49:07,145 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 245 in dump_songs_with_swaps: World of Warcraft Burning Crusade Login Music --- https://www.youtube.com/watch?v=YTnWoMl0Jew
-[136.6564295291900635] 2017-10-28 17:49:07,146 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 246 in dump_songs_with_swaps: ########DEBUG SONG SWAPS END#########
-[136.7109818458557129] 2017-10-28 17:49:07,200 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4217 in on_message: [2017-10-28 17:49:07.200730][DEBUG] Jadedtdt#1164
-[136.7114827632904053] 2017-10-28 17:49:07,201 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4219 in on_message: [ON_MESSAGE] Storing latest APL pickle file
-[136.7365069389343262] 2017-10-28 17:49:07,226 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4222 in on_message: [ON_MESSAGE] Storing latest users pickle file
-[164.0655164718627930] 2017-10-28 17:49:34,555 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~debug self.repair_songs_with_swaps()
-[164.0685198307037354] 2017-10-28 17:49:34,558 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 231 in repair_songs_with_swaps: #######DEBUG SONG SWAPS START########
-[164.0705213546752930] 2017-10-28 17:49:34,560 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 238 in repair_songs_with_swaps: ########DEBUG SONG SWAPS END#########
-[164.1401166915893555] 2017-10-28 17:49:34,629 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4217 in on_message: [2017-10-28 17:49:34.629865][DEBUG] Jadedtdt#1164
-[164.1406178474426270] 2017-10-28 17:49:34,630 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4219 in on_message: [ON_MESSAGE] Storing latest APL pickle file
-[164.1646401882171631] 2017-10-28 17:49:34,654 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4222 in on_message: [ON_MESSAGE] Storing latest users pickle file
-[177.9249441623687744] 2017-10-28 17:49:48,414 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~debug self.repair_songs_with_dupes()
-[178.0005154609680176] 2017-10-28 17:49:48,490 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 178 in repair_songs_with_dupes: ORIG START
-[178.0020179748535156] 2017-10-28 17:49:48,491 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=YTnWoMl0Jew --- World of Warcraft Burning Crusade Login Music
-[178.0025174617767334] 2017-10-28 17:49:48,492 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576', '138532752038297600']
-[178.0030181407928467] 2017-10-28 17:49:48,492 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 181 in repair_songs_with_dupes: https://www.youtube.com/watch?v=YTnWoMl0Jew --- World of Warcraft Burning Crusade Login Music
-[178.0030181407928467] 2017-10-28 17:49:48,492 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 182 in repair_songs_with_dupes: ['181268300301336576', '85618365707587584']
-[178.0035183429718018] 2017-10-28 17:49:48,493 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 184 in repair_songs_with_dupes: ORIG END
-[178.0035183429718018] 2017-10-28 17:49:48,493 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 191 in repair_songs_with_dupes: FINAL START
-[178.0040192604064941] 2017-10-28 17:49:48,493 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 193 in repair_songs_with_dupes: https://www.youtube.com/watch?v=YTnWoMl0Jew --- World of Warcraft Burning Crusade Login Music
-[178.0040192604064941] 2017-10-28 17:49:48,493 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 194 in repair_songs_with_dupes: ['181268300301336576', '138532752038297600', '85618365707587584']
-[178.0045194625854492] 2017-10-28 17:49:48,494 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 195 in repair_songs_with_dupes: FINAL END
-[178.1823859214782715] 2017-10-28 17:49:48,672 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4217 in on_message: [2017-10-28 17:49:48.672134][DEBUG] Jadedtdt#1164
-[178.1828863620758057] 2017-10-28 17:49:48,672 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4219 in on_message: [ON_MESSAGE] Storing latest APL pickle file
-[178.2089099884033203] 2017-10-28 17:49:48,698 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4222 in on_message: [ON_MESSAGE] Storing latest users pickle file
-[181.7745585441589355] 2017-10-28 17:49:52,264 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~listhas burning
-[181.8336148262023926] 2017-10-28 17:49:52,323 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 2628 in find_songs_with_title: Looking for ['burning']
-[182.0489695072174072] 2017-10-28 17:49:52,538 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4217 in on_message: [2017-10-28 17:49:52.538717][LISTHAS] Jadedtdt#1164
-[182.0494697093963623] 2017-10-28 17:49:52,539 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4219 in on_message: [ON_MESSAGE] Storing latest APL pickle file
-[182.0734937191009521] 2017-10-28 17:49:52,563 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4222 in on_message: [ON_MESSAGE] Storing latest users pickle file
-[196.3394603729248047] 2017-10-28 17:50:06,829 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~debug self.dump_songs_with_swaps()
-[196.3424625396728516] 2017-10-28 17:50:06,832 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 241 in dump_songs_with_swaps: #######DEBUG SONG SWAPS START########
-[196.3449649810791016] 2017-10-28 17:50:06,834 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 246 in dump_songs_with_swaps: ########DEBUG SONG SWAPS END#########
-[196.4050216674804688] 2017-10-28 17:50:06,894 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4217 in on_message: [2017-10-28 17:50:06.894770][DEBUG] Jadedtdt#1164
-[196.4055223464965820] 2017-10-28 17:50:06,895 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4219 in on_message: [ON_MESSAGE] Storing latest APL pickle file
-[196.4305460453033447] 2017-10-28 17:50:06,920 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4222 in on_message: [ON_MESSAGE] Storing latest users pickle file
-[219.2070820331573486] 2017-10-28 17:50:29,696 - DEBUG - musicbot.player | In player.py::MainThread(19900), line 222 in _playback_finished: Deleting file: audio_cache\youtube-Nwo-xezj7Ts-Sixpence_None_The_Richer_-_Breathe_Your_Name_Video.webm
-[219.2095859050750732] 2017-10-28 17:50:29,699 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 920 in on_player_finished_playing: Past played: 1 of 20
-[219.2110857963562012] 2017-10-28 17:50:29,700 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 949 in on_player_finished_playing: 127966571300651008
-[219.2115867137908936] 2017-10-28 17:50:29,701 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 964 in on_player_finished_playing: Toaxt#9949
-[219.2130887508392334] 2017-10-28 17:50:29,702 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1004 in on_player_finished_playing: Metal Gear Solid 3 Snake Eater Soundtrack: Snake Eater
-[219.9219088554382324] 2017-10-28 17:50:30,411 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 1098 in on_player_finished_playing: Stored song volume: 0.15
-[220.6095147132873535] 2017-10-28 17:50:31,099 - INFO - musicbot.entry | In entry.py::MainThread(19900), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=9aHQnDTd1y4
-[221.7753961086273193] 2017-10-28 17:50:32,265 - INFO - musicbot.entry | In entry.py::MainThread(19900), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=9aHQnDTd1y4
-[222.6153604984283447] 2017-10-28 17:50:33,105 - FFMPEG - musicbot.player | In player.py::MainThread(19900), line 293 in _play: Creating player with options: -nostdin -vn c:\Users\Gene\MusicBot\audio_cache\youtube-9aHQnDTd1y4-Metal_Gear_Solid_3_Snake_Eater_Soundtrack_-_Snake_Eater.webm
-[222.6188638210296631] 2017-10-28 17:50:33,108 - DEBUG - musicbot.bot | In bot.py::MainThread(19900), line 1200 in serialize_queue: Serializing queue for 138532599181213696
-[224.9240028858184814] 2017-10-28 17:50:35,413 - INFO - musicbot.bot | In bot.py::MainThread(19900), line 4098 in on_message: 181268300301336576/Jadedtdt#1164: ~restart
-[224.9910664558410645] 2017-10-28 17:50:35,480 - DEBUG - musicbot.player | In player.py::MainThread(19900), line 222 in _playback_finished: Deleting file: audio_cache\youtube-9aHQnDTd1y4-Metal_Gear_Solid_3_Snake_Eater_Soundtrack_-_Snake_Eater.webm
-[225.0281019210815430] 2017-10-28 17:50:35,517 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19900), line 4275 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Nerds -> [DISCONNECT]
+[3.7525916099548340] 2017-10-29 23:34:27,268 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1458 in on_ready: Server List:
+[3.7530918121337891] 2017-10-29 23:34:27,268 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1459 in <listcomp>:  - Catch The Rainbow!
+[3.7535920143127441] 2017-10-29 23:34:27,269 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1490 in on_ready: Bound to text channels:
+[3.7540926933288574] 2017-10-29 23:34:27,269 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1491 in <listcomp>:  - Catch The Rainbow!/bot_commands
+[3.7550942897796631] 2017-10-29 23:34:27,270 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1529 in on_ready: Not autojoining any voice channels
+[3.7560992240905762] 2017-10-29 23:34:27,271 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1533 in on_ready: Options:
+[3.7560992240905762] 2017-10-29 23:34:27,271 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1535 in on_ready:   Command prefix: ~
+[3.7565960884094238] 2017-10-29 23:34:27,272 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1536 in on_ready:   Default volume: 15%
+[3.7570962905883789] 2017-10-29 23:34:27,272 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1538 in on_ready:   Skip threshold: 4 votes or 50%
+[3.7570962905883789] 2017-10-29 23:34:27,272 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1539 in on_ready:   Now Playing @mentions: Disabled
+[3.7575964927673340] 2017-10-29 23:34:27,273 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1540 in on_ready:   Auto-Summon: Enabled
+[3.7580990791320801] 2017-10-29 23:34:27,273 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1541 in on_ready:   Auto-Playlist: Enabled
+[3.7580990791320801] 2017-10-29 23:34:27,273 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1542 in on_ready:   Auto-Pause: Enabled
+[3.7585968971252441] 2017-10-29 23:34:27,274 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1543 in on_ready:   Delete Messages: Enabled
+[3.7585968971252441] 2017-10-29 23:34:27,274 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1545 in on_ready:   Delete Invoking: Disabled
+[3.7590987682342529] 2017-10-29 23:34:27,274 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1546 in on_ready:   Debug Mode: Enabled
+[3.7590987682342529] 2017-10-29 23:34:27,274 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1547 in on_ready:   Downloaded songs will be deleted
+[3.7595984935760498] 2017-10-29 23:34:27,275 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 521 in _join_startup_channels: Found owner in "Casuals"
+[3.7600991725921631] 2017-10-29 23:34:27,275 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 530 in _join_startup_channels: Attempting to join Catch The Rainbow!/Casuals
+[3.7600991725921631] 2017-10-29 23:34:27,275 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 674 in get_voice_client: Connection attempt 1 to Casuals
+[3.7605996131896973] 2017-10-29 23:34:27,276 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(8720), line 614 in join_voice_channel: (join_voice_channel) creating futures
+[3.7605996131896973] 2017-10-29 23:34:27,276 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(8720), line 620 in join_voice_channel: (join_voice_channel) setting voice state
+[3.7610993385314941] 2017-10-29 23:34:27,276 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(8720), line 623 in join_voice_channel: (join_voice_channel) waiting for session id
+[3.7872478961944580] 2017-10-29 23:34:27,303 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(8720), line 4277 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Casuals -> [JOIN, CONNECT]
+[3.7872478961944580] 2017-10-29 23:34:27,303 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 4288 in on_voice_state_update: 254089547447533569/Elegiggle#3010 has joined Catch The Rainbow!/Casuals
+[3.7877554893493652] 2017-10-29 23:34:27,303 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(8720), line 627 in join_voice_channel: (join_voice_channel) waiting for voice data
+[3.8413045406341553] 2017-10-29 23:34:27,357 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(8720), line 641 in join_voice_channel: (join_voice_channel) connecting...
+[3.9089591503143311] 2017-10-29 23:34:27,424 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(8720), line 653 in join_voice_channel: (join_voice_channel) connection successful
+[3.9089591503143311] 2017-10-29 23:34:27,424 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 700 in get_voice_client: Connected in 0.1s
+[3.9099602699279785] 2017-10-29 23:34:27,425 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 701 in get_voice_client: Connected to Catch The Rainbow!/Casuals
+[3.9104609489440918] 2017-10-29 23:34:27,426 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 546 in _join_startup_channels: Joined Catch The Rainbow!/Casuals
+[3.9109604358673096] 2017-10-29 23:34:27,426 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 922 in on_player_finished_playing: Past played: 0 of 20
+[3.9114608764648438] 2017-10-29 23:34:27,427 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 951 in on_player_finished_playing: 181268300301336576
+[3.9119625091552734] 2017-10-29 23:34:27,427 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 966 in on_player_finished_playing: Jadedtdt#1164
+[3.9129626750946045] 2017-10-29 23:34:27,428 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1006 in on_player_finished_playing: The Chainsmokers - Waterbed
+[3.9189682006835938] 2017-10-29 23:34:27,434 - VOICEDEBUG - musicbot.player | In player.py::MainThread(8720), line 336 in websocket_check: Starting websocket check loop for Catch The Rainbow!
+[5.0075500011444092] 2017-10-29 23:34:28,523 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 1100 in on_player_finished_playing: Stored song volume: 0.15
+[5.9244716167449951] 2017-10-29 23:34:29,440 - INFO - musicbot.entry | In entry.py::MainThread(8720), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=rNsP4nE1_FA
+[7.0448639392852783] 2017-10-29 23:34:30,560 - INFO - musicbot.entry | In entry.py::MainThread(8720), line 227 in _really_download: Download complete: https://www.youtube.com/watch?v=rNsP4nE1_FA
+[7.9353513717651367] 2017-10-29 23:34:31,451 - FFMPEG - musicbot.player | In player.py::MainThread(8720), line 293 in _play: Creating player with options: -nostdin -vn c:\Users\Gene\MusicBot\audio_cache\youtube-rNsP4nE1_FA-The_Chainsmokers_-_Waterbed.webm
+[7.9398577213287354] 2017-10-29 23:34:31,455 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 1202 in serialize_queue: Serializing queue for 138532599181213696
+[9.8214154243469238] 2017-10-29 23:34:33,337 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 4100 in on_message: 181268300301336576/Jadedtdt#1164: ~np
+[9.9574899673461914] 2017-10-29 23:34:33,473 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 4219 in on_message: [2017-10-29 23:34:33.473355][NP] Jadedtdt#1164
+[9.9584896564483643] 2017-10-29 23:34:33,474 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 4221 in on_message: [ON_MESSAGE] Storing latest APL pickle file
+[9.9845142364501953] 2017-10-29 23:34:33,500 - DEBUG - musicbot.bot | In bot.py::MainThread(8720), line 4224 in on_message: [ON_MESSAGE] Storing latest users pickle file
+[19.2388389110565186] 2017-10-29 23:34:42,754 - INFO - musicbot.bot | In bot.py::MainThread(8720), line 4100 in on_message: 181268300301336576/Jadedtdt#1164: ~restart
+[19.2893285751342773] 2017-10-29 23:34:42,805 - DEBUG - musicbot.player | In player.py::MainThread(8720), line 222 in _playback_finished: Deleting file: audio_cache\youtube-rNsP4nE1_FA-The_Chainsmokers_-_Waterbed.webm

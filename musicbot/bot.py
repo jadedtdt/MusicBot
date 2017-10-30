@@ -149,6 +149,14 @@ class MusicBot(discord.Client):
                     log.debug(each_song.getTitle())
         log.debug("########DEBUG SONG URLS END#########")
 
+        log.debug("#######DEBUG SONG URLS START########")
+        for each_user in self.users_list:
+            for each_song in each_user.getSongList():
+                if each_song.getURL() == None or each_song.getURL() == "":
+                    if (each_song.getTitle() != None):
+                        log.debug(each_song.getTitle())
+        log.debug("########DEBUG SONG URLS END#########")
+
     async def dump_songs_without_likers(self):
         log.debug("#######DEBUG SONG LIKERS START########")
         for each_song in self.autoplaylist:
@@ -157,7 +165,7 @@ class MusicBot(discord.Client):
                     log.debug(each_song.getTitle())
         log.debug("########DEBUG SONG LIKERS END#########")
 
-    async def dump_songs_without_title(self):
+    async def dump_songs_without_titles(self):
         log.debug("#######DEBUG SONG TITLES START########")
         for each_song in self.autoplaylist:
             if each_song.getTitle() == None or each_song.getTitle() == "":
@@ -3364,12 +3372,12 @@ class MusicBot(discord.Client):
             else:
                 the_tags = ""
 
-            if len(likers) > 0:
-                np_text += "\nLiked by: %s%s" % (likers, the_tags)
-
             song = self.find_song(player.current_entry.url)
             if song != None:
                 np_text += "\nVolume: %s" % str(int(song.getVolume() * 100))
+                np_text += "\nPlay Count: %d" % song.getPlays()
+                if len(likers) > 0:
+                    np_text += "\nLiked by: %s%s" % (likers, the_tags)
 
             #self.server_specific_data[server]['last_np_msg'] = await self.safe_send_message(channel, np_text)
             #await self._manual_delete_check(message)
