@@ -21,8 +21,9 @@ class User:
     #   Getting from Class
 
     ###########################################################################
-
     def getSong(self, music_obj):
+        if (type(music_obj) == str):
+            music_obj()
         for each_song in self.song_list:
             if each_song.getURL() == music_obj.getURL() or each_song.getURL() == music_obj.getURL():
                 return each_song
@@ -42,7 +43,6 @@ class User:
     #   Setting values
 
     ###########################################################################
-
     def setSongList(self, song_list):
         self.song_list = song_list
 
@@ -54,7 +54,6 @@ class User:
     #   Check if has
 
     ###########################################################################
-
     def hasSong(self, music_obj):
         for each_song in self.song_list:
             if each_song.getURL() == music_obj.getURL():
@@ -73,7 +72,6 @@ class User:
     #   Adding to Class
 
     ###########################################################################
-
     def addSong(self, music_obj):
         self.song_list.append(music_obj)
 
@@ -85,7 +83,6 @@ class User:
     #   Removing from Class
 
     ###########################################################################
-
     def removeSong(self, music_obj):
         if self.hasSong(music_obj):
             toDelete = self.getSong(music_obj)
@@ -95,10 +92,4 @@ class User:
         return False
 
     def __repr__(self):
-
-        if self.song_list == None:
-            songs = ""
-        else:
-            songs = str(self.song_list)
-
-        return (self.user_id if self.user_id != None else "") + ": " + (self.mood if self.mood != None else "") + ". Songs: " + songs
+        return (self.user_id if self.user_id != None else "") + ": " + (self.mood if self.mood != None else "") + ". Songs: " + (str(self.song_list) if self.song_list != None else "")

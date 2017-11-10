@@ -7,20 +7,18 @@ class Music:
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
-        if (title != None):
-            if (title == list(title)):
+        if title != None:
+            if type(title) == list:
                 for each_word in title:
                     title += each_word + " "
             else:
                 self.title = title
         self.url = url
         # check if already in list format
-        if (author == list(author)):
+        if type(author) == list:
             self.likers = author
         else:
             self.likers = [author]
-
-        # if "[" in author or "]" in author
 
         self.plays = 0
         self.tags = []
@@ -31,6 +29,7 @@ class Music:
     #   Getting from Class
 
     ###########################################################################
+
     def getTitle(self):
         return self.title
 
@@ -50,20 +49,18 @@ class Music:
     def getVolume(self):
         return self.volume
 
-    # do we really even need this?
-    def getStore(self):
-        temp = self.url + TITLE_URL_SEPARATOR + self.title + URL_LIKERS_SEPARATOR
-        for liker in self.likers:
-            temp =+ str(liker) + LIKERS_DELIMETER
-        return temp[:-2]
-
     ###########################################################################
 
     #   Check if has
 
     ###########################################################################
-    def hasLiker(self, author):
-        return author in self.likers
+
+    # takes a discord user id
+    def hasLiker(self, liker):
+        #force int
+        if type(liker) == int:
+            liker = str(liker)
+        return liker in self.likers
 
     def hasTag(self, tag):
         return tag in self.tags
@@ -73,11 +70,17 @@ class Music:
     #   Adding to Class
 
     ###########################################################################
+
     def addPlay(self):
         self.plays += 1
 
+    # takes a discord user id
     def addLiker(self, liker):
-        self.likers.append(liker)
+        #force int
+        if type(liker) == int:
+            liker = str(liker)
+        if not self.hasLiker(liker):
+            self.likers.append(liker)
 
     def addTag(self, tag):
         self.tags.append(tag)
@@ -92,21 +95,23 @@ class Music:
         self.volume = volume
 
     def __repr__(self):
-        title_str = ""
-        if self.title != None:
-            title_str = str(self.title)
-        return self.url + TITLE_URL_SEPARATOR + title_str
+        return ("" if self.url == None else self.url) + TITLE_URL_SEPARATOR + ("" if self.title == None else self.title)
 
     ###########################################################################
 
     #   Removing from Class
 
     ###########################################################################
+
     def removePlay(self):
         if self.plays > 0:
             self.plays -= 1
 
+    # takes a discord user id
     def removeLiker(self, liker):
+        #force int
+        if type(liker) == int:
+            liker = str(liker)
         if self.hasLiker(liker):
             self.likers.remove(liker)
 

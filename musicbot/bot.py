@@ -127,6 +127,91 @@ class MusicBot(discord.Client):
         self.aiosession = aiohttp.ClientSession(loop=self.loop)
         self.http.user_agent += ' MusicBot/%s' % BOTVERSION
 
+    async def import_songs(self):
+
+
+        discord_member = None
+
+        #TODO delete files after importing them
+
+        if os.path.isdir("./data/import"):
+            for filename in os.listdir(os.getcwd() + '\data\import'):
+                # loading autoplaylist file + identifying discord user
+                if "-" in filename:
+                    dashIndex = filename.index("-")
+                    uname = filename[:dashIndex] #get username and digit (jadedtdt1234)
+                    uname = uname[:-4] #strip off 4digit num (jadedtdt)
+
+                    for each_member in self.get_all_members():
+                        if uname == each_member.name:
+                            discord_member = each_member
+                else:
+                    log.error(filename)
+
+                if discord_member != None:
+                    log.error(discord_member)
+                else:
+                    log.error("import_songs: could not identify this user's discord account - " + filename[:dashIndex])
+                    continue
+
+                # loading lines into memory
+                lines = []
+                with open('data/import/' + filename, 'r', encoding='utf8') as inputfile:
+                    for line in inputfile:
+                        lines.append(line.strip())
+
+                for i, each_line in enumerate(lines):
+                    if "---" in each_line:
+                        sepIndex = each_line.index("---")
+                        each_line = each_line[sepIndex+3:]
+                    else:
+                        log.error("import_songs: no title separator - " + line)
+                        continue
+
+                    if "http" not in each_line:                
+                        log.error("import_songs: no url - " + line)
+                        continue
+                    else:
+                        if "," in each_line:
+                            comIndex = each_line.index(",")
+                            lines[i] = each_line[:comIndex]
+
+                for each_line in lines:
+                    log.debug(each_line)
+        else:
+            log.error("import_songs: Could not find import folder in ./data/ folder")
+
+        return
+
+    async def test_addresses(self, kwargs):
+        log.debug("#######DEBUG ADDR START########")
+
+        for each_song in self.autoplaylist:
+
+            if kwargs == each_song.getURL():
+                return each_song
+
+            if each_song.getTitle() != None:
+                if kwargs in each_song.getTitle().lower():
+                    my_song = each_song
+
+        if (my_song == None):
+            log.debug("MY_SONG NULL")
+        else:      
+            log.debug(my_song.getTitle())
+            log.debug(my_song.getURL())
+            log.debug(str(my_song.getLikers()))
+            log.debug(str(id(my_song)))
+            log.debug("---")
+
+        new_user = User('123456789')
+        new_user.addSong(my_song)
+        test_song = new_user.getSong(my_song)
+        log.debug(str(id(test_song)))
+        log.debug(str(id(new_user.getSong(my_song))))
+
+        log.debug("########DEBUG ADDR END#########")
+
     async def remove_songs_without_urls(self):
         log.debug("#######DEBUG SONG URLS START########")
         for each_song in self.autoplaylist:
@@ -314,26 +399,25 @@ class MusicBot(discord.Client):
         return None
 
     async def check_songs(self, song_url, author):
-        orig = self.autoplaylist.copy()
 
-        matched_song = None
-        cached_song = None
-        while self.find_song(song_url) != None and matched_song == None:
-            cached_song = self.find_song(song_url)
-            if author.id in cached_song.getLikers():
-                matched_song = cached_song
-            self.autoplaylist.remove(cached_song)
-
-        if matched_song != None:
-            song_url = matched_song.getURL()
+        if "http" in song_url:
+            search_song = Music(song_url)
         else:
-            # none of them are our songs, so we'll try someone else's
-            if cached_song != None:
-                song_url = cached_song.getURL()
+            log.warning("check_songs: Make sure you're not making a swap!")
+            search_song = Music(None, song_url)
 
-        self.autoplaylist = orig
+        log.debug("search song! " + str(search_song))
 
-        return song_url
+        if type(author) != User:
+            author = self.get_user(author)
+
+        log.debug("author! " + str(author.getID()))
+
+        return_song = author.getSong(search_song)
+        if not return_song:
+            return_song = self.find_song(search_song.getURL())
+
+        return return_song
 
     async def notify_likers(self, song, emsg=""):
         if song == None:
@@ -395,6 +479,7 @@ class MusicBot(discord.Client):
         return wrapper
 
     def _get_user(self, user_id, voice=False):
+
         if voice:
             for server in self.servers:
                 for channel in server.channels:
@@ -974,9 +1059,9 @@ class MusicBot(discord.Client):
                         ####################
                         # if user's mood isn't the default setting (None)
                         if user.getMood() != "" and user.getMood() != None:
-                            log.debug("MOOD: ", user.getMood())
+                            log.debug("MOOD: " + user.getMood())
 
-                            song = random.choice(self.dict_moods[author])
+                            song = self.find_song(random.choice(self.metaData[user.getMood().lower()]))
                             if user.getMood().lower() in self.metaData.keys():
                                 playURL = random.choice(self.metaData[user.getMood().lower()])
                             else:
@@ -2687,10 +2772,13 @@ class MusicBot(discord.Client):
         reply_text = ""
         user = ""
 
+        if song_url == "last" or song_url == "end":
+            song_url = -1
+
         if song_url is None:
             url = player.current_entry.url
             title = player.current_entry.title
-        elif song_url.isnumeric():
+        elif type(song_url) == int:
             position = int(song_url)
             entry = await player.playlist.get_entry(position)
 
@@ -2734,10 +2822,13 @@ class MusicBot(discord.Client):
         reply_text = ""
         user = ""
 
+        if song_url == "last" or song_url == "end":
+            song_url = -1
+
         if song_url == None:
             url = player.current_entry.url
             title = player.current_entry.title
-        elif song_url.isnumeric():
+        elif type(song_url) == int:
             position = int(song_url)
             entry = await player.playlist.get_entry(position)
 
@@ -2823,7 +2914,7 @@ class MusicBot(discord.Client):
     async def cmd_play(self, player, channel, author, permissions, leftover_args, song_url, immediate=False):
         """
         Usage:
-            {command_prefix}play song_link
+            {command_prefix}play song_url
             {command_prefix}play text to search for
 
         Adds the song to the playlist.  If a link is not provided, the first
@@ -2845,9 +2936,9 @@ class MusicBot(discord.Client):
         # let's see if we already have this song or a similar one. i feel like this will help 70% of the time
         # let's check the songs the user likes before looking at other people's
 
-        temp_url = await self.check_songs(song_url, author)
-        if temp_url != None:
-            song_url = temp_url
+        temp_song = await self.check_songs(song_url, author)
+        if temp_song != None:
+            song_url = temp_song.getURL()
 
         try:
             info = await self.downloader.extract_info(player.playlist.loop, song_url, download=False, process=False)
@@ -2863,7 +2954,7 @@ class MusicBot(discord.Client):
         # abstract the search handling away from the user
         # our ytdl options allow us to use search strings as input urls
         if info.get('url', '').startswith('ytsearch'):
-            # print("[Command:play] Searching for \"%s\"" % song_url)
+            #log.debug("[Command:play] Searching for \"%s\"" % song_url)
             info = await self.downloader.extract_info(
                 player.playlist.loop,
                 song_url,
@@ -2986,6 +3077,7 @@ class MusicBot(discord.Client):
             btext = str(listlen - drop_count)
 
         else:
+            # not playlist
             if permissions.max_song_length and info.get('duration', 0) > permissions.max_song_length:
                 raise exceptions.PermissionsError(
                     "Song duration exceeds limit (%s > %s)" % (info['duration'], permissions.max_song_length),
@@ -2997,7 +3089,7 @@ class MusicBot(discord.Client):
                 if immediate == True:
                     if len(player.playlist) > 1:
                         player.playlist.promote_last()
-                        position = 1
+                        position = '1'
                     if player.is_playing:
                         player.skip()
 
@@ -3013,7 +3105,6 @@ class MusicBot(discord.Client):
             reply_text = "Enqueued **%s** to be played. Position in queue: %s"
             btext = entry.title
 
-        #if position == 1 and player.is_stopped:
         if position == 1:
             position = 'Up next!'
             reply_text %= (btext, position)
@@ -3027,7 +3118,6 @@ class MusicBot(discord.Client):
                 time_until = ''
 
             reply_text %= (btext, position, ftimedelta(time_until))
-
 
         try:
             log.info("[PLAY] " + author.name + ": " + entry.title)
