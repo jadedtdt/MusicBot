@@ -1674,6 +1674,8 @@ class MusicBot(discord.Client):
 
         # if not on anyone's list, let's add it to someone's
         if song == None:
+            if title is None:
+                title = ""
             log.debug("[ADD_TO_AUTOPLAYLIST] Creating new song object " + title)
             song = Music(url, title, author)
             self.autoplaylist.append(song)
@@ -2939,6 +2941,9 @@ class MusicBot(discord.Client):
         temp_song = await self.check_songs(song_url, author)
         if temp_song != None:
             song_url = temp_song.getURL()
+        else:
+            if "http" not in song_url and "www." in song_url:
+                song_url = "https://" + song_url
 
         try:
             info = await self.downloader.extract_info(player.playlist.loop, song_url, download=False, process=False)
@@ -4386,7 +4391,18 @@ class MusicBot(discord.Client):
         auto_paused = self.server_specific_data[after.server]['auto_paused']
         player = await self.get_player(state.my_voice_channel)
 
-        if state.joining and state.empty() and player.is_playing:
+        if not state.empty(old_channel=state.leaving):
+            if auto_paused and player.is_paused:
+                log.info(autopause_msg.format(
+                    state = "Unpausing",
+                    channel = state.my_voice_channel,
+                    reason = ""
+                ).strip())
+
+                self.server_specific_data[after.server]['auto_paused'] = False
+                player.resume()
+                
+        elif state.joining and state.empty() and player.is_playing:
             log.info(autopause_msg.format(
                 state = "Pausing",
                 channel = state.my_voice_channel,
@@ -4398,17 +4414,7 @@ class MusicBot(discord.Client):
             return
 
         if not state.is_about_me:
-            if not state.empty(old_channel=state.leaving):
-                if auto_paused and player.is_paused:
-                    log.info(autopause_msg.format(
-                        state = "Unpausing",
-                        channel = state.my_voice_channel,
-                        reason = ""
-                    ).strip())
-
-                    self.server_specific_data[after.server]['auto_paused'] = False
-                    player.resume()
-            else:
+            if state.empty(old_channel=state.leaving):
                 if not auto_paused and player.is_playing:
                     log.info(autopause_msg.format(
                         state = "Pausing",

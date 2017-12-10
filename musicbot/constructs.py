@@ -159,7 +159,7 @@ class VoiceStateUpdate:
 
     @property
     def is_about_me(self):
-        return self.after == self.me
+        return (self.after == self.me) or (self.before == self.me)
 
     @property
     def my_voice_channel(self) -> discord.Channel:
@@ -169,7 +169,7 @@ class VoiceStateUpdate:
     def is_about_my_voice_channel(self):
         return all((
             self.my_voice_channel,
-            self.voice_channel == self.my_voice_channel
+            self.old_voice_channel == self.my_voice_channel or self.new_voice_channel == self.my_voice_channel
         ))
 
     @property
@@ -196,38 +196,38 @@ class VoiceStateUpdate:
     def joining(self):
         return all((
             self.my_voice_channel,
-            self.before.voice_channel != self.my_voice_channel,
-            self.after.voice_channel == self.my_voice_channel
+            self.old_voice_channel != self.my_voice_channel,
+            self.new_voice_channel == self.my_voice_channel
         ))
 
     @property
     def leaving(self):
         return all((
             self.my_voice_channel,
-            self.before.voice_channel == self.my_voice_channel,
-            self.after.voice_channel != self.my_voice_channel
+            self.old_voice_channel == self.my_voice_channel,
+            self.new_voice_channel != self.my_voice_channel
         ))
 
     @property
     def moving(self):
         return all((
-            self.before.voice_channel,
-            self.after.voice_channel,
-            self.before.voice_channel != self.after.voice_channel,
+            self.old_voice_channel,
+            self.new_voice_channel,
+            self.old_voice_channel != self.new_voice_channel,
         ))
 
     @property
     def connecting(self):
         return all((
-            not self.before.voice_channel or self.resuming,
-            self.after.voice_channel
+            not self.old_voice_channel or self.resuming,
+            self.new_voice_channel
         ))
 
     @property
     def disconnecting(self):
         return all((
-            self.before.voice_channel,
-            not self.after.voice_channel
+            self.old_voice_channel,
+            not self.new_voice_channel
         ))
 
     @property
@@ -249,7 +249,7 @@ class VoiceStateUpdate:
 
             return True
 
-        channel = self.old_voice_channel if old_channel else self.voice_channel
+        channel = self.old_voice_channel if old_channel else self.new_voice_channel
         if not channel:
             return
 
