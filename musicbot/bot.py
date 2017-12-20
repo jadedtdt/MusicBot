@@ -981,11 +981,11 @@ class MusicBot(discord.Client):
 
     async def on_player_finished_playing(self, player, **_):
         # updates our pickles
-        if (get_latest_pickle_mtime(self.config.auto_playlist_pickle) < self.last_modified_ts_apl):
+        if (get_latest_pickle_mtime(self.config.auto_playlist_pickle) > self.last_modified_ts_apl):
             log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest APL pickle file")
             self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
             self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-        if (get_latest_pickle_mtime(self.config.users_list_pickle) < self.last_modified_ts_users):
+        if (get_latest_pickle_mtime(self.config.users_list_pickle) > self.last_modified_ts_users):
             log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest users pickle file")
             self.users_list = load_pickle(self.config.users_list_pickle)
             self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
@@ -4172,11 +4172,11 @@ class MusicBot(discord.Client):
         if self.config.bound_channels and message.channel.id not in self.config.bound_channels and not message.channel.is_private:
             return  # if I want to log this I just move it under the prefix check
         
-        if (get_latest_pickle_mtime(self.config.auto_playlist_pickle) < self.last_modified_ts_apl):
+        if (get_latest_pickle_mtime(self.config.auto_playlist_pickle) > self.last_modified_ts_apl):
             log.debug("[ON_MESSAGE] Loading latest APL pickle file")
             self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
             self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-        if (get_latest_pickle_mtime(self.config.users_list_pickle) < self.last_modified_ts_users):
+        if (get_latest_pickle_mtime(self.config.users_list_pickle) > self.last_modified_ts_users):
             log.debug("[ON_MESSAGE] Loading latest users pickle file")
             self.users_list = load_pickle(self.config.users_list_pickle)
             self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
@@ -4319,12 +4319,6 @@ class MusicBot(discord.Client):
 
             log.info("[" + str(datetime.now()) + "][" + command.upper() + "] " + str(message.author))
 
-            log.debug("[ON_MESSAGE] Storing latest APL pickle file")
-            store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
-            self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-            log.debug("[ON_MESSAGE] Storing latest users pickle file")
-            store_pickle(self.config.users_list_pickle, self.users_list)
-            self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
         except (exceptions.CommandError, exceptions.HelpfulError, exceptions.ExtractionError) as e:
             log.error("Error in {0}: {1.__class__.__name__}: {1.message}".format(command, e), exc_info=True)
@@ -4351,6 +4345,13 @@ class MusicBot(discord.Client):
             if not sentmsg and not response and self.config.delete_invoking:
                 await asyncio.sleep(5)
                 await self.safe_delete_message(message, quiet=True)
+
+        log.debug("[ON_MESSAGE] Storing latest APL pickle file")
+        store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+        self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
+        log.debug("[ON_MESSAGE] Storing latest users pickle file")
+        store_pickle(self.config.users_list_pickle, self.users_list)
+        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
     async def on_voice_state_update(self, before, after):
         if not self.init_ok:
