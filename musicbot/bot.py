@@ -1186,12 +1186,18 @@ class MusicBot(discord.Client):
 
                 try:
                     await player.playlist.add_entry(playURL, channel=None, author=None)
+                    break
                 except exceptions.ExtractionError as e:
                     log.error("Error adding song from autoplaylist: {}".format(e))
                     log.debug('', exc_info=True)
                     continue
 
-                break
+            log.debug("[ON_MESSAGE] Storing latest APL pickle file")
+            store_pickle(self.config.auto_playlist_pickle, self.autoplaylist)
+            self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
+            log.debug("[ON_MESSAGE] Storing latest users pickle file")
+            store_pickle(self.config.users_list_pickle, self.users_list)
+            self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
             if not self.autoplaylist:
                 # TODO: When I add playlist expansion, make sure that's not happening during this check
