@@ -108,6 +108,7 @@ class MusicBot(discord.Client):
         #Setting up the metaData tags
         if not self.wholeMetadata:
             log.warning("[__INIT__] Metadata tags are empty")
+            print("Attention: Metadata tags are empty")
         else:
             temp = True
             for row in self.wholeMetadata:
@@ -1048,7 +1049,6 @@ class MusicBot(discord.Client):
                     user = self.get_user(each_user.id)
 
         # updates title if it's not there
-        song = self.find_song_by_url(entry.url)
         if song is not None:
             if song.getTitle() == None:
                 log.debug("[ON_PLAYER_PLAY] Updating title for {\"url\": \"" + entry.url + "\", \"title\": \"" + entry.title + "\"}")
