@@ -1,62 +1,62 @@
-[42.648077011] 2018-01-16 16:27:31,657 - INFO - launcher: Starting sanity checks
-[43.649673462] 2018-01-16 16:27:31,658 - INFO - launcher: Checking for python 3.5+
-[43.649673462] 2018-01-16 16:27:31,658 - INFO - launcher: Checking console encoding
-[44.151544571] 2018-01-16 16:27:31,659 - INFO - launcher: Setting console encoding to UTF-8
-[44.653177261] 2018-01-16 16:27:31,659 - INFO - launcher: Ensuring we're in the right folder
-[46.660423279] 2018-01-16 16:27:31,661 - INFO - launcher: Adding local bins/ folder to path
-[47.663211823] 2018-01-16 16:27:31,662 - INFO - launcher: Checks passed.
-[48.165082932] 2018-01-16 16:27:31,663 - INFO - launcher: Moving old musicbot log
+[43.147802353] 2018-01-16 14:52:34,473 - INFO - launcher: Starting sanity checks
+[43.649435043] 2018-01-16 14:52:34,473 - INFO - launcher: Checking for python 3.5+
+[44.151067734] 2018-01-16 14:52:34,474 - INFO - launcher: Checking console encoding
+[44.652938843] 2018-01-16 14:52:34,474 - INFO - launcher: Setting console encoding to UTF-8
+[44.652938843] 2018-01-16 14:52:34,474 - INFO - launcher: Ensuring we're in the right folder
+[46.658039093] 2018-01-16 14:52:34,476 - INFO - launcher: Adding local bins/ folder to path
+[47.662019730] 2018-01-16 14:52:34,477 - INFO - launcher: Checks passed.
+[48.167467117] 2018-01-16 14:52:34,478 - INFO - launcher: Moving old musicbot log
 
 ######################### PRE-RUN SANITY CHECKS PASSED #########################
 
-[1.7300128936767578] 2018-01-16 16:27:33,345 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 664 in _setup_logging: Set logging level to DEBUG
-[1.8960783481597900] 2018-01-16 16:27:33,511 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 103 in __init__: [__INIT__] Loaded autoplaylist with 3059 entries
-[1.898116827] launcher-INFO: Connecting
-[4.1945292949676514] 2018-01-16 16:27:35,809 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 1652 in on_ready: Connection established, ready to go.
-[4.1955342292785645] 2018-01-16 16:27:35,810 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 784 in _cache_app_info: Caching app info
-[4.2623536586761475] 2018-01-16 16:27:35,877 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 1475 in _scheck_ensure_env: Ensuring data folders exist
-[4.2668700218200684] 2018-01-16 16:27:35,882 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 1491 in _scheck_server_permissions: Checking server permissions
-[4.2678718566894531] 2018-01-16 16:27:35,883 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 1495 in _scheck_autoplaylist: Auditing autoplaylist
-[4.2683744430541992] 2018-01-16 16:27:35,883 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 1499 in _scheck_configs: Validating config
-[4.2693784236907959] 2018-01-16 16:27:35,884 - DEBUG - musicbot.config | In config.py::MainThread(14108), line 176 in async_validate: Validating options...
-[4.2703804969787598] 2018-01-16 16:27:35,885 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 1502 in _scheck_configs: Validating permissions config
-[4.2708823680877686] 2018-01-16 16:27:35,886 - DEBUG - musicbot.permissions | In permissions.py::MainThread(14108), line 58 in async_validate: Validating permissions...
-[4.2723875045776367] 2018-01-16 16:27:35,887 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1663 in on_ready: Connected! Musicbot v1.9.6-review
+[1.6005356311798096] 2018-01-16 14:52:36,030 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 664 in _setup_logging: Set logging level to DEBUG
+[1.7550830841064453] 2018-01-16 14:52:36,185 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 103 in __init__: [__INIT__] Loaded autoplaylist with 3059 entries
+[1.758093834] launcher-INFO: Connecting
+[4.0599377155303955] 2018-01-16 14:52:38,490 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 1652 in on_ready: Connection established, ready to go.
+[4.0604386329650879] 2018-01-16 14:52:38,490 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 784 in _cache_app_info: Caching app info
+[4.0977768898010254] 2018-01-16 14:52:38,527 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 1475 in _scheck_ensure_env: Ensuring data folders exist
+[4.1022922992706299] 2018-01-16 14:52:38,532 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 1491 in _scheck_server_permissions: Checking server permissions
+[4.1032948493957520] 2018-01-16 14:52:38,533 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 1495 in _scheck_autoplaylist: Auditing autoplaylist
+[4.1042997837066650] 2018-01-16 14:52:38,534 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 1499 in _scheck_configs: Validating config
+[4.1053020954132080] 2018-01-16 14:52:38,535 - DEBUG - musicbot.config | In config.py::MainThread(7100), line 176 in async_validate: Validating options...
+[4.1058046817779541] 2018-01-16 14:52:38,535 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 1502 in _scheck_configs: Validating permissions config
+[4.1068089008331299] 2018-01-16 14:52:38,537 - DEBUG - musicbot.permissions | In permissions.py::MainThread(7100), line 58 in async_validate: Validating permissions...
+[4.1083133220672607] 2018-01-16 14:52:38,538 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1663 in on_ready: Connected! Musicbot v1.9.6-review
 
-[4.2733910083770752] 2018-01-16 16:27:35,888 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1673 in on_ready: Bot:   277148632623480833/Music-o Bot#6849 [BOT]
-[4.2743945121765137] 2018-01-16 16:27:35,889 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1681 in on_ready: Owner: 136665080820400128/DevilGale#4957
+[4.1093170642852783] 2018-01-16 14:52:38,539 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1673 in on_ready: Bot:   277148632623480833/Music-o Bot#6849 [BOT]
+[4.1098177433013916] 2018-01-16 14:52:38,540 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1681 in on_ready: Owner: 136665080820400128/DevilGale#4957
 
-[4.2748961448669434] 2018-01-16 16:27:35,890 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1684 in on_ready: Server List:
-[4.2753984928131104] 2018-01-16 16:27:35,890 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1685 in <listcomp>:  - ...
-[4.2764017581939697] 2018-01-16 16:27:35,891 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1716 in on_ready: Bound to text channels:
-[4.2769038677215576] 2018-01-16 16:27:35,892 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1717 in <listcomp>:  - .../musicbot
-[4.2784101963043213] 2018-01-16 16:27:35,893 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1742 in on_ready: Autojoining voice chanels:
-[4.2789106369018555] 2018-01-16 16:27:35,894 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1743 in <listcomp>:  - .../General
-[4.2799131870269775] 2018-01-16 16:27:35,895 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1759 in on_ready: Options:
-[4.2829227447509766] 2018-01-16 16:27:35,898 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1761 in on_ready:   Command prefix: ~
-[4.2839274406433105] 2018-01-16 16:27:35,899 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1762 in on_ready:   Default volume: 25%
-[4.2849342823028564] 2018-01-16 16:27:35,900 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1764 in on_ready:   Skip threshold: 4 votes or 50%
-[4.2859346866607666] 2018-01-16 16:27:35,901 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1765 in on_ready:   Now Playing @mentions: Disabled
-[4.2869372367858887] 2018-01-16 16:27:35,902 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1766 in on_ready:   Auto-Summon: Enabled
-[4.2874402999877930] 2018-01-16 16:27:35,902 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1767 in on_ready:   Auto-Playlist: Enabled
-[4.2884430885314941] 2018-01-16 16:27:35,903 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1768 in on_ready:   Auto-Pause: Enabled
-[4.2894477844238281] 2018-01-16 16:27:35,904 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1769 in on_ready:   Delete Messages: Enabled
-[4.2904498577117920] 2018-01-16 16:27:35,905 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1771 in on_ready:   Delete Invoking: Disabled
-[4.2924566268920898] 2018-01-16 16:27:35,907 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1772 in on_ready:   Debug Mode: Enabled
-[4.2929592132568359] 2018-01-16 16:27:35,908 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 1773 in on_ready:   Downloaded songs will be deleted
-[4.2944648265838623] 2018-01-16 16:27:35,909 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 717 in _join_startup_channels: Attempting to join .../General
-[4.2949643135070801] 2018-01-16 16:27:35,910 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 871 in get_voice_client: Connection attempt 1 to General
-[4.2959678173065186] 2018-01-16 16:27:35,911 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(14108), line 811 in join_voice_channel: (join_voice_channel) creating futures
-[4.2959678173065186] 2018-01-16 16:27:35,911 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(14108), line 817 in join_voice_channel: (join_voice_channel) setting voice state
-[4.2964699268341064] 2018-01-16 16:27:35,911 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(14108), line 820 in join_voice_channel: (join_voice_channel) waiting for session id
-[4.3275773525238037] 2018-01-16 16:27:35,942 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(14108), line 4814 in on_voice_state_update: Voice state update for 277148632623480833/Music-o Bot#6849 on .../General -> [JOIN, CONNECT]
-[4.3275773525238037] 2018-01-16 16:27:35,942 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 4825 in on_voice_state_update: 277148632623480833/Music-o Bot#6849 has joined .../General
-[4.3285803794860840] 2018-01-16 16:27:35,943 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(14108), line 824 in join_voice_channel: (join_voice_channel) waiting for voice data
-[4.3426272869110107] 2018-01-16 16:27:35,957 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(14108), line 838 in join_voice_channel: (join_voice_channel) connecting...
-[4.4429602622985840] 2018-01-16 16:27:36,058 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(14108), line 850 in join_voice_channel: (join_voice_channel) connection successful
-[4.4434626102447510] 2018-01-16 16:27:36,058 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 897 in get_voice_client: Connected in 0.1s
-[4.4444663524627686] 2018-01-16 16:27:36,059 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 898 in get_voice_client: Connected to .../General
-[4.4454696178436279] 2018-01-16 16:27:36,060 - INFO - musicbot.bot | In bot.py::MainThread(14108), line 733 in _join_startup_channels: Joined .../General
-[4.4519922733306885] 2018-01-16 16:27:36,067 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 1330 in on_player_finished_playing: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
-[4.5096881389617920] 2018-01-16 16:27:36,124 - DEBUG - musicbot.bot | In bot.py::MainThread(14108), line 1333 in on_player_finished_playing: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
-[4.5653777122497559] 2018-01-16 16:27:36,180 - VOICEDEBUG - musicbot.player | In player.py::MainThread(14108), line 336 in websocket_check: Starting websocket check loop for ...
+[4.1108233928680420] 2018-01-16 14:52:38,541 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1684 in on_ready: Server List:
+[4.1113257408142090] 2018-01-16 14:52:38,541 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1685 in <listcomp>:  - ...
+[4.1118271350860596] 2018-01-16 14:52:38,542 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1716 in on_ready: Bound to text channels:
+[4.1128294467926025] 2018-01-16 14:52:38,543 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1717 in <listcomp>:  - .../musicbot
+[4.1138343811035156] 2018-01-16 14:52:38,544 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1742 in on_ready: Autojoining voice chanels:
+[4.1148343086242676] 2018-01-16 14:52:38,545 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1743 in <listcomp>:  - .../General
+[4.1158380508422852] 2018-01-16 14:52:38,546 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1759 in on_ready: Options:
+[4.1193497180938721] 2018-01-16 14:52:38,549 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1761 in on_ready:   Command prefix: ~
+[4.1208548545837402] 2018-01-16 14:52:38,551 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1762 in on_ready:   Default volume: 25%
+[4.1228632926940918] 2018-01-16 14:52:38,553 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1764 in on_ready:   Skip threshold: 4 votes or 50%
+[4.1248710155487061] 2018-01-16 14:52:38,555 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1765 in on_ready:   Now Playing @mentions: Disabled
+[4.1268773078918457] 2018-01-16 14:52:38,557 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1766 in on_ready:   Auto-Summon: Enabled
+[4.1298873424530029] 2018-01-16 14:52:38,560 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1767 in on_ready:   Auto-Playlist: Enabled
+[4.1308903694152832] 2018-01-16 14:52:38,561 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1768 in on_ready:   Auto-Pause: Enabled
+[4.1328985691070557] 2018-01-16 14:52:38,563 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1769 in on_ready:   Delete Messages: Enabled
+[4.1344041824340820] 2018-01-16 14:52:38,564 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1771 in on_ready:   Delete Invoking: Disabled
+[4.1354074478149414] 2018-01-16 14:52:38,565 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1772 in on_ready:   Debug Mode: Enabled
+[4.1364109516143799] 2018-01-16 14:52:38,566 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 1773 in on_ready:   Downloaded songs will be deleted
+[4.1409373283386230] 2018-01-16 14:52:38,571 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 717 in _join_startup_channels: Attempting to join .../General
+[4.1429309844970703] 2018-01-16 14:52:38,573 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 871 in get_voice_client: Connection attempt 1 to General
+[4.1439342498779297] 2018-01-16 14:52:38,574 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(7100), line 811 in join_voice_channel: (join_voice_channel) creating futures
+[4.1449370384216309] 2018-01-16 14:52:38,575 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(7100), line 817 in join_voice_channel: (join_voice_channel) setting voice state
+[4.1454403400421143] 2018-01-16 14:52:38,575 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(7100), line 820 in join_voice_channel: (join_voice_channel) waiting for session id
+[4.1790745258331299] 2018-01-16 14:52:38,609 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 4801 in on_voice_state_update: Resumed voice connection to .../General
+[4.1801328659057617] 2018-01-16 14:52:38,610 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(7100), line 4813 in on_voice_state_update: Voice state update for 277148632623480833/Music-o Bot#6849 on .../General -> [RESUME, CONNECT]
+[4.1806335449218750] 2018-01-16 14:52:38,610 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(7100), line 824 in join_voice_channel: (join_voice_channel) waiting for voice data
+[4.1967692375183105] 2018-01-16 14:52:38,626 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(7100), line 838 in join_voice_channel: (join_voice_channel) connecting...
+[4.3355002403259277] 2018-01-16 14:52:38,765 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(7100), line 850 in join_voice_channel: (join_voice_channel) connection successful
+[4.3360021114349365] 2018-01-16 14:52:38,766 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 897 in get_voice_client: Connected in 0.2s
+[4.3370053768157959] 2018-01-16 14:52:38,767 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 898 in get_voice_client: Connected to .../General
+[4.3385105133056641] 2018-01-16 14:52:38,768 - INFO - musicbot.bot | In bot.py::MainThread(7100), line 733 in _join_startup_channels: Joined .../General
+[4.3460369110107422] 2018-01-16 14:52:38,776 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 1330 in on_player_finished_playing: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[4.4087493419647217] 2018-01-16 14:52:38,838 - DEBUG - musicbot.bot | In bot.py::MainThread(7100), line 1333 in on_player_finished_playing: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[4.4860155582427979] 2018-01-16 14:52:38,916 - VOICEDEBUG - musicbot.player | In player.py::MainThread(7100), line 336 in websocket_check: Starting websocket check loop for ...
