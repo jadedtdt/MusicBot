@@ -178,7 +178,6 @@ class MusicBot(discord.Client):
                         lines2[i].append(each_line.split(" --- ")[0])
                         each_line = each_line.split(" --- ")[1]
                     else:
-                        log.error("import_songs: no title separator - " + str(each_line))
                         continue
 
                     if ", " in each_line:
