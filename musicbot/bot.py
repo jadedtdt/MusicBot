@@ -10,7 +10,6 @@ import asyncio
 import pathlib
 import traceback
 import datetime
-import weakref
 
 import aiohttp
 import discord
