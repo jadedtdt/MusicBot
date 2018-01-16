@@ -5,6 +5,7 @@
 audio_cache/
 dectalk/
 
+data/
 logs/
 config/options.ini
 config/permissions.ini

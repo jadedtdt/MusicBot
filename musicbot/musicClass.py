@@ -1,4 +1,4 @@
-from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH, TITLE_URL_SEPARATOR, URL_LIKERS_SEPARATOR, LIKERS_DELIMETER
+from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
 from .config import Config, ConfigDefaults
 
 class Music:

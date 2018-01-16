@@ -10,6 +10,7 @@ import asyncio
 import pathlib
 import traceback
 import datetime
+import weakref
 
 import aiohttp
 import discord
@@ -442,8 +443,8 @@ class MusicBot(discord.Client):
         for user in self.users_list:
             user.setupHeard()
         print("Please add cmd_heard to all users")
-        print("\aDelete line 93")
-        prntStr = "__React to remove__\n<@" + self.config.owner_id +  "> please add cmd_heard to all users\nAnd Delete line 1688 in bot.py"
+        print("\aDelete line 1781")
+        prntStr = "__React to remove__\n<@" + self.config.owner_id +  "> please add cmd_heard, cmd_oldlisthas to all users\nAnd Delete line 1781 in bot.py\nAnd give bot Administrator rights."
         for server in self.servers:
             for channel in server.channels:
                 if channel.id == list(self.config.bound_channels)[0]:
@@ -531,7 +532,7 @@ class MusicBot(discord.Client):
         likers_str = ""
         for each_liker in likers:
             likers_str += self._get_user(each_liker).mention + " "
-        msg = 'Hey! %s. It seems like your video has been made unavailable.\n%s, %s\nReason: %s' % (likers_str, song.getTitle(), song.getURL(), emsg)
+        msg = 'Hey! %s. It seems like your video has been made unavailable.\n<%s>, %s\nReason: %s' % (likers_str, song.getTitle(), song.getURL(), emsg)
         await self.safe_send_message(channel, msg)
 
     def __del__(self):
@@ -1292,7 +1293,7 @@ class MusicBot(discord.Client):
                             #for tag in tags:
                             #    await self._cmd_removetag(player, author, channel, tag, printing=False)
                             #this doesn't work because there's currently no song playing.. not sure how to do this
-                            await self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % playURL)
+                            await self.safe_print("[Info] Removing unplayable song from autoplaylist: <%s>" % playURL)
                         print("\a")  # BEEPS
                         continue
                     else:
@@ -1777,7 +1778,7 @@ class MusicBot(discord.Client):
 
         await self._join_startup_channels(autojoin_channels, autosummon=self.config.auto_summon)
 
-        # await self.setup_heard()
+        await self.setup_heard()
         # t-t-th-th-that's all folks!
 
     def get_likers(self, song_url):
@@ -2406,6 +2407,7 @@ class MusicBot(discord.Client):
         - LIST : Prints all the tags
         - SHOW : Shows the songs in the specified tag
         - MSG : Messages user with all the songs w/ urls of the specified tag
+        - REPLACE :  [tag1] [tag2] replacing tag1 with tag2
         """
 
         await self.send_typing(channel)
@@ -2604,7 +2606,7 @@ class MusicBot(discord.Client):
             if song.getTitle() != None:
                 prntStr += ":notes:" + song.getTitle() + "\n"
             else:
-                prntStr += ":notes:" + "[NO TITLE] " + song.getURL() + "\n"
+                prntStr += ":notes:" + "[NO TITLE] <" + song.getURL() + ">\n"
 
         return Response(prntStr, delete_after=50)
 
