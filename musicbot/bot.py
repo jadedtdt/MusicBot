@@ -418,6 +418,7 @@ class MusicBot(discord.Client):
 
         log.debug("@@@@@@@@")
 
+        my_song = self.find_song_by_url(kwargs)
         if (my_song == None):
             log.debug("MY_SONG NULL")
         else:
