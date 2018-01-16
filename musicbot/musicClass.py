@@ -1,4 +1,4 @@
-from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
+from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH, TITLE_URL_SEPARATOR, URL_LIKERS_SEPARATOR, LIKERS_DELIMETER
 from .config import Config, ConfigDefaults
 
 class Music:
@@ -8,10 +8,10 @@ class Music:
         self.config = Config(config_file)
 
         if title != None:
-            if type(title) == list:
-                for each_word in title:
-                    title += each_word + " "
-        self.title = title
+            if type(title) == list:    
+                self.title = " ".join(title)
+            else:
+                self.title = title
         self.url = url
         # check if already in list format
         if type(author) == list:
@@ -94,7 +94,13 @@ class Music:
         self.volume = volume
 
     def __repr__(self):
-        return ("" if self.url == None else self.url) + " --- " + ("" if self.title ==  None else self.title)
+        return ("" if self.url == None else self.url) + TITLE_URL_SEPARATOR + ("" if self.title == None else self.title)
+
+    def __hash__(self):
+        return hash(self.url)
+
+    #def __eq__(self, other):
+    #    return self.url == other.getURL()
 
     ###########################################################################
 
