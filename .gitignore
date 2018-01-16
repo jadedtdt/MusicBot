@@ -12,3 +12,4 @@ config/autoplaylist.txt
 
 *.command
 *.pickle
+logs/musicbot.log
