@@ -442,13 +442,15 @@ class MusicBot(discord.Client):
         # self.users_list is a list not dictionary
         for user in self.users_list:
             user.setupHeard()
+            user.getHeard()
         print("Please add cmd_heard to all users")
-        print("\aDelete line 1781")
-        prntStr = "__React to remove__\n<@" + self.config.owner_id +  "> please add cmd_heard, cmd_oldlisthas to all users\nAnd Delete line 1781 in bot.py\nAnd give bot Administrator rights."
+        print("\aDelete line 1781 and 1782")
+        prntStr = "__React to remove__\n<@" + self.config.owner_id +  "> please add cmd_heard, cmd_oldlisthas to all users\nAnd Delete line 1781 and 1782 in bot.py\nAnd give bot Administrator rights."
         for server in self.servers:
             for channel in server.channels:
                 if channel.id == list(self.config.bound_channels)[0]:
                     msg = await self.send_message(channel, prntStr)
+        
         await self.wait_for_reaction(message=msg)
         await self.delete_message(msg)
         
@@ -1776,9 +1778,11 @@ class MusicBot(discord.Client):
         # maybe option to leave the ownerid blank and generate a random command for the owner to use
         # wait_for_message is pretty neato
 
+        asyncio.ensure_future(self.setup_heard())
+        asyncio.sleep(0.1)
+
         await self._join_startup_channels(autojoin_channels, autosummon=self.config.auto_summon)
 
-        await self.setup_heard()
         # t-t-th-th-that's all folks!
 
     def get_likers(self, song_url):
