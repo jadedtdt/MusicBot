@@ -2160,9 +2160,6 @@ class MusicBot(discord.Client):
         # maybe option to leave the ownerid blank and generate a random command for the owner to use
         # wait_for_message is pretty neato
 
-        asyncio.ensure_future(self.setup_heard())
-        asyncio.sleep(0.1)
-
         await self._join_startup_channels(autojoin_channels, autosummon=self.config.auto_summon)
 
         # t-t-th-th-that's all folks!
@@ -2386,11 +2383,11 @@ class MusicBot(discord.Client):
                 prntStr = "Please input a number greater than 0."
             else:
                 user = self.get_user(author.id)
-                if int(leftover_args[0]) > len(user.getSongList()):
+                if int(leftover_args[0]) > len(user[1].getSongList()):
                     prntStr = "Unable to change __**" + author.display_name + "**__'s heard length. Desired heard length of *" + leftover_args[0] + "* is larger than song list."
                 else:
-                    prntStr = "__**" + author.display_name + "**__'s heard length went from *" + str(user.getHeardLen()) + "* to *" + leftover_args[0] + "*"
-                    user.setHeardLen(int(leftover_args[0]))
+                    prntStr = "__**" + author.display_name + "**__'s heard length went from *" + str(user[1].getHeardLen()) + "* to *" + leftover_args[0] + "*"
+                    user[1].setHeardLen(int(leftover_args[0]))
         except Exception as e:
             prntStr = "Invalid value given. Please input a number."
             log.error(e)
@@ -2961,25 +2958,18 @@ class MusicBot(discord.Client):
         Looks if a song title is in your or others lists
 
         """
-        FIELDS_LIMIT = 25
-        EM_CHAR_LIMIT = 6000
-
-        thinkingMsg = await self.safe_send_message(channel, "Processing:thought_balloon:")
-        songsInList = 0
 
         if len(leftover_args) == 0:
             prntStr += "```Usage:\n\t{command_prefix}listhas songTitle\n\nLooks if a song title in in your list```"
             return Response(prntStr, delete_after=20)
         else:
+            thinkingMsg = await self.safe_send_message(channel, "Processing:thought_balloon:")
             messages = []
-            title = '**Autoplay lists containing: "' + ' '.join(leftover_args) +  '"**'
-            print(len(title))
+            title = '**Autoplay lists containing: ' + ' '.join(leftover_args) +  '**'
             if len(title) > 256:
                 title = 'Autoplay Lists'
-            em = discord.Embed(title=title, type="rich", color=0x006600)
 
-            user = self.get_user(author)[1].getSongList()
-            ContainsList = await self.find_song_by_title(leftover_args, self.new_autoplaylist.songs)
+            ContainsList = await self.find_song_by_title(list(filter(None, " ".join(leftover_args).split("\""))), self.new_autoplaylist.songs)
             #sorting into a list for each person who liked the songs
             peopleListSongs = {}
             for songObj in ContainsList:
@@ -2998,87 +2988,22 @@ class MusicBot(discord.Client):
             #Printing: Yours
             char_cnt = 0
             if author.id in peopleListSongs:
-                em.description = "\t:busts_in_silhouette:__Yours__\n"
-                prntStr = ""
-                em.set_footer(text=author.display_name)
-                char_cnt += len(em.description + em.footer.text)
-                times_printed = 0
-                for songObj in peopleListSongs[author.id]:
-                    #print(peopleListSongs[author.id])
-                    lnprnt = ":point_right:[" + songObj.getTitle() + "](" + self.check_url(songObj.getURL()) + ")\n"
-                    if (char_cnt + len(lnprnt)) > (EM_CHAR_LIMIT - 15) or len(em.fields) == FIELDS_LIMIT:
-                        em.set_footer(text=em.footer.text + " | Partial List")
-                        break
-                    if len(em.description + lnprnt) < 2048:
-                        em.description += lnprnt
-                        char_cnt += len(lnprnt)
-                    elif len(prntStr + lnprnt) > 1024:
-                        em.add_field(name='\u200b',value=prntStr, inline=True)
-                        char_cnt += len(prntStr)
-                        print("Field ["  + str(len(em.fields)) + "]: " + str(len(prntStr)) + " of " + str(char_cnt))
-                        prntStr = lnprnt
-                    else:
-                        prntStr += lnprnt
-
-                messages.append(await self.send_message(channel, embed=em))
-                char_cnt = 0
-                em.title = ""
-                em.description = ""
-                em.clear_fields()
+                messages.append(await self._embed_listhas(channel, author.display_name, peopleListSongs[author.id], title))
                 del peopleListSongs[author.id]
+                title = None
             print("2nd run: " + str(time.perf_counter() - t0))
 
-            em_unknown = []
-            new_em = True
             #Printing: Others
             for author_id in peopleListSongs.keys():
                 userName = "Unknown User" if self._get_user(author_id) == None else self._get_user(author_id).display_name
-                intro_prnt = "\t:busts_in_silhouette:__" + userName + "__\n"
-                if new_em and userName != "Unknown User":
-                    em.description = intro_prnt
-                    new_em = False
-                    em.set_footer(text=userName)
-                    char_cnt += len(em.description + em.footer.text)
-                prntStr = ""
-                for songObj in peopleListSongs[author_id]:
-                    lnprnt = ":point_right:[" + songObj.getTitle() + "](" + self.check_url(songObj.getURL()) + ")\n"
-                    if (char_cnt + len(prntStr + intro_prnt)) > (EM_CHAR_LIMIT - 15) or len(em.fields) == FIELDS_LIMIT:
-                        em.set_field_at(-1, name=em.fields[-1].name + " | Partial List", value=em.fields[-1].value, inline=True)
-                        break
-                    if len(em.description + lnprnt) < 2048 and userName != "Unknown User":
-                        em.description += lnprnt
-                        char_cnt += len(lnprnt)
-                    elif len(prntStr + lnprnt) > 1024:
-                        if userName == "Unknown User":
-                            em_unknown.append(prntStr)
-                            # em_unkown.add_field(name="\u200b",value=prntStr, inline=True)
-                        else:
-                            em.add_field(name="\t:busts_in_silhouette:__" + userName + "__",value=prntStr, inline=True)
-                            char_cnt += len(em.fields[-1].name + em.fields[-1].value)
-                            print("Field ["  + str(len(em.fields)) + "]: " + str(len(prntStr)) + " of " + str(char_cnt))
+                if userName != "Unknown User":
+                    messages.append(await self._embed_listhas(channel, userName, peopleListSongs[author_id], title))
+                    title = None
 
-                        prntStr = lnprnt
-                    else:
-                        prntStr += lnprnt
-                        lnprnt = ""
-                # print(em.fields)
-                if len(em.fields) < FIELDS_LIMIT and lnprnt == "":
-                    print(userName + "\aIt happened")
-                    #em.add_field(name='\u200b', value=prntStr, inline=True)
-                    print(prntStr)
-
-                if char_cnt != 0:
-                    new_em = True
-                    messages.append(await self.send_message(channel, embed=em))
-                    em.description = ""
-                    em.clear_fields()
-                    char_cnt = 0
-            if len(em.fields) != 0:
-                messages.append(await self.send_message(channel, embed=em))
-                em.clear_fields()
-            messages.append(await self.send_message(channel, "```Finished Printing```"))
-            asyncio.ensure_future(self._wait_delete_msgs(messages, 60 + len(messages)))
             await self.safe_delete_message(thinkingMsg)
+            messages.append(await self.send_message(channel, "```Finished Printing```"))
+            asyncio.ensure_future(self._wait_delete_msgs(messages, 20 + (len(messages) * 5)))
+
 
             # em1 = discord.Embed(type="rich")
             # em1.title = title
@@ -3091,7 +3016,45 @@ class MusicBot(discord.Client):
             # await self.add_reaction(msgr, "◀") #:arrow_backward:
             # # await self.add_reaction(msgr, ":arrow_backward:")
             # await self.add_reaction(msgr, "▶") #:arrow_forward:
-            
+    
+    async def _embed_listhas(self, channel, userName, songList, title=None):
+        #Right now will be one embed per person
+        #Possibly do color later for the author vs. others
+        em = discord.Embed(title=title, type="rich", color=0x006600)
+        EM_CHAR_LIMIT = 6000
+        FIELDS_LIMIT = 25
+        prntStr = ""
+        
+        em.description = "\t:busts_in_silhouette:__" + userName + "__\n"
+        em.set_footer(text=userName)
+        char_cnt = len(em.description + em.footer.text)
+        
+        for songObj in songList:
+            lnprnt = ":point_right:[" + songObj.getTitle() + "](" + self.check_url(songObj.getURL()) + ")\n"
+            if (char_cnt + len(prntStr)) > (EM_CHAR_LIMIT - 15) or len(em.fields) == FIELDS_LIMIT:
+                em.set_footer(text=userName + " | Partial List")
+                # em.set_field_at(-1, name=em.fields[-1].name + " | Partial List", value=em.fields[-1].value, inline=True)
+                break
+
+            if len(em.description + lnprnt) < 2048:
+                em.description += lnprnt
+                char_cnt += len(lnprnt)
+            elif len(prntStr + lnprnt) > 1024:
+                em.add_field(name="\u200b",value=prntStr, inline=True)
+                char_cnt += len(em.fields[-1].name + em.fields[-1].value)
+                log.debug("Field ["  + str(len(em.fields)) + "]: " + str(len(prntStr)) + " of " + str(char_cnt))
+                prntStr = lnprnt
+            else:
+                prntStr += lnprnt
+                lnprnt = ""
+        # print(em.fields)
+        if len(em.fields) < FIELDS_LIMIT and lnprnt == "":
+            print(userName + "\aIt happened")
+            #em.add_field(name='\u200b', value=prntStr, inline=True)
+            print(prntStr)
+
+        return await self.send_message(channel, embed=em)
+
     async def cmd_oldlisthas(self, player, author, channel, permissions, leftover_args):
         ###### 1/10/2018 ######
         #Add to list after whole list is compiled
@@ -3105,7 +3068,7 @@ class MusicBot(discord.Client):
             t0 = time.clock()
             #IMOPRTANT: .strip().lower()
             #finds all songs with the containing words
-            ContainsList = await self.find_songs_with_title(leftover_args, self.autoplaylist)
+            ContainsList = await self.find_song_by_title(leftover_args, self.new_autoplaylist.songs)
             songsInList = len(ContainsList)
             peopleListSongs = {}
             #sorting into a list for each person who liked the songs
@@ -3338,7 +3301,8 @@ class MusicBot(discord.Client):
         found_songs = []
 
         if type(search_words) is str:
-            search_words = search_words.split(" ")
+            # search_words = search_words.split(" ")
+            pass
 
         log.debug("[FIND_SONG_BY_TITLE] Looking for " + str(search_words))
 
@@ -3346,7 +3310,7 @@ class MusicBot(discord.Client):
             isFound = True
             if each_song.getTitle() != None:
                 for each_search_word in search_words:
-                    if each_search_word.lower() not in each_song.getTitle().lower():
+                    if each_search_word.lower().strip() not in each_song.getTitle().lower():
                         isFound = False
                         break
                 if isFound == True:
