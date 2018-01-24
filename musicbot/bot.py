@@ -789,6 +789,7 @@ class MusicBot(discord.Client):
                 log.warning(each_song)
 
         return len(songs)
+        
     async def setup_heard(self):
         # First time setup of personal lists of songs previously played
         # self.users_list is a list not dictionary
@@ -1587,8 +1588,8 @@ class MusicBot(discord.Client):
                         ####################
                         # Repeat begin
                         ####################
-                        if (song != None):
-                            if None not in self.list_heard and len(self.list_heard) != 0:
+                        if song:
+                            if None not in self.list_heard and len(self.list_heard) > 0:
                                 if any(filter(lambda song_obj : song_obj.getURL() == song.getURL(), self.list_heard)):
                                     log.debug("Song played too recently: " + song.getTitle())
                                     timeout = timeout + 1
@@ -2191,7 +2192,7 @@ class MusicBot(discord.Client):
         return names
 
     # finds the first instance a song URL is found or if a string is found in a title and returns the object
-    async def find_song_by_url(self, url):
+    def find_song_by_url(self, url):
 
         found_song = None
 
@@ -2809,7 +2810,7 @@ class MusicBot(discord.Client):
             prntStr = "The tag **[" + tag + "]** does not exist."
             return Response(prntStr, delete_after=35)
 
-        prntStr = "__Songs in **[" + leftover_args.capitalize() + "]** tag__\n\n"
+        prntStr = "__Songs in **[" + tag.capitalize() + "]** tag__\n\n"
 
         for link in self.metaData[tag]:
             song = self.find_song_by_url(link)
@@ -2977,8 +2978,8 @@ class MusicBot(discord.Client):
                 title = 'Autoplay Lists'
             em = discord.Embed(title=title, type="rich", color=0x006600)
 
-            user = self.get_user(author).getSongList()
-            ContainsList = await self.find_songs_with_title(leftover_args, self.autoplaylist)
+            user = self.get_user(author)[1].getSongList()
+            ContainsList = await self.find_song_by_title(leftover_args, self.new_autoplaylist.songs)
             #sorting into a list for each person who liked the songs
             peopleListSongs = {}
             for songObj in ContainsList:

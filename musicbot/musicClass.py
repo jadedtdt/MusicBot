@@ -97,8 +97,8 @@ class Music:
 
     def __repr__(self):
         return "Title: {title}, URL: {url}".format(
-            name=getattr(self, 'title', "NO_TITLE"),
-            id=getattr(self, 'url', "NO_URL"))
+            title=getattr(self, 'title', "NO_TITLE"),
+            url=getattr(self, 'url', "NO_URL"))
 
     def __hash__(self):
         return hash(self.url)

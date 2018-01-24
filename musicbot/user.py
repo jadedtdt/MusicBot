@@ -46,18 +46,15 @@ class User:
     def getID(self):
         return self.user_id
 
-<<<<<<< HEAD
     def getName(self):
         return self.user_name
 
-=======
     def getHeard(self):
         return self.heard_list
 		
     def getHeardLen(self):
         return self.heard_length
 		
->>>>>>> f638ecc066cd233708f388d9235782dbef36eb67
     ###########################################################################
 
     #   Setting values
@@ -127,7 +124,6 @@ class User:
     #   Removing from Class
 
     ###########################################################################
-<<<<<<< HEAD
     def removeSong(self, url):
         if self.hasSong(url):
             self.song_list.remove(url)
