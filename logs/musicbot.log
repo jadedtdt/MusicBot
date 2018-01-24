@@ -1551,3 +1551,101 @@ AttributeError: 'str' object has no attribute 'getTitle'
 [24753.0035617351531982] 2018-01-23 21:12:13,711 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 4768 in on_voice_state_update: 85618365707587584/EPICish#3906 has left Catch The Rainbow!/Pros
 [24753.8784394264221191] 2018-01-23 21:12:14,586 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 85618365707587584/EPICish#3906 on Catch The Rainbow!/Pros -> [JOIN, MOVE]
 [24753.8784394264221191] 2018-01-23 21:12:14,586 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 4768 in on_voice_state_update: 85618365707587584/EPICish#3906 has joined Catch The Rainbow!/Pros
+[24939.9191391468048096] 2018-01-23 21:15:20,627 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[24939.9201414585113525] 2018-01-23 21:15:20,628 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 138532752038297600
+[24939.9211397171020508] 2018-01-23 21:15:20,629 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1499 in on_player_finished_playing: Dynamic Menace#7801
+[24939.9221408367156982] 2018-01-23 21:15:20,630 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1540 in on_player_finished_playing: Zedd, Alessia Cara - Stay Lyric Video
+[24941.1090328693389893] 2018-01-23 21:15:21,816 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 1643 in on_player_finished_playing: Stored song volume: 0.15
+[24942.3396942615509033] 2018-01-23 21:15:23,047 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[24942.3737256526947021] 2018-01-23 21:15:23,081 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[24942.3827347755432129] 2018-01-23 21:15:23,090 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 196 in _download: Download cached: https://www.youtube.com/watch?v=h--P8HzYZ74
+[24944.3330476284027100] 2018-01-23 21:15:25,040 - FFMPEG - musicbot.player | In player.py::MainThread(2432), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\../MusicBot/audio_cache\youtube-h--P8HzYZ74-Zedd_Alessia_Cara_-_Stay_Lyric_Video.webm
+[24944.5832831859588623] 2018-01-23 21:15:25,291 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1753 in serialize_queue: Serializing queue for 138532599181213696
+[154665.8939249515533447] 2018-01-23 21:15:37,922 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(688), line 4767 in on_voice_state_update: Voice state update for 251969568686211083/BigFatBlue#9012 on Kookiest Kroogers/Fuck blue -> [CONNECT]
+[154671.2648463249206543] 2018-01-23 21:15:43,293 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(688), line 4767 in on_voice_state_update: Voice state update for 251969568686211083/BigFatBlue#9012 on Kookiest Kroogers/Fuck blue -> [DISCONNECT]
+[154672.7403006553649902] 2018-01-23 21:15:44,769 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(688), line 4767 in on_voice_state_update: Voice state update for 251969568686211083/BigFatBlue#9012 on Kookiest Kroogers/Fuck blue -> [CONNECT]
+[25081.3761436939239502] 2018-01-23 21:17:42,084 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 138532752038297600/Dynamic Menace#7801 on Catch The Rainbow!/Pros -> [MUTE, DEAFEN]
+[25101.1385266780853271] 2018-01-23 21:18:01,846 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 138532752038297600/Dynamic Menace#7801 on Catch The Rainbow!/Pros -> [UNMUTE, UNDEAFEN]
+[25156.8841688632965088] 2018-01-23 21:18:57,592 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[25156.8846685886383057] 2018-01-23 21:18:57,592 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 138532752038297600
+[25156.8851692676544189] 2018-01-23 21:18:57,593 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1499 in on_player_finished_playing: Dynamic Menace#7801
+[25156.8856699466705322] 2018-01-23 21:18:57,593 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1540 in on_player_finished_playing: BENNY BENASSI 'CINEMA' (SKRILLEX REMIX)
+[25157.6472289562225342] 2018-01-23 21:18:58,355 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 1643 in on_player_finished_playing: Stored song volume: 0.15
+[25158.5139110088348389] 2018-01-23 21:18:59,221 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[25158.5474424362182617] 2018-01-23 21:18:59,255 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[25158.5589532852172852] 2018-01-23 21:18:59,266 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=Ua0KpfJsxKo
+[25160.8910348415374756] 2018-01-23 21:19:01,598 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=Ua0KpfJsxKo
+[25160.8930380344390869] 2018-01-23 21:19:01,600 - FFMPEG - musicbot.player | In player.py::MainThread(2432), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\audio_cache\youtube-Ua0KpfJsxKo-BENNY_BENASSI_CINEMA_SKRILLEX_REMIX.webm
+[25161.1164109706878662] 2018-01-23 21:19:01,824 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1753 in serialize_queue: Serializing queue for 138532599181213696
+[25184.1195211410522461] 2018-01-23 21:19:24,827 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 127966571300651008/Toaxt#9949 on Catch The Rainbow!/AFK Vagabonds -> [LEAVE, MOVE, MUTE]
+[25184.1200218200683594] 2018-01-23 21:19:24,827 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 4768 in on_voice_state_update: 127966571300651008/Toaxt#9949 has left Catch The Rainbow!/Pros
+[25197.3996334075927734] 2018-01-23 21:19:38,107 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 363412893137371136/thang#0303 on Catch The Rainbow!/Pros -> [MUTE]
+[25273.9776313304901123] 2018-01-23 21:20:54,685 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 363412893137371136/thang#0303 on Catch The Rainbow!/Pros -> [UNMUTE]
+[25327.2476336956024170] 2018-01-23 21:21:47,955 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 363412893137371136/thang#0303 on Catch The Rainbow!/Pros -> [MUTE]
+[25376.5849707126617432] 2018-01-23 21:22:37,292 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 4585 in on_message: 85618365707587584/EPICish#3906: ~stat
+[25376.7972629070281982] 2018-01-23 21:22:37,505 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 4704 in on_message: [2018-01-23 21:22:37.505139][STAT] EPICish#3906
+[25376.7977631092071533] 2018-01-23 21:22:37,505 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[25376.8307948112487793] 2018-01-23 21:22:37,538 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[25469.1178786754608154] 2018-01-23 21:24:09,825 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[25469.1183784008026123] 2018-01-23 21:24:09,826 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 136665080820400128
+[25469.1188793182373047] 2018-01-23 21:24:09,826 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1499 in on_player_finished_playing: DevilGale#4957
+[25469.1193797588348389] 2018-01-23 21:24:09,827 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1540 in on_player_finished_playing: Zedd - I Want You To Know ft. Selena Gomez
+[25470.3119814395904541] 2018-01-23 21:24:11,019 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 1643 in on_player_finished_playing: Stored song volume: 0.15
+[25471.4630455970764160] 2018-01-23 21:24:12,170 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[25471.4970784187316895] 2018-01-23 21:24:12,204 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[25471.5055863857269287] 2018-01-23 21:24:12,213 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=X46t8ZFqUB4
+[25474.0501489639282227] 2018-01-23 21:24:14,758 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=X46t8ZFqUB4
+[25474.0526535511016846] 2018-01-23 21:24:14,760 - FFMPEG - musicbot.player | In player.py::MainThread(2432), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\audio_cache\youtube-X46t8ZFqUB4-Zedd_-_I_Want_You_To_Know_ft._Selena_Gomez.webm
+[25474.2841312885284424] 2018-01-23 21:24:14,992 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1753 in serialize_queue: Serializing queue for 138532599181213696
+[25564.2637443542480469] 2018-01-23 21:25:44,971 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 127966571300651008/Toaxt#9949 on Catch The Rainbow!/Pros -> [JOIN, MOVE, UNMUTE]
+[25564.2637443542480469] 2018-01-23 21:25:44,971 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 4768 in on_voice_state_update: 127966571300651008/Toaxt#9949 has joined Catch The Rainbow!/Pros
+[25604.5491671562194824] 2018-01-23 21:26:25,257 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 363412893137371136/thang#0303 on Catch The Rainbow!/Pros -> [UNMUTE]
+[25721.1854717731475830] 2018-01-23 21:28:21,893 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[25721.1859710216522217] 2018-01-23 21:28:21,893 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 136665080820400128
+[25721.1864726543426514] 2018-01-23 21:28:21,894 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1499 in on_player_finished_playing: DevilGale#4957
+[25721.1869726181030273] 2018-01-23 21:28:21,894 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1540 in on_player_finished_playing: SunStroke Project & Olia Tira - Run Away Moldova
+[25721.8613932132720947] 2018-01-23 21:28:22,569 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 1643 in on_player_finished_playing: Stored song volume: 0.15
+[25722.5625162124633789] 2018-01-23 21:28:23,270 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[25722.5970492362976074] 2018-01-23 21:28:23,304 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[25722.6055586338043213] 2018-01-23 21:28:23,313 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 220 in _really_download: Download started: https://youtu.be/ECyeUYsU14E
+[25724.7132165431976318] 2018-01-23 21:28:25,421 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 230 in _really_download: Download complete: https://youtu.be/ECyeUYsU14E
+[25724.7152183055877686] 2018-01-23 21:28:25,423 - FFMPEG - musicbot.player | In player.py::MainThread(2432), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\audio_cache\youtube-ECyeUYsU14E-SunStroke_Project_Olia_Tira_-_Run_Away_Moldova.webm
+[25724.9394316673278809] 2018-01-23 21:28:25,647 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1753 in serialize_queue: Serializing queue for 138532599181213696
+[25906.1007857322692871] 2018-01-23 21:31:26,808 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[25906.1012852191925049] 2018-01-23 21:31:26,809 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 127966571300651008
+[25906.1022870540618896] 2018-01-23 21:31:26,810 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1499 in on_player_finished_playing: Toaxt#9949
+[25906.1027872562408447] 2018-01-23 21:31:26,810 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1540 in on_player_finished_playing: New Slaves
+[25907.2940850257873535] 2018-01-23 21:31:28,001 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 1643 in on_player_finished_playing: Stored song volume: 0.15
+[25908.4331524372100830] 2018-01-23 21:31:29,141 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[25908.4686870574951172] 2018-01-23 21:31:29,176 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[25908.4771938323974609] 2018-01-23 21:31:29,185 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 196 in _download: Download cached: https://www.youtube.com/watch?v=IyOL-f_UO5k
+[25910.4315838813781738] 2018-01-23 21:31:31,139 - FFMPEG - musicbot.player | In player.py::MainThread(2432), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\../MusicBot/audio_cache\youtube-IyOL-f_UO5k-New_Slaves.webm
+[25910.6788189411163330] 2018-01-23 21:31:31,386 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1753 in serialize_queue: Serializing queue for 138532599181213696
+[155691.5793693065643311] 2018-01-23 21:32:43,608 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(688), line 4767 in on_voice_state_update: Voice state update for 251835968129073155/Sharm#7248 on Kookiest Kroogers/Fuck blue -> [MUTE, DEAFEN]
+[26166.8999719619750977] 2018-01-23 21:35:47,607 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[26166.9004724025726318] 2018-01-23 21:35:47,608 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 363412893137371136
+[26166.9009726047515869] 2018-01-23 21:35:47,608 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[26166.9014732837677002] 2018-01-23 21:35:47,609 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 85618365707587584
+[26166.9014732837677002] 2018-01-23 21:35:47,609 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1499 in on_player_finished_playing: EPICish#3906
+[26166.9019742012023926] 2018-01-23 21:35:47,609 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1540 in on_player_finished_playing: Bartender OST 11 - SONORA ~Rekishi~
+[26167.6150474548339844] 2018-01-23 21:35:48,322 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 1643 in on_player_finished_playing: Stored song volume: 0.15
+[26168.3924896717071533] 2018-01-23 21:35:49,100 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[26168.4246549606323242] 2018-01-23 21:35:49,132 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[26168.4331605434417725] 2018-01-23 21:35:49,141 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=QtBD-J9RKTM
+[26170.4130086898803711] 2018-01-23 21:35:51,120 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=QtBD-J9RKTM
+[26170.4155130386352539] 2018-01-23 21:35:51,123 - FFMPEG - musicbot.player | In player.py::MainThread(2432), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\audio_cache\youtube-QtBD-J9RKTM-Bartender_OST_11_-_SONORA_~Rekishi~.webm
+[26170.6545302867889404] 2018-01-23 21:35:51,362 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1753 in serialize_queue: Serializing queue for 138532599181213696
+[26267.1305162906646729] 2018-01-23 21:37:27,838 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 363412893137371136/thang#0303 on Catch The Rainbow!/Pros -> [MUTE]
+[26281.6410043239593506] 2018-01-23 21:37:42,348 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(2432), line 4757 in on_voice_state_update: Voice state update for 363412893137371136/thang#0303 on Catch The Rainbow!/Pros -> [UNMUTE]
+[26314.2361662387847900] 2018-01-23 21:38:14,944 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[26314.2376651763916016] 2018-01-23 21:38:14,945 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 363412893137371136
+[26314.2386682033538818] 2018-01-23 21:38:14,946 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1455 in on_player_finished_playing: Past played: 21 of 20
+[26314.2396683692932129] 2018-01-23 21:38:14,947 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1484 in on_player_finished_playing: 127966571300651008
+[26314.2406692504882812] 2018-01-23 21:38:14,948 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1499 in on_player_finished_playing: Toaxt#9949
+[26314.2416708469390869] 2018-01-23 21:38:14,949 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1540 in on_player_finished_playing: Cowboy Bebop OST 4 - Yo pumpkin head
+[26315.3405632972717285] 2018-01-23 21:38:16,048 - INFO - musicbot.bot | In bot.py::MainThread(2432), line 1643 in on_player_finished_playing: Stored song volume: 0.15
+[26316.0769438743591309] 2018-01-23 21:38:16,784 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[26316.1194829940795898] 2018-01-23 21:38:16,827 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(2432), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[26316.1284923553466797] 2018-01-23 21:38:16,836 - INFO - musicbot.entry | In entry.py::MainThread(2432), line 196 in _download: Download cached: https://www.youtube.com/watch?v=f5M3R2WvFQk
+[26318.0745220184326172] 2018-01-23 21:38:18,782 - FFMPEG - musicbot.player | In player.py::MainThread(2432), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\../MusicBot/audio_cache\youtube-f5M3R2WvFQk-Cowboy_Bebop_OST_4_-_Yo_pumpkin_head.webm
+[26318.3117420673370361] 2018-01-23 21:38:19,019 - DEBUG - musicbot.bot | In bot.py::MainThread(2432), line 1753 in serialize_queue: Serializing queue for 138532599181213696

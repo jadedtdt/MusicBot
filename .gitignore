@@ -5,10 +5,13 @@
 audio_cache/
 dectalk/
 
-logs/
+data/server_names.txt
+logs/*
+data/*
 config/options.ini
 config/permissions.ini
 config/autoplaylist.txt
 
 *.command
 *.pickle
+logs/musicbot.log

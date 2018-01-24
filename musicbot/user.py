@@ -19,7 +19,9 @@ class User:
         self.mood = None
 
         self.song_list = []
-
+        self.heard_length = 15
+        self.heard_list = []
+		
     ###########################################################################
 
     #   Getting from Class
@@ -27,19 +29,10 @@ class User:
     ###########################################################################
     '''
     def getSong(self, music_obj):
-
-        # if given a string, force into music object type
-        if (type(music_obj) != Music):
-
-            if "http" in music_obj:
-                music_obj = Music(music_obj)
-            else:
-                music_obj = Music(None, music_obj)
-
+        if (type(music_obj) == str):
+            music_obj()
         for each_song in self.song_list:
-            if music_obj.getURL() is not None and music_obj.getURL() == each_song.getURL():
-                return each_song
-            if music_obj.getTitle() is not None and music_obj.getTitle().lower() in each_song.getTitle().lower():
+            if each_song.getURL() == music_obj.getURL() or each_song.getURL() == music_obj.getURL():
                 return each_song
         return None
     '''
@@ -53,9 +46,18 @@ class User:
     def getID(self):
         return self.user_id
 
+<<<<<<< HEAD
     def getName(self):
         return self.user_name
 
+=======
+    def getHeard(self):
+        return self.heard_list
+		
+    def getHeardLen(self):
+        return self.heard_length
+		
+>>>>>>> f638ecc066cd233708f388d9235782dbef36eb67
     ###########################################################################
 
     #   Setting values
@@ -66,6 +68,20 @@ class User:
 
     def setMood(self, mood):
         self.mood = mood
+		
+    def setHeardLen(self, heard_len):
+        if self.heard_length > len(self.song_list):
+            return False
+        else:
+            self.heard_length = heard_len
+            return True
+		
+    def setupHeard(self):
+        try:
+            self.heard_list
+        except:
+            self.heard_list = []
+            self.heard_length = 15
 
     def setID(self, user_id):
         self.user_id = user_id
@@ -101,11 +117,17 @@ class User:
     def addMood(self, tag):
         self.mood = tag
 
+    def addHeard(self, music_obj):
+        self.heard_list.append(music_obj)
+        while len(self.heard_list) > self.heard_length:
+            del self.heard_list[0]
+		
     ###########################################################################
 
     #   Removing from Class
 
     ###########################################################################
+<<<<<<< HEAD
     def removeSong(self, url):
         if self.hasSong(url):
             self.song_list.remove(url)

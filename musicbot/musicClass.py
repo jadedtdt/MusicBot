@@ -8,20 +8,18 @@ class Music:
         self.config = Config(config_file)
 
         if title:
-            if type(title) == list:
-                title = ' '.join(title)
+            if type(title) == list:    
+                self.title = " ".join(title)
+            else:
+                self.title = title
         else:
-            title = ""
-        self.title = title
+            self.title = ""
         self.url = url
         # check if already in list format
         if type(author) == list:
             self.likers = author
         else:
-            if author:
-                self.likers = [author]
-            else:
-                self.likers = []
+            self.likers = [author]
 
         self.plays = 0
         self.tags = []
@@ -97,6 +95,17 @@ class Music:
     def setVolume(self, volume):
         self.volume = volume
 
+    def __repr__(self):
+        return "Title: {title}, URL: {url}".format(
+            name=getattr(self, 'title', "NO_TITLE"),
+            id=getattr(self, 'url', "NO_URL"))
+
+    def __hash__(self):
+        return hash(self.url)
+
+    #def __eq__(self, other):
+    #    return self.url == other.getURL()
+
     ###########################################################################
 
     #   Removing from Class
@@ -118,8 +127,3 @@ class Music:
     def removeTag(self, tag):
         if self.hasTag(tag):
             self.tags.remove(tag)
-
-    def __repr__(self):        
-        return "URL: {url} --- Title: {title}".format(
-            url=getattr(self, 'url', "NO_URL"),
-            title=getattr(self, 'title', "NO_TITLE"))

@@ -95,8 +95,6 @@ class MusicBot(discord.Client):
         # Metadata
         self.metaData = {}
         self.wholeMetadata = load_file(self.config.metadata_file)
-        self.list_Played = []
-        self.len_list_Played = 20
 
         if not self.new_autoplaylist.songs:
             log.warning("[__INIT__] Autoplaylist is empty, disabling.")
@@ -106,7 +104,7 @@ class MusicBot(discord.Client):
 
         if self.blacklist:
             log.debug("[__INIT__] Loaded blacklist with {} entries".format(len(self.blacklist)))
-
+            
         #Setting up the metaData tags
         if not self.wholeMetadata:
             log.warning("[__INIT__] Metadata tags are empty")
@@ -158,7 +156,6 @@ class MusicBot(discord.Client):
                     uname = uname[:-4] #strip off 4digit num (jadedtdt)
 
                     for each_member in self.get_all_members():
-                        log.warning(each_member)
                         if uname == each_member.name:
                             discord_member = each_member
                 else:
@@ -422,6 +419,7 @@ class MusicBot(discord.Client):
                     if each_song.getURL() == new_song.getURL():
                         self.new_autoplaylist.songs.remove(each_song)
                 self.new_autoplaylist.songs.append(new_song)
+
 
     async def merge_dupes(self, song1, song2):
         if type(song1) != Music and type(song2) != Music:
@@ -791,6 +789,31 @@ class MusicBot(discord.Client):
                 log.warning(each_song)
 
         return len(songs)
+    async def setup_heard(self):
+        # First time setup of personal lists of songs previously played
+        # self.users_list is a list not dictionary
+        for user in self.users_list:
+            user.setupHeard()
+            user.getHeard()
+        print("Please add cmd_heard to all users")
+        print("\aDelete line 1781 and 1782")
+        prntStr = "__React to remove__\n<@" + self.config.owner_id +  "> please add cmd_heard, cmd_oldlisthas to all users\nAnd Delete line 1781 and 1782 in bot.py\nAnd give bot Administrator rights."
+        for server in self.servers:
+            for channel in server.channels:
+                if channel.id == list(self.config.bound_channels)[0]:
+                    msg = await self.send_message(channel, prntStr)
+        
+        await self.wait_for_reaction(message=msg)
+        await self.delete_message(msg)
+        
+    def check_url(self, url):
+        if 'www.' in url and 'https://' not in url:
+            url = 'https://' + url
+        if '&index' in url or '&list' in url:
+            return url.split('&')[0]
+        if '&t' in url and 'yout' in url:
+            return url.split('&')[0]
+        return url
 
     async def revert_user_changes(self):
         for each_user in self.users_list:
@@ -875,6 +898,7 @@ class MusicBot(discord.Client):
 
         likers = song.getLikers()
         likers_str = ""
+
         if likers:
             likers = list(filter(lambda liker: self._get_user(liker) != None, likers))
             likers = [self._get_user(liker) for liker in likers]
@@ -1103,6 +1127,16 @@ class MusicBot(discord.Client):
     async def _wait_delete_msg(self, message, after):
         await asyncio.sleep(after)
         await self.safe_delete_message(message, quiet=True)
+
+    async def _wait_delete_msgs(self, messages, after):
+        await asyncio.sleep(after)
+        try:
+            if len(messages) == 1:
+                await self.delete_message(message[0])
+            else:
+                await self.delete_messages(messages)
+        except Exception as e:
+            print("Something went wrong: ", e)
 
     # TODO: Check to see if I can just move this to on_message after the response check
     async def _manual_delete_check(self, message, *, quiet=False):
@@ -1453,7 +1487,30 @@ class MusicBot(discord.Client):
                     if not (m.deaf or m.self_deaf or m.id == self.user.id):
                         people.append(m.id)
 
-                log.debug("Past played: %s of %s" % (len(self.list_Played), self.len_list_Played))
+                ####################
+                # BEGIN: Prepare heard (repeating songs)
+                ####################
+                list_people = list(filter(lambda user_obj : user_obj.getID() in people, self.users_list))
+                tmpClock = time.perf_counter()
+                self.list_heard = []
+
+                list(filter(lambda user_obj : self.list_heard.extend(user_obj.getHeard()), list_people))
+                self.list_heard = list(set(self.list_heard))
+                # print("1st time: " + str(time.perf_counter() - tmpClock))
+                
+                #log.debug("User and Heard Len: " + str(list(map(lambda user_obj : self._get_user(user_obj.getID()).display_name + " - " + str(user_obj.getHeardLen()), list_people))))
+                #log.debug("List heard all: " + str(list(map(lambda song_obj : song_obj.getTitle(), self.list_heard))))
+                
+                # tmpClock = time.perf_counter()
+                # self.list_heard = []
+                # for user_obj in list_people:
+                #     self.list_heard.extend(user_obj.getHeard())
+                # self.list_heard = list(set(self.list_heard))
+                # print("2nd time " + str(time.perf_counter() - tmpClock))
+                ####################
+                # END: Prepare heard (repeating songs)
+                ####################
+
                 ####################
                 # Ghost begin
                 ####################
@@ -1531,18 +1588,18 @@ class MusicBot(discord.Client):
                         # Repeat begin
                         ####################
                         if (song != None):
-                            if song.getURL() in self.list_Played:
-                                log.debug("Song played too recently")
-                                timeout = timeout + 1
-                                continue
-                            if len(self.list_Played) >= self.len_list_Played:
-                                del self.list_Played[0:(len(self.list_Played) - self.len_list_Played)]
+                            if None not in self.list_heard and len(self.list_heard) != 0:
+                                if any(filter(lambda song_obj : song_obj.getURL() == song.getURL(), self.list_heard)):
+                                    log.debug("Song played too recently: " + song.getTitle())
+                                    timeout = timeout + 1
+                                    continue
                             if playURL == None:
                                 log.debug(song.getTitle())
-                                self.list_Played.append(song.getURL())
+                                for user in list_people:
+                                    user.addHeard(song)
                             else:
+                                print("UH OH")
                                 log.debug(playURL)
-                                self.list_Played.append(playURL)
 
                             timeout = 0
                         ####################
@@ -1554,13 +1611,12 @@ class MusicBot(discord.Client):
                             url = random.choice(user.getSongList())
                             song = self.find_song_by_url(url)
                             #check if repeat song
-                            if song.getURL() in self.list_Played:
+                            if any(filter(lambda song_obj : song_obj.getURL() == song.getURL(), self.list_heard)):
                                 log.debug("Song played too recently")
                                 timeout = timeout + 1
                                 continue
-                            if len(self.list_Played) >= self.len_list_Played:
-                                del self.list_Played[0:(len(self.list_Played) - self.len_list_Played)]
-                            self.list_Played.append(song.getURL())
+                            for user in list_people:
+                                    user.addHeard(song)
                             timeout = 0
                         else:
                             log.warning("USER NOT IN CHANNEL!")
@@ -1613,6 +1669,7 @@ class MusicBot(discord.Client):
                             #for tag in tags:
                             #    await self._cmd_removetag(player, author, channel, tag, printing=False)
                             #this doesn't work because there's currently no song playing.. not sure how to do this
+
                             #await self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % playURL)
                             print("\a")  # BEEPS
 
@@ -2102,6 +2159,9 @@ class MusicBot(discord.Client):
         # maybe option to leave the ownerid blank and generate a random command for the owner to use
         # wait_for_message is pretty neato
 
+        asyncio.ensure_future(self.setup_heard())
+        asyncio.sleep(0.1)
+
         await self._join_startup_channels(autojoin_channels, autosummon=self.config.auto_summon)
 
         # t-t-th-th-that's all folks!
@@ -2131,7 +2191,7 @@ class MusicBot(discord.Client):
         return names
 
     # finds the first instance a song URL is found or if a string is found in a title and returns the object
-    def find_song_by_url(self, url):
+    async def find_song_by_url(self, url):
 
         found_song = None
 
@@ -2308,27 +2368,37 @@ class MusicBot(discord.Client):
 
         return Response(longStr, delete_after=35)
 
-    async def cmd_trackcount(self, server, player, channel, author, leftover_args):
+        
+    async def cmd_heard(self, server, player, channel, author, leftover_args=None):
         """
         Usage:
-        {command_prefix}trackcount #
+        {command_prefix}heard #
 
         Adjusts the amount of songs that need to be played before a previous song can be played again
 
         """
-
-        if len(leftover_args) > 1:
-            prntStr = "Too many arguments given for **adjrepeat** command."
-            return Response(prntStr, delete_after=20)
-        elif len(leftover_args) == 0:
-            prntStr = "Current allowed number of repeated songs is **" + str(self.len_list_Played) + "**."
+        if leftover_args == None:
+            prntStr = "__**" + author.display_name + "**__'s heard length is " + str(self.get_user(author.id).getHeardLen())
             return Response(prntStr, delete_after=20)
         try:
-            self.len_list_Played = int(leftover_args[0])
-            prntStr = "Allowed number of repeated song changed to **" + leftover_args[0] + "**."
-        except:
+            if int(leftover_args[0]) < 0:
+                prntStr = "Please input a number greater than 0."
+            else:
+                user = self.get_user(author.id)
+                if int(leftover_args[0]) > len(user.getSongList()):
+                    prntStr = "Unable to change __**" + author.display_name + "**__'s heard length. Desired heard length of *" + leftover_args[0] + "* is larger than song list."
+                else:
+                    prntStr = "__**" + author.display_name + "**__'s heard length went from *" + str(user.getHeardLen()) + "* to *" + leftover_args[0] + "*"
+                    user.setHeardLen(int(leftover_args[0]))
+        except Exception as e:
             prntStr = "Invalid value given. Please input a number."
+            log.error(e)
+        
         return Response(prntStr, delete_after=20)
+
+    async def cmd_okay(self, author):
+        prntStr = [":ok_hand:", author.mention + "'s command was shot down! :gun:", "skull_crossbones: Deleting List in 10 years. skull_crossbones:", "Enqueued Doritos Ad to be played. Position in queue: Up Next", "~smart " + author.mention]
+        return Response(random.choice(prntStr), delete_after=20)
 
     async def cmd_stat(self, server, player, channel, author, leftover_args):
         """
@@ -2538,10 +2608,10 @@ class MusicBot(discord.Client):
             return []
 
 
-    async def cmd_tag(self, player, author, channel, permissions, leftover_args):
+    async def cmd_tag(self, player, author, channel, permissions, leftover_args=None):
         """
         Usage:
-            {command_prefix}tag [command] the_tag
+            {command_prefix}tag [command] [url(OPTIONAL)] the_tag
 
         Ex: ~tag add rock
         [command]:
@@ -2551,39 +2621,73 @@ class MusicBot(discord.Client):
         - LIST : Prints all the tags
         - SHOW : Shows the songs in the specified tag
         - MSG : Messages user with all the songs w/ urls of the specified tag
+        - REPLACE :  [tag1] [tag2] replacing tag1 with tag2
         """
 
         await self.send_typing(channel)
-        if len(leftover_args) >= 1 and len(leftover_args) <= 2:
+        if len(leftover_args) >= 1:
             self.updateMetaData()
-            if leftover_args[0].lower() == "add":
-                return await self._cmd_addtag(player, author, channel, leftover_args[1])
-            elif leftover_args[0].lower() == "remove":
-                return await self._cmd_removetag(player, author, channel, leftover_args[1])
-            elif leftover_args[0].lower() == "play":
-                return await self._cmd_playtag(player, author, channel, permissions, leftover_args[1])
-            elif leftover_args[0].lower() == "list":
-                return await self._cmd_listtag(player, author, channel, permissions, None)
+            if leftover_args[0].lower() == "list":
+                return await self._cmd_listtag(player, author, channel)
             elif leftover_args[0].lower() == "show":
-                return await self._cmd_showtag(player, author, channel, permissions, leftover_args[1])
+                tag = ' '.join(leftover_args[1:])
+                return await self._cmd_showtag(player, author, channel, permissions, tag)
             elif leftover_args[0].lower() == "msg":
-                return await self._cmd_msgtag(player, author, channel, permissions, leftover_args[1])
+                tag = ' '.join(leftover_args[1:])
+                return await self._cmd_msgtag(player, author, channel, permissions, tag)
+            elif leftover_args[0].lower() == "play":
+                tag = ' '.join(leftover_args[1:])
+                return await self._cmd_playtag(player, author, channel, permissions, tag)
+            elif leftover_args[0].lower() == "replace":
+                tags = " ".join(leftover_args[1:])
+                if tags != "":
+                    if (tags[0] == '[' and ']' in tags[1:-1]) and ('[' in tags[1:-1] and tags[-1] == ']') and (tags[1:-1].find(']') < tags[1:-1].find('[')):
+                        tag1 = tags[1:tags[1:-1].find(']') + 1]
+                        tag2 = tags[tags[1:-1].find('[') + 1:-1]
+                        return await self._cmd_replacetag(author, tag1, tag2)
+                prntStr = "Please put the command of replace in the form of\n ```{command_prefix}tag replace [tag_initial] [tag_final]```"
+                return Response(prntStr, delete_after=20)
+
+            if "http" in leftover_args[1] and "://" in leftover_args[1] or "www." in leftover_args[1]:
+                song_info = self.find_song_by_url(leftover_args[1])
+                tag = ' '.join(leftover_args[2:])
+                if song_info == None:
+                    prntStr = "**" + leftover_args[1] + "** is not added in the Autoplay list"
+                    return Response(prntStr, delete_after=20)
+            else:
+                if not player.is_playing:
+                    prntStr = "Error: No song is playing"
+                    return Response(prntStr, delete_after=20)
+                song_info = self.find_song_by_url(player.current_entry.url)
+                tag = ' '.join(leftover_args[1:])
+                if song_info == None:
+                    prntStr = "**" + player.current_entry.title + "** is not added in the Autoplay list"
+                    return Response(prntStr, delete_after=20)
+
+            if leftover_args[0].lower() == "add":
+                return await self._cmd_addtag(player, author, channel, tag, song_info)
+            elif leftover_args[0].lower() == "remove":
+                return await self._cmd_removetag(player, author, channel, tag, song_info)
             else:
                 prntStr = "**[" + leftover_args[0] + "]** is not a recognized command"
                 return Response(prntStr, delete_after=20)
         else:
-            prntStr = "**" + str(len(leftover_args)) + "** arguments were given **1-2** arguments expected"
+            prntStr = "**" + str(len(leftover_args)) + "** arguments were given **2 or more** arguments expected"
             return Response(prntStr, delete_after=20)
 
 
-    async def _cmd_addtag(self, player, author, channel, leftover_args):
+    async def _cmd_addtag(self, player, author, channel, tag, song=None):
         """
         Usage:
             {command_prefix}addtag TAG
 
         Adds the playing song to the specified tag
         """
-        tag = leftover_args.lower()
+        log.debug("Trying to add " + song.getTitle() + " to " + tag + " tag")
+
+        if song == None:
+            prntStr = "No song was playing during **[add]** command"
+            return Response(prntStr, delete_after=20)
 
         if tag == "reset" or tag == "clear":
             prntStr = "Sorry, '**reset**' and '**clear**' are reserved tags. Please choose something else"
@@ -2592,20 +2696,21 @@ class MusicBot(discord.Client):
         #Checks if tag already exists
         if tag in self.metaData.keys():
             #Checks if the song is already in the tag/list
-            if sanitize_string(player.current_entry.url) not in self.metaData[tag]:
-                self.metaData[tag].append(player.current_entry.url)
+            if sanitize_string(song.getURL()) not in self.metaData[tag]:
+                self.metaData[tag].append(song.getURL())
             else:
-                prntStr = "**" + player.current_entry.title + "** is already added to the **[" + leftover_args + "]** tag"
+                prntStr = "**" + song.getTitle() + "** is already added to the **[" + tag + "]** tag"
                 return Response(prntStr, delete_after=20)
         else:
             #If tag doesn't exist, create a new tag
-            self.metaData[tag] = [player.current_entry.url]
+            self.metaData[tag] = [song.getURL()]
         #Updating list to file
-        await self._cmd_updatetags()
-        prntStr = "**" + player.current_entry.title + "** was added to the **[" + leftover_args + "]** tag"
+        self._cmd_updatetags()
+        await self.tag_update_apl(tag, song, 'add')
+        prntStr = "**" + song.getTitle() + "** was added to the **[" + tag + "]** tag"
         return Response(prntStr, delete_after=20)
 
-    async def _cmd_removetag(self, player, author, channel, leftover_args, printing=True):
+    async def _cmd_removetag(self, player, author, channel, tag, song=None, printing=True):
         """
         Usage:
             {command_prefix}removetag TAG
@@ -2614,41 +2719,26 @@ class MusicBot(discord.Client):
         """
 
         # Checks if the tag exists first
-        if leftover_args.lower() in self.metaData.keys():
+        if tag in self.metaData.keys():
             #Checks if the url is in the list
-            if sanitize_string(player.current_entry.url) in self.metaData[leftover_args.lower()]:
-                self.metaData[leftover_args.lower()].remove(sanitize_string(player.current_entry.url))
+            if song.getURL() in self.metaData[tag]:
+                self.metaData[tag].remove(song.getURL())
                 #Remove tag entirely if empty
-                if len(self.metaData[leftover_args.lower()]) == 0:
-                    del self.metaData[leftover_args.lower()]
+                if len(self.metaData[tag]) == 0:
+                    del self.metaData[tag]
                 #Update tags file
-                await self._cmd_updatetags()
-                prntStr = "**" + player.current_entry.title + "** is removed from **[" + leftover_args + "]** tag"
+                self._cmd_updatetags()
+                await self.tag_update_apl(tag, song, 'remove')
+                prntStr = "**" + song.getTitle() + "** is removed from **[" + tag + "]** tag"
             else:
-                prntStr = "**" + player.current_entry.title + "** was not in **[" + leftover_args + "]** tag"
+                prntStr = "**" + song.getTitle() + "** was not in **[" + tag + "]** tag"
 
         if printing == True:
             return Response(prntStr, delete_after=20)
         else:
             return True
 
-    async def _cmd_updatetags(self):
-        """
-        Usage:
-            self._cmd_updatetags()
-
-        Takes the current metaData dictionary and pushes to file
-        """
-
-        str_to_write = []
-        for metaTag in self.metaData:
-            #First tag
-            str_to_write.append(metaTag)
-            #Second push urls
-            str_to_write.append(sanitize_string(self.metaData[metaTag]))
-        write_file(self.config.metadata_file, str_to_write)
-
-    async def _cmd_playtag(self, player, author, channel, permissions, leftover_args):
+    async def _cmd_playtag(self, player, author, channel, permissions, tag):
         """
         Usage:
             {command_prefix}playtag TAG
@@ -2657,8 +2747,8 @@ class MusicBot(discord.Client):
         """
 
         #Checks if tag exists
-        if leftover_args.lower() in self.metaData.keys():
-            playUrl = random.choice(self.metaData[leftover_args.lower()])
+        if tag in self.metaData.keys():
+            playUrl = random.choice(self.metaData[tag])
         else:
             prntStr = "The tag **[" + leftover_args + "]** does not exist."
             return Response(prntStr, delete_after=35)
@@ -2682,7 +2772,7 @@ class MusicBot(discord.Client):
             prntStr = "A song from **[" + leftover_args + "]** was unable to be added."
             return Response(prntStr, delete_after=35)
 
-    async def _cmd_listtag(self, player, author, channel, permissions, leftover_args):
+    async def _cmd_listtag(self, player, author, channel):
         """
         Usage:
             {command_prefix}listtag
@@ -2696,15 +2786,15 @@ class MusicBot(discord.Client):
         #for key,value in sorted(self.metaData.items(), key=lambda tuple: (len(tuple[1]),tuple[0]), reverse=True):
         #Will sort the metaData by the
         for key,value in sorted(self.metaData.items()):
-        #for tags in self.metaData.keys():
             if len(prntStr + key) < 1990:
-                prntStr += "**[" + key.lower() + "]** : " + str(len(value)) + "\n"
+                prntStr += "**[" + key + "]** : " + str(len(value)) + "\n"
             else:
-                prntStr += "```Partial```"
-                break
+                await self.safe_send_message(channel, prntStr, expire_in=30)
+                await self.send_typing(channel)
+                prntStr = ""
         return Response(prntStr, delete_after=30)
 
-    async def _cmd_showtag(self, player, author, channel, permissions, leftover_args):
+    async def _cmd_showtag(self, player, author, channel, permissions, tag):
         """
         Usage:
             {command_prefix}showtag TAG
@@ -2713,41 +2803,29 @@ class MusicBot(discord.Client):
         """
 
         #Checks if tag exists
-        if leftover_args.lower() in self.metaData.keys():
-            playUrl = random.choice(self.metaData[leftover_args.lower()])
+        if tag in self.metaData.keys():
+            playUrl = random.choice(self.metaData[tag])
         else:
-            prntStr = "The tag **[" + leftover_args + "]** does not exist."
+            prntStr = "The tag **[" + tag + "]** does not exist."
             return Response(prntStr, delete_after=35)
 
         prntStr = "__Songs in **[" + leftover_args.capitalize() + "]** tag__\n\n"
-        for link in self.metaData[leftover_args]:
-            t0 = time.clock()
-            #Getting people with the url in their list
-            prsnLists = list(filter(lambda person: [song for song in person.getSongList() if link == song], self.users_list))
-            #prsnLists = []
-            #for person in self.users_list:
-            #    for song in person.getSongList():
-            #        if link == song.getURL():
-            #            prsnLists.append(person)
 
-            if len(prsnLists) == 0:
+        for link in self.metaData[tag]:
+            song = self.find_song_by_url(link)
+            if song == None:
                 continue
-            #Getting song name
-            #print(prsnLists[0].getSongList())
-            song = list(filter(lambda songs: link in songs, prsnLists[0].getSongList()))
-
-            if len(song) == 0:
-                continue
-
-            if len(prntStr + str(song[0])) < 2000:
-                if song[0].getTitle() != None:
-                    prntStr += ":notes:" + song[0].getTitle() + "\n"
-                else:
-                    prntStr += ":notes:" + "[NO TITLE] " + song[0].getURL() + "\n"
+            if len(prntStr + str(song)) > 2000:
+                Response(prntStr, delete_after=50)
+                prntStr = ""
+            if song.getTitle() != None:
+                prntStr += ":notes:" + song.getTitle() + "\n"
+            else:
+                prntStr += ":notes:" + "[NO TITLE] <" + song.getURL() + ">\n"
 
         return Response(prntStr, delete_after=50)
 
-    async def _cmd_msgtag(self, player, author, channel, permissions, leftover_args):
+    async def _cmd_msgtag(self, player, author, channel, permissions, tag):
         """
         Usage:
             {command_prefix}msgtag the_tag
@@ -2756,28 +2834,123 @@ class MusicBot(discord.Client):
         """
 
         #Checks if tag exists
-        if leftover_args.lower() in self.metaData.keys():
-            playUrl = random.choice(self.metaData[leftover_args.lower()])
+        if tag in self.metaData.keys():
+            pass
         else:
             prntStr = "The tag **[" + leftover_args + "]** does not exist."
             return Response(prntStr, delete_after=35)
 
         prntStr = []
-        for link in self.metaData[leftover_args]:
-            t0 = time.clock()
-            prsnLists = list(filter(lambda person: [songList for songList in self.users_list[person] if link in songList], self.users_list.keys()))
-
-            songTitle = list(filter(lambda songs: link in songs, self.users_list[prsnLists[0]]))
-            if len(songTitle) == 0:
+        for link in self.metaData[tag]:
+            song = self.find_song_by_url(link)
+            
+            if song == None:
                 continue
-            prntStr.append(songTitle[0].split(" --- ")[0] + "\r\n\t" + link)
+            prntStr.append(song.getTitle + "\r\n\t" + link)
 
         with BytesIO() as prntDoc:
             prntDoc.writelines(d.encode('utf8') + b'\n' for d in prntStr)
             prntDoc.seek(0)
-            await self.send_file(author, prntDoc, filename='%stagList.txt' %leftover_args)
+            await self.send_file(author, prntDoc, filename='%s_tagList.txt' %tag)
 
         return Response(":mailbox_with_mail:", delete_after=20)
+
+    async def _cmd_replacetag(self, author, tag1, tag2):
+        if tag1 in self.metaData.keys():
+            print(list(map(lambda song_url : song_url , self.metaData[tag1])))
+            if author.id in list(map(lambda song_url : self.find_song_by_url(song_url).getLikers() , self.metaData[tag1])):
+                return Response("Woah buckaroo", delete_after=20)
+            self.metaData[tag2] = self.metaData[tag1]
+            del self.metaData[tag1]
+            self.cmd_updatetags()
+            await self.tag_update_apl([tag1, tag2], None, 'replace')
+            prntStr = "The tag **[" + tag1 + "]** was replaced with the tag **[" + tag2 + "]**"
+        else:
+            prntStr = "The tag **[" + tag1 + "]** does not exist."
+        return Response(prntStr, delete_after=20)
+
+    def _cmd_updatetags(self):
+        """
+        Usage:
+            self._cmd_updatetags()
+
+        Takes the current metaData dictionary and pushes to file
+        """
+
+        str_to_write = []
+        for metaTag in self.metaData:
+            #First tag
+            str_to_write.append(metaTag)
+            #Second push urls
+            str_to_write.append(sanitize_string(self.metaData[metaTag]))
+        # print(str_to_write)
+        write_file(self.config.metadata_file, str_to_write)
+
+    async def tag_update_apl(self, tag, song, cmd):
+        if cmd == 'add':
+            #Changing song in APL
+            song.addTag(tag)
+            #Changing song in User's list
+            song_likers = song.getLikers()
+            for user_id in song_likers:
+                self.get_user(user_id).getSong(song).addTag(tag)
+        elif cmd == 'remove':
+            #Changing song in APL
+            song.removeTag(tag)
+            #Changing song in User's list
+            song_likers = song.getLikers()
+            for user_id in song_likers:
+                self.get_user(user_id).getSong(song).removeTag(tag)
+        elif cmd == 'replace':
+            #Changing song in APL
+            for song_url in self.metaData[tag[1]]:
+                song = self.find_song_by_url(song_url)
+                song.removeTag(tag[0])
+                song.addTag(tag[1])
+                
+                #Changing song in User's list
+                song_likers = song.getLikers()
+                for user_id in song_likers:
+                    users_Song = self.get_user(user_id).getSong(song)
+                    users_Song.removeTag(tag[0])
+                    users_Song.addTag(tag[1])
+
+    def remove_song_from_tags(self, song):
+        print("Looking for: " + song.getURL())
+        updated_tags = False
+        future_delete = []
+        for tag_key in self.metaData.keys():
+            if song.getURL() in self.metaData[tag_key]:
+                self.metaData[tag_key].remove(song.getURL())
+                if len(self.metaData[tag_key]) == 0:
+                    future_delete.append(tag_key)
+                updated_tags = True
+        for delete_tag in future_delete:
+            del self.metaData[delete_tag]
+        if updated_tags == True:
+            self._cmd_updatetags()
+
+    async def cmd_embed(self, player, author, channel, permissions, leftover_args):
+        em = discord.Embed(type="rich")
+        # leftover_args = list(map(lambda ele : int(ele), leftover_args))
+        chars = ('0123456789'  * 7 + '\n') * 30
+        #title = 256 Char limit
+        #description = 2048 Char limit
+        #field.name = 256 char limit
+        #field.value = 1024 char limit
+        # em.title = chars[:leftover_args[0]]
+
+        em.title = leftover_args[0]
+        try:
+            em.description = leftover_args[1]
+        except:
+            print("\aDescription failed")
+        try:
+            em.add_field(name=leftover_args[2], value=leftover_args[3])
+            # em.add_field(name=chars[:leftover_args[2]], value=chars[:leftover_args[3]], inline=True)
+        except:
+            print("\aset_field failed")
+        await self.send_message(channel, embed=em)
 
     async def cmd_listhas(self, player, author, channel, permissions, leftover_args):
         """
@@ -2787,19 +2960,151 @@ class MusicBot(discord.Client):
         Looks if a song title is in your or others lists
 
         """
+        FIELDS_LIMIT = 25
+        EM_CHAR_LIMIT = 6000
 
+        thinkingMsg = await self.safe_send_message(channel, "Processing:thought_balloon:")
+        songsInList = 0
+
+        if len(leftover_args) == 0:
+            prntStr += "```Usage:\n\t{command_prefix}listhas songTitle\n\nLooks if a song title in in your list```"
+            return Response(prntStr, delete_after=20)
+        else:
+            messages = []
+            title = '**Autoplay lists containing: "' + ' '.join(leftover_args) +  '"**'
+            print(len(title))
+            if len(title) > 256:
+                title = 'Autoplay Lists'
+            em = discord.Embed(title=title, type="rich", color=0x006600)
+
+            user = self.get_user(author).getSongList()
+            ContainsList = await self.find_songs_with_title(leftover_args, self.autoplaylist)
+            #sorting into a list for each person who liked the songs
+            peopleListSongs = {}
+            for songObj in ContainsList:
+                for person in songObj.getLikers():
+                    if person not in peopleListSongs:
+                        peopleListSongs[person] = [songObj]
+                    else:
+                        peopleListSongs[person].append(songObj)
+
+            if len(peopleListSongs) == 0:
+                await self.safe_delete_message(thinkingMsg)
+                prntStr = "No song has **__" + " ".join(leftover_args).strip() + "__** in the title"
+                return Response(prntStr, delete_after=20)
+
+            t0 = time.perf_counter()
+            #Printing: Yours
+            char_cnt = 0
+            if author.id in peopleListSongs:
+                em.description = "\t:busts_in_silhouette:__Yours__\n"
+                prntStr = ""
+                em.set_footer(text=author.display_name)
+                char_cnt += len(em.description + em.footer.text)
+                times_printed = 0
+                for songObj in peopleListSongs[author.id]:
+                    #print(peopleListSongs[author.id])
+                    lnprnt = ":point_right:[" + songObj.getTitle() + "](" + self.check_url(songObj.getURL()) + ")\n"
+                    if (char_cnt + len(lnprnt)) > (EM_CHAR_LIMIT - 15) or len(em.fields) == FIELDS_LIMIT:
+                        em.set_footer(text=em.footer.text + " | Partial List")
+                        break
+                    if len(em.description + lnprnt) < 2048:
+                        em.description += lnprnt
+                        char_cnt += len(lnprnt)
+                    elif len(prntStr + lnprnt) > 1024:
+                        em.add_field(name='\u200b',value=prntStr, inline=True)
+                        char_cnt += len(prntStr)
+                        print("Field ["  + str(len(em.fields)) + "]: " + str(len(prntStr)) + " of " + str(char_cnt))
+                        prntStr = lnprnt
+                    else:
+                        prntStr += lnprnt
+
+                messages.append(await self.send_message(channel, embed=em))
+                char_cnt = 0
+                em.title = ""
+                em.description = ""
+                em.clear_fields()
+                del peopleListSongs[author.id]
+            print("2nd run: " + str(time.perf_counter() - t0))
+
+            em_unknown = []
+            new_em = True
+            #Printing: Others
+            for author_id in peopleListSongs.keys():
+                userName = "Unknown User" if self._get_user(author_id) == None else self._get_user(author_id).display_name
+                intro_prnt = "\t:busts_in_silhouette:__" + userName + "__\n"
+                if new_em and userName != "Unknown User":
+                    em.description = intro_prnt
+                    new_em = False
+                    em.set_footer(text=userName)
+                    char_cnt += len(em.description + em.footer.text)
+                prntStr = ""
+                for songObj in peopleListSongs[author_id]:
+                    lnprnt = ":point_right:[" + songObj.getTitle() + "](" + self.check_url(songObj.getURL()) + ")\n"
+                    if (char_cnt + len(prntStr + intro_prnt)) > (EM_CHAR_LIMIT - 15) or len(em.fields) == FIELDS_LIMIT:
+                        em.set_field_at(-1, name=em.fields[-1].name + " | Partial List", value=em.fields[-1].value, inline=True)
+                        break
+                    if len(em.description + lnprnt) < 2048 and userName != "Unknown User":
+                        em.description += lnprnt
+                        char_cnt += len(lnprnt)
+                    elif len(prntStr + lnprnt) > 1024:
+                        if userName == "Unknown User":
+                            em_unknown.append(prntStr)
+                            # em_unkown.add_field(name="\u200b",value=prntStr, inline=True)
+                        else:
+                            em.add_field(name="\t:busts_in_silhouette:__" + userName + "__",value=prntStr, inline=True)
+                            char_cnt += len(em.fields[-1].name + em.fields[-1].value)
+                            print("Field ["  + str(len(em.fields)) + "]: " + str(len(prntStr)) + " of " + str(char_cnt))
+
+                        prntStr = lnprnt
+                    else:
+                        prntStr += lnprnt
+                        lnprnt = ""
+                # print(em.fields)
+                if len(em.fields) < FIELDS_LIMIT and lnprnt == "":
+                    print(userName + "\aIt happened")
+                    #em.add_field(name='\u200b', value=prntStr, inline=True)
+                    print(prntStr)
+
+                if char_cnt != 0:
+                    new_em = True
+                    messages.append(await self.send_message(channel, embed=em))
+                    em.description = ""
+                    em.clear_fields()
+                    char_cnt = 0
+            if len(em.fields) != 0:
+                messages.append(await self.send_message(channel, embed=em))
+                em.clear_fields()
+            messages.append(await self.send_message(channel, "```Finished Printing```"))
+            asyncio.ensure_future(self._wait_delete_msgs(messages, 60 + len(messages)))
+            await self.safe_delete_message(thinkingMsg)
+
+            # em1 = discord.Embed(type="rich")
+            # em1.title = title
+            # # em1.description = em_prsnPrint
+            # em1.set_footer(text=(author.display_name + "    | 1 of 3 pages" ))
+            # # em1.add_field(name="1 of 3 pages", value=em_prsnPrint)
+            # print(em1.fields)
+            # msgr = await self.send_message(channel, embed=em1)
+            # #other option self.emojis.find("name", name)
+            # await self.add_reaction(msgr, "◀") #:arrow_backward:
+            # # await self.add_reaction(msgr, ":arrow_backward:")
+            # await self.add_reaction(msgr, "▶") #:arrow_forward:
+            
+    async def cmd_oldlisthas(self, player, author, channel, permissions, leftover_args):
+        ###### 1/10/2018 ######
         #Add to list after whole list is compiled
         thinkingMsg = await self.safe_send_message(channel, "Processing:thought_balloon:")
         prntStr = ""
         songsInList = 0
+
         if len(leftover_args) == 0:
             prntStr += "```Usage:\n\t{command_prefix}listhas songTitle\n\nLooks if a song title in in your list```"
         else:
             t0 = time.clock()
-            #IMPORTANT: .strip().lower()
+            #IMOPRTANT: .strip().lower()
             #finds all songs with the containing words
-            ContainsList = await self.find_song_by_title(leftover_args, list(self._url_to_song_.values()))
-            print(str(ContainsList))
+            ContainsList = await self.find_songs_with_title(leftover_args, self.autoplaylist)
             songsInList = len(ContainsList)
             peopleListSongs = {}
             #sorting into a list for each person who liked the songs
@@ -2810,15 +3115,15 @@ class MusicBot(discord.Client):
                     else:
                         peopleListSongs[person].append(songObj)
 
-            prntStr = "**Autoplay lists containing: \""
-            for word in leftover_args:
-                prntStr += word.strip() + " "
-            prntStr = prntStr.strip() + "\"**\n"
+            prntStr = '**Autoplay lists containing: "' + ' '.join(leftover_args) +  '"**'
+
             #Check if the 'command' asker has songs
             if author.id in peopleListSongs:
+                em_prsnPrint = "\n\t:busts_in_silhouette:__Yours__\n"
                 prsnPrint = "\n\t:busts_in_silhouette:__Yours__\n"
                 for songObj in peopleListSongs[author.id]:
-                    prsnPrint += ":point_right:" + songObj.getTitle() + "(" + songObj.getURL() + ")" + "\n"
+                    prsnPrint += ":point_right:" + songObj.getTitle() + "(<" + songObj.getURL() + ">)" + "\n"
+                    em_prsnPrint += ":point_right:[" + songObj.getTitle() + "](" + songObj.getURL() + ")" + "\n"
                 #Correcting for too many songs
                 if len(prntStr + prsnPrint) > DISCORD_MSG_CHAR_LIMIT:
                     prsnPrint = "```Partial List - Yours```" + prsnPrint[33:]
@@ -2836,9 +3141,11 @@ class MusicBot(discord.Client):
                 if person == author.id:
                     continue
                 userName = "Unknown User" if self._get_user(person) == None else self._get_user(person).name
+                em_prsnPrint = "\n\t:busts_in_silhouette:__" + userName + "__\n"
                 prsnPrint = "\n\t:busts_in_silhouette:__" + userName + "__\n"
                 for songObj in peopleListSongs[person]:
-                    prsnPrint += ":point_right:" + songObj.getTitle() + "(" + songObj.getURL() + ")" + "\n"
+                    prsnPrint += ":point_right:" + songObj.getTitle() + "(<" + songObj.getURL() + ">)" + "\n"
+                    em_prsnPrint += ":point_right:[" + songObj.getTitle() + "](" + songObj.getURL() + ")" + "\n"
                 #Correcting for too many songs (sqrewing over ppl b/c i'm lazy)
                 if len(prntStr + prsnPrint) > DISCORD_MSG_CHAR_LIMIT:
                     prsnPrint = "\n```Partial List - " + userName + "```" + prsnPrint[27+len(userName):]
@@ -2866,8 +3173,8 @@ class MusicBot(discord.Client):
                 return Response(prntStr, delete_after=50)
             return
 
-            #######################
-            '''
+        #######################
+        '''
             prntStr = ""
             toPlay = None
             searchWord = ""
@@ -4356,7 +4663,6 @@ class MusicBot(discord.Client):
         Usage:
             {command_prefix}playnow song_link
             {command_prefix}playnow text to search for
-
         Stops the currently playing song and immediately plays the song requested. \
         If a link is not provided, the first result from a youtube search is played.
         """

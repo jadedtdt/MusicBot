@@ -48,7 +48,7 @@ class PermissionsError(CommandError):
 
 # Error with pretty formatting for hand-holding users through various errors
 class HelpfulError(MusicbotException):
-    def __init__(self, issue, solution, *, preface="An error has occured:\n", expire_in=0):
+    def __init__(self, issue, solution, *, preface="An error has occured:\n", footnote='', expire_in=0):
         self.issue = issue
         self.solution = solution
         self.preface = preface
