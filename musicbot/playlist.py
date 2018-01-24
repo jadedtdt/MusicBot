@@ -17,7 +17,6 @@ from .exceptions import ExtractionError, WrongEntryTypeError
 
 log = logging.getLogger(__name__)
 
-
 class Playlist(EventEmitter, Serializable):
     """
         A playlist is manages the list of songs that will be played.

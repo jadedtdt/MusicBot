@@ -7,17 +7,21 @@ class Music:
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
-        if title != None:
+        if title:
             if type(title) == list:
-                for each_word in title:
-                    title += each_word + " "
+                title = ' '.join(title)
+        else:
+            title = ""
         self.title = title
         self.url = url
         # check if already in list format
         if type(author) == list:
             self.likers = author
         else:
-            self.likers = [author]
+            if author:
+                self.likers = [author]
+            else:
+                self.likers = []
 
         self.plays = 0
         self.tags = []
@@ -93,9 +97,6 @@ class Music:
     def setVolume(self, volume):
         self.volume = volume
 
-    def __repr__(self):
-        return ("" if self.url == None else self.url) + " --- " + ("" if self.title ==  None else self.title)
-
     ###########################################################################
 
     #   Removing from Class
@@ -117,3 +118,8 @@ class Music:
     def removeTag(self, tag):
         if self.hasTag(tag):
             self.tags.remove(tag)
+
+    def __repr__(self):        
+        return "URL: {url} --- Title: {title}".format(
+            url=getattr(self, 'url', "NO_URL"),
+            title=getattr(self, 'title', "NO_TITLE"))

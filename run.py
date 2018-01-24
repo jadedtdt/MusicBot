@@ -298,7 +298,6 @@ def req_ensure_env():
         os.environ['PATH'] += ';' + os.path.abspath('bin/')
         sys.path.append(os.path.abspath('bin/')) # might as well
 
-
 def req_ensure_folders():
     pathlib.Path('logs').mkdir(exist_ok=True)
     pathlib.Path('data').mkdir(exist_ok=True)
@@ -307,7 +306,6 @@ def req_ensure_folders():
 def opt_check_disk_space(warnlimit_mb=200):
     if disk_usage('.').free < warnlimit_mb*1024*2:
         log.warning("Less than %sMB of free space remains on this device" % warnlimit_mb)
-
 
 #################################################
 

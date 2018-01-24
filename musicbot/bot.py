@@ -12,6 +12,8 @@ import traceback
 import datetime
 import weakref
 
+import copy as copy
+
 import aiohttp
 import discord
 import colorlog
@@ -29,6 +31,7 @@ from discord.http import _func_
 from . import exceptions
 from . import downloader
 
+from .autoplaylist import AutoPlaylist
 from .config import Config, ConfigDefaults
 from .constructs import SkipState, Response, VoiceStateUpdate
 from .entry import StreamPlaylistEntry
@@ -39,6 +42,7 @@ from .player import MusicPlayer
 from .playlist import Playlist
 from .user import User
 from .utils import load_file, write_file, sane_round_int, fixg, ftimedelta, get_latest_pickle_mtime, load_pickle, store_pickle, sanitize_string, join_str
+from .yti import YouTubeIntegration
 
 from .constants import VERSION as BOTVERSION
 from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
@@ -79,18 +83,14 @@ class MusicBot(discord.Client):
 
         # Autoplaylist
         self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-        self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
-
-        self._url_to_song_ = {}
-        for each_song in self.autoplaylist:
-            self._url_to_song_[each_song.getURL()] = each_song
-
-        self.autoplaylist = list(self._url_to_song_.values())
+        self._url_to_song_ = load_pickle(self.config.auto_playlist_pickle)
 
         # Users
         self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
         self.users_list = load_pickle(self.config.users_list_pickle)
         self.ghost_list = {}
+
+        self.new_autoplaylist = AutoPlaylist(self._url_to_song_, self.users_list)
 
         # Metadata
         self.metaData = {}
@@ -98,11 +98,11 @@ class MusicBot(discord.Client):
         self.list_Played = []
         self.len_list_Played = 20
 
-        if not self.autoplaylist:
+        if not self.new_autoplaylist.songs:
             log.warning("[__INIT__] Autoplaylist is empty, disabling.")
             self.config.auto_playlist = False
         else:
-            log.info("[__INIT__] Loaded autoplaylist with {} entries".format(len(self.autoplaylist)))            
+            log.info("[__INIT__] Loaded autoplaylist with {} entries".format(len(self.new_autoplaylist.songs)))            
 
         if self.blacklist:
             log.debug("[__INIT__] Loaded blacklist with {} entries".format(len(self.blacklist)))
@@ -134,8 +134,17 @@ class MusicBot(discord.Client):
         self.aiosession = aiohttp.ClientSession(loop=self.loop)
         self.http.user_agent += ' MusicBot/%s' % BOTVERSION
 
-    async def import_songs(self):
+    async def archive(self, file):
+        if file:
+            pass
 
+    async def test_apl(self):
+        log.debug("BEFORE: " + str(len(self._url_to_song_.values())))
+        #self.new_autoplaylist.add_to_autoplaylist('https://www.youtube.com/watch?v=w2IuYn1PIiA', 'Andrew Applepie & Bjurman - Drowning World', '181268300301336576')
+        #self.new_autoplaylist.remove_from_autoplaylist('https://www.youtube.com/watch?v=w2IuYn1PIiA', 'Andrew Applepie & Bjurman - Drowning World', '181268300301336576')
+        log.debug("AFTER: " + str(len(self._url_to_song_.values())))
+
+    async def import_songs(self):
         discord_member = None
 
         #TODO delete files after importing them
@@ -207,44 +216,109 @@ class MusicBot(discord.Client):
                     #0 is url, 1 is title
                     song = Music(each_line[0], each_line[1])
                     if self.get_user(discord_member) != None:
-                        user = self.get_user(discord_member)
-                        if not user.hasSong(song):
+                        user = self.get_user(discord_member)[1]
+                        if not user.hasSong(song.getURL()):
                             num_songs += 1
                             log.debug("Adding song {} to {}'s APL: ".format(song, user))
-                            self.add_to_autoplaylist(song.getURL(), song.getTitle(), user.getID())
+                            self.new_autoplaylist.add_to_autoplaylist(song.getURL(), song.getTitle(), user.getID())
 
                     else:
                         log.warning("Could not find user with discord acct: " + str(discord_member))
         else:
             log.error("import_songs: Could not find import folder in ./data/ folder")
 
-        return "Imported {} songs into {}'s AutoPlayList".format(num_songs, uname)
+        return "Imported {} songs into {}'s AutoPlaylist".format(num_songs, uname)
 
-    # autoplaylist is updated before and after every command so we don't have to maintain the old value in the dict
+    def check_url(self, url):
+        if 'www.' in url and 'http' not in url:
+            url = 'https://' + url
+        if '?t=' in url:            
+            return url.split('?')[0]
+        if '&t' in url or '&index' in url or '&list' in url:
+            return url.split('&')[0]
+        return url
+
+    async def bruh(self):
+        for each_song in list(self._url_to_song_.values()):
+            try:
+                "test" in each_song.getTitle()
+            except:
+                self._url_to_song_[each_song.getURL()].setTitle(str(each_song.getTitle()))
+
     async def clean_songs(self):
         for each_url in list(self._url_to_song_.keys()):
-            if each_url != None:
-                if each_url.startswith("www"):
-                    new_url = "https://" + each_url
+            if each_url:
+                new_url = self.check_url(each_url)
+                if 'dailymotion' in each_url:
+                    log.warning(each_url)
+                    log.warning(new_url)
+                song = self._url_to_song_[each_url]
 
-                    song = self._url_to_song_[each_url]
-
-                    # removes key from dict
+                # removes key from dict
+                if new_url != each_url:
+                    log.warning("before: " + each_url)
+                    log.warning("after: " + self.check_url(each_url))
                     self._url_to_song_.pop(each_url)
 
-                    new_song = song
-                    new_song.setURL(new_url)
+                    try:
+                        song = self._url_to_song_[each_url]
+                        if song:
+                            log.debug("Shouldn't get here")
+                    except:
+                        log.debug("Successfully removed bad url: " + each_url)
 
-                    for each_liker in song.getLikers():
-                        each_liker.getSong(song).setURL(new_url)
+                    new_song = Music(new_url, song.getTitle(), song.getLikers())
+                    self._url_to_song_[new_url] = new_song
 
-                    # adds new url,song to dict
-                    self._url_to_song_[new_url] = song
+        for each_song in list(self._url_to_song_.values()):
+            each_url = each_song.getURL()
+            if each_url:
+                new_url = self.check_url(each_url)
+                if 'dailymotion' in each_url:
+                    log.warning(each_url)
+                    log.warning(new_url)
+                song = self._url_to_song_[new_url]
+
+                # removes key from dict
+                if new_url != each_url:
+                    log.warning(each_url)
+                    log.warning(self.check_url(each_url))
+                    self._url_to_song_.pop(new_url)
+
+                    try:
+                        song = self._url_to_song_[new_url]
+                        if song:
+                            log.debug("Shouldn't get here")
+                    except:
+                        log.debug("Successfully removed bad url: " + new_url)
+
+                    new_song = Music(new_url, song.getTitle(), song.getLikers())
+                    self._url_to_song_[new_url] = new_song
+
+        for i, each_user in enumerate(self.users_list):
+            for each_url in each_user.getSongList():
+                new_url = self.check_url(each_url)
+                if new_url != each_url:
+                    if self.users_list[i].removeSong(each_url):
+                        if self.users_list[i].addSong(new_url):
+                            log.debug("Successfully repaired url: " + each_url)
+                        else:
+                            log.debug("Failed to add")
+                    else:
+                        log.debug("Failed to remove")
+
+        log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file")
+        store_pickle(self.config.auto_playlist_pickle, self._url_to_song_)
+        self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
+
+        log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file")
+        store_pickle(self.config.users_list_pickle, self.users_list)
+        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
     async def test_addresses(self, kwargs):
         log.debug("#######DEBUG ADDR START########")
 
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
 
             if kwargs == each_song.getURL():
                 return each_song
@@ -272,21 +346,23 @@ class MusicBot(discord.Client):
 
     async def remove_songs_without_urls(self):
         log.debug("#######DEBUG SONG URLS START########")
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getURL() == None or each_song.getURL() == "":
-                self.autoplaylist.remove(each_song)
+                self.new_autoplaylist.songs.remove(each_song)
         log.debug("########DEBUG SONG URLS END#########")
 
     async def remove_songs_without_likers(self):
         log.debug("#######DEBUG SONG LIKERS START########")
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getLikers() == None or len(each_song.getLikers()) == 0:
-                self.autoplaylist.remove(each_song)
+                song = self.find_song_by_url(each_song.getURL())
+                if song:
+                    self._url_to_song_.pop(song.getURL())
         log.debug("########DEBUG SONG LIKERS END#########")
 
     async def dump_songs_without_urls(self):
         log.debug("#######DEBUG SONG URLS START########")
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getURL() == None or each_song.getURL() == "":
                 if (each_song.getTitle() != None):
                     log.debug(each_song.getTitle())
@@ -304,7 +380,7 @@ class MusicBot(discord.Client):
 
     async def dump_songs_without_likers(self):
         log.debug("#######DEBUG SONG LIKERS START########")
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getLikers() == None or len(each_song.getLikers()) == 0:
                 if (each_song.getTitle() != None):
                     log.debug(each_song.getTitle())
@@ -312,7 +388,7 @@ class MusicBot(discord.Client):
 
     async def dump_songs_without_titles(self):
         log.debug("#######DEBUG SONG TITLES START########")
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getTitle() == None or each_song.getTitle() == "":
                 log.debug(each_song.getURL())
         log.debug("########DEBUG SONG TITLES END#########")
@@ -320,7 +396,7 @@ class MusicBot(discord.Client):
     async def repair_songs_with_dupes(self):
         cached_list = list()
         duped_list = list()
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getURL() in cached_list:
                 duped_list.append(each_song.getURL())
             else:
@@ -328,7 +404,7 @@ class MusicBot(discord.Client):
 
         for each_duped_url in duped_list:
             zzz = list()
-            for each_song in self.autoplaylist:
+            for each_song in self.new_autoplaylist.songs:
                 if each_song.getURL() == each_duped_url:
                     log.debug(each_song)
                     log.debug(str(each_song.getLikers()))
@@ -342,10 +418,10 @@ class MusicBot(discord.Client):
             new_song = await self.merge_dupes(zzz[0], zzz[1])
 
             if new_song != None:
-                for each_song in self.autoplaylist:
+                for each_song in self.new_autoplaylist.songs:
                     if each_song.getURL() == new_song.getURL():
-                        self.autoplaylist.remove(each_song)
-                self.autoplaylist.append(new_song)
+                        self.new_autoplaylist.songs.remove(each_song)
+                self.new_autoplaylist.songs.append(new_song)
 
     async def merge_dupes(self, song1, song2):
         if type(song1) != Music and type(song2) != Music:
@@ -362,7 +438,7 @@ class MusicBot(discord.Client):
 
         cached_list = list()
         duped_list = list()
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getURL() in cached_list:
                 duped_list.append(each_song)
             else:
@@ -373,9 +449,53 @@ class MusicBot(discord.Client):
 
         log.debug("########DEBUG SONG DUPES END#########")
 
+    async def dump_songs_with_dupes2(self):
+        log.debug("#######DEBUG SONG DUPES2 START########")
+
+        cached_list = []
+        duped_list = []
+        for each_user in self.users_list:
+            log.warning(str(each_user))
+            if each_user.getSongList():
+                for each_url in each_user.getSongList():
+                    if each_url in cached_list:
+                        duped_list.append(each_url)
+                    else:
+                        cached_list.append(each_url)
+            for each_song in duped_list:
+                log.debug(each_song)
+
+            cached_list = []
+            duped_list = []
+
+        log.debug("########DEBUG SONG DUPES2 END#########")
+
+    async def repair_songs_with_dupes2(self):
+        log.debug("#######DEBUG SONG DUPES2 START########")
+
+        cached_list = []
+        duped_list = []
+        for each_user in self.users_list:
+            log.warning(str(each_user))
+            if each_user.getSongList():
+                for each_url in each_user.getSongList():
+                    if each_url in cached_list:
+                        duped_list.append(each_url)
+                    else:
+                        cached_list.append(each_url)
+            for each_song in duped_list:
+                log.debug(each_song)
+
+            each_user.setSongList(cached_list)
+
+            cached_list = []
+            duped_list = []
+
+        log.debug("########DEBUG SONG DUPES2 END#########")
+
     async def repair_songs_with_swaps(self):
         log.debug("#######DEBUG SONG SWAPS START########")
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getTitle() != None:
                 if "http" in each_song.getTitle():
                     temp = each_song.getTitle()
@@ -385,24 +505,239 @@ class MusicBot(discord.Client):
 
     async def dump_songs_with_swaps(self):
         log.debug("#######DEBUG SONG SWAPS START########")
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.getTitle() != None:
                 if "http" in each_song.getTitle():
                     log.debug(each_song)
         log.debug("########DEBUG SONG SWAPS END#########")
 
-    async def migrate_dic_to_userslist(self):
+    async def print_user_corruption(self, user_id=None):
+        songs_in_apl = []
+        songs_in_user = []
+
+        if not user_id:
+            user_id = '181268300301336576'
+        else:
+            user_id = str(user_id)
+
+        for each_song in self.new_autoplaylist.songs:
+            if each_song.hasLiker(user_id):
+                songs_in_apl.append(each_song.getURL())
+
+        for each_song in self.get_user(user_id)[1].getSongList():
+            if each_song == None:
+                log.warning("!!!")
+            else:
+                songs_in_user.append(each_song)
+
+        log.debug("LIST1: " + str(len(songs_in_apl)))
+        log.debug("LIST2: " + str(len(songs_in_user)))
+
+    # if there is a god, please forgive me
+    async def print_corruption(self):
+
+        for each_user in self.users_list:
+                # in song list but not in dict values
+                log.debug("BEGIN 1 --- " + str(each_user))
+                for each_url in each_user.getSongList():
+                    found = False
+                    for each_song2 in list(self._url_to_song_.values()):
+                        if each_url == each_song2.getURL():
+                            found = True
+                    if not found:
+                        log.warning(each_song)
+                        #self.add_to_autoplaylist(each_song.getURL(), each_song.getTitle(), each_user.getID())
+                log.debug("END 1 --- " + str(each_user))
+
+                # in song list but not in autoplaylist keys
+                log.debug("BEGIN 2 --- " + str(each_user))
+                for each_url in each_user.getSongList():
+                    try:
+                        each_song = self._url_to_song_[each_url]
+                    except:
+                        log.warning(each_song)
+                        #self.add_to_autoplaylist(each_song.getURL(), each_song.getTitle(), each_user.getID())
+                log.debug("END 2 --- " + str(each_user))
+
+                # in autoplaylist values but not in song list
+                log.debug("BEGIN 3 --- " + str(each_user))
+                for each_song in list(self._url_to_song_.values()):
+                    if each_song.hasLiker(each_user.getID()):
+                        if not each_user.hasSong(each_song.getURL()):
+                            log.warning(each_song)
+                            #self._add_to_autoplaylist(each_song.getURL(), each_song.getTitle(), each_user.getID())
+                log.debug("END 3 --- " + str(each_user))
+
+                # 
+                log.debug("BEGIN 4 --- " + str(each_user))
+                url_list_copy = []
+                for each_url in each_user.getSongList():
+                    url_list_copy.append(each_url)
+
+                for i, each_url in enumerate(url_list_copy):
+                    found = False
+                    for each_song2 in list(self._url_to_song_.values()):
+                        if each_url == each_song2.getURL():
+                            url_list_copy[i] = None
+
+                if len(url_list_copy) > 0:
+                    for each_url in url_list_copy:
+                        if each_url != None:
+                            log.warning(str(each_song))
+                            #self.add_to_autoplaylist(each_song.getURL(), each_song.getTitle(), each_user.getID())
+                log.debug("END 4 --- " + str(each_user))
+
+                # null songs in autoplaylist values
+                log.debug("BEGIN 5 --- " + str(each_user))
+                for each_url in each_user.getSongList():
+                    if each_url == None:
+                        log.warning("!!!")
+                log.debug("END 5 --- " + str(each_user))
+
+        return
+
+    # if there is a god, please forgive me pt. 2
+    async def repair_corruption(self):
+
+        for each_user in self.users_list:
+                # in song list but not in autoplaylist
+                #log.debug("BEGIN 1 --- " + str(each_user))
+                for each_song in each_user.getSongList():
+                    found = False
+                    for each_song2 in list(self._url_to_song_.values()):
+                        if each_song.getURL() == each_song2.getURL():
+                            found = True
+                    if not found:
+                        pass
+                        #log.warning(each_song)
+                        if not self.new_autoplaylist.add_to_autoplaylist(each_song.getURL(), each_song.getTitle(), each_user.getID()):
+                            log.warning("FAILURE --- User: {} Song: {}: ".format(str(each_user.getID()), str(each_song)))
+                #log.debug("END 1 --- " + str(each_user))
+
+                # in song list but not in autoplaylist
+                #log.debug("BEGIN 2 --- " + str(each_user))
+                for each_url in each_user.getSongList():
+                    try:
+                        each_song = self._url_to_song_[each_url]
+                    except:
+                        pass
+                        #log.warning(each_song)
+                        if not self.new_autoplaylist.add_to_autoplaylist(each_song.getURL(), each_song.getTitle(), each_user.getID()):
+                            log.warning("FAILURE --- User: {} Song: {}: ".format(str(each_user.getID()), str(each_song)))
+                #log.debug("END 2 --- " + str(each_user))
+
+                # in autoplaylist but not in song list
+                #log.debug("BEGIN 3 --- " + str(each_user))
+                for each_song in list(self._url_to_song_.values()):
+                    if each_song.hasLiker(each_user.getID()):
+                        if not each_user.hasSong(each_song):
+                            pass
+                            #log.warning(each_song)
+                            if not self._add_to_autoplaylist(each_song.getURL(), each_song.getTitle(), each_user.getID()):
+                                log.warning("FAILURE --- User: {} Song: {}: ".format(str(each_user.getID()), str(each_song)))
+                #log.debug("END 3 --- " + str(each_user))
+
+        self.new_autoplaylist.store()
+
+        return
+
+    # updates user objects to have names
+    async def update_users(self):
+        for i, each_user in enumerate(self.users_list):
+            member = self._get_user(each_user.getID())
+            if member != None:
+                song_list = self.users_list[i].getSongList()
+                self.users_list[i] = User(member.id, member.name)
+                self.users_list[i].setSongList(song_list)
+
+                log.warning(self.users_list[i])
+
+        self.new_autoplaylist.store()
+        return True
+
+    # updates user objects to have names
+    async def update_users2(self):
+        for i, each_user in enumerate(self.users_list):
+            member = self._get_user(each_user.getID())
+            if member != None:
+                log.warning(self.users_list[i])
+
+            song_list = self.users_list[i].getSongList()
+            new_song_list = list(map(lambda song: song.getURL() if type(song) == Music else song, song_list))
+            self.users_list[i].setSongList(new_song_list)
+
+        self.new_autoplaylist.store()
+        return True
+
+    async def update_userslist_to_dic(self):
+        log.debug("#######DEBUG MIGRATE DIC TO USERSLIST START########")
+
+        for each_user in self.users_list:
+            if each_user.getSongList():
+                for each_url in each_user.getSongList():
+                    try:
+                        song = self._url_to_song_[each_url]
+                        if song:
+                            # adds liker to existing song
+                            if not song.hasLiker(each_user.getID()):
+                                self._url_to_song_[each_url].addLiker(each_user.getID())
+                        else:
+                            # adds song to dict since it didnt exist before
+                            self._url_to_song_[each_url] = Music(each_url, None, each_user.getID())
+                    except:
+                        # adds song to dict since it didnt exist before
+                            self._url_to_song_[each_url] = Music(each_url, None, each_user.getID())
+
+        log.debug("########DEBUG MIGRATE DIC TO USERSLIST END#########")
+
+    #deprecated
+    async def migrate_userslist_to_dic(self):
+        log.debug("#######DEBUG MIGRATE DIC TO USERSLIST START########")
+
+        self._url_to_song_ = {}
+
+        for each_user in self.users_list:
+            if each_user.getSongList():
+                for each_url in each_user.getSongList():
+                    try:
+                        song = self._url_to_song_[each_url]
+                        if song:
+                            # adds liker to existing song
+                            if not song.hasLiker(each_user.getID()):
+                                self._url_to_song_[each_url].addLiker(each_user.getID())
+                        else:
+                            # adds song to dict since it didnt exist before
+                            self._url_to_song_[each_url] = song
+                    except:
+                        # adds song to dict since it didnt exist before
+                        self._url_to_song_[each_url] = song
+
+        log.debug("########DEBUG MIGRATE DIC TO USERSLIST END#########")
+
+    async def migrate_dic_to_userslist(self, user_id=None):
         log.debug("#######DEBUG MIGRATE DIC TO USERSLIST START########")
 
         #clear users song lists
-        for each_user in self.users_list:
-            each_user.setSongList([])
+        if user_id == None:
+            for each_user in self.users_list:
+                each_user.setSongList([])
+        else:
+            self.users_list[self.get_user(str(user_id))[0]].setSongList([])
 
         for each_url in list(self._url_to_song_.keys()):
             song = self._url_to_song_[each_url]
 
             for each_liker in song.getLikers():
-                self.get_user(each_liker).addSong(song)
+                user = self.users_list[self.get_user(each_liker)[0]]
+                if user_id:
+                    if str(user.getID()) == str(user_id):
+                        if not user.addSong(song):
+                            log.debug("Failed to add " + str(song))
+                else:
+                    if not user.addSong(song):
+                        log.debug("Failed to add " + str(song))
+
+        self.new_autoplaylist.store()
 
         log.debug("########DEBUG MIGRATE DIC TO USERSLIST END#########")
 
@@ -411,7 +746,7 @@ class MusicBot(discord.Client):
 
     async def dump_song(self, kwargs):
         log.debug("#######DEBUG SONG START########")
-        my_songs = await self.find_song_by_title(kwargs, self.autoplaylist)
+        my_songs = await self.find_song_by_title(kwargs, self.new_autoplaylist.songs)
         for each_song in my_songs:
             log.debug(each_song.getTitle())
             log.debug(each_song.getURL())
@@ -432,12 +767,39 @@ class MusicBot(discord.Client):
         log.debug("########DEBUG SONG END#########")
 
     async def get_user_songs(self, user_id):
+        user_id = str(user_id)
         songs = []
-        for each_song in self.autoplaylist:
+        for each_song in self.new_autoplaylist.songs:
             if each_song.hasLiker(user_id):
                 songs.append(each_song)
 
+        for each_song in songs:
+            if not self.get_user(user_id)[1].hasSong(each_song):
+                log.warning(each_song)
+
+        return songs
+
+    async def stat2(self, user_id):
+        user_id = str(user_id)
+        songs = []
+        for each_song in self.new_autoplaylist.songs:
+            if each_song.hasLiker(user_id):
+                songs.append(each_song)
+
+        for each_song in songs:
+            if not self.get_user(user_id)[1].hasSong(each_song):
+                log.warning(each_song)
+
         return len(songs)
+
+    async def revert_user_changes(self):
+        for each_user in self.users_list:
+            log.warning(str(each_user))
+            for i, each_item in enumerate(each_user.getSongList()):
+                if type(each_item) == str:
+                    print(each_item)
+                    each_user.getSongList()[i] = Music(each_item, None)
+
 
     ########################
     # updateMetaData
@@ -473,31 +835,36 @@ class MusicBot(discord.Client):
         else:
             discord_id = discord_user
 
-        for each_user in self.users_list:
+        for i, each_user in enumerate(self.users_list):
             if each_user.getID() == discord_id:
-                return each_user
+                return i, each_user
 
         #print("No user found with info: ", discord_user)
-        return None
+        return 0, None
 
-    async def check_songs(self, song_url, author):
 
-        log.debug("search song! " + str(song_url))
-        log.debug("search song! " + str(author))
+    def test_yti(self):
+        yti = YouTubeIntegration()
 
-        if type(author) != User:
-            author = self.get_user(author)
+        # Creates users' playlists in youtube if they dont have one
+        for each_user in self.users_list:
+            member = self._get_user(each_user.getID())
+            if member != None:
+                name = member.name.replace(' ', '-')
+                playlist_id = yti.lookup_playlist(name)
+                if playlist_id == None:
+                    log.debug("Creating playlist for user: " + name)
+                    yti.create_playlist(member.name.replace(' ', '-'))
 
-        log.debug("author! " + str(author.getID()))
-
-        return_song = author.getSong(song_url)
-        #if not return_song:
-        #    if search_song.getURL() is None:
-        #        return_song = self.find_song_by_title(search_song.getTitle())
-        #    else:
-        #        return_song = self.find_song_by_url(search_song.getURL())
-
-        return return_song
+                for each_song in each_user.getSongList():
+                    if "youtube" in each_song.getURL() or "youtu.be" in each_song.getURL():
+                        video_id = yti.extract_youtube_uid(each_song.getURL())
+                        if video_id != None:
+                            log.debug("yti.add_video({}, {})".format(name, video_id))
+                        else:
+                            print("video_id is None")
+                    else:
+                        print("Not a youtube URL: " + each_song.getURL())
 
     async def notify_likers(self, song, emsg=""):
         if song == None:
@@ -508,10 +875,15 @@ class MusicBot(discord.Client):
 
         likers = song.getLikers()
         likers_str = ""
-        for each_liker in likers:
-            likers_str += self._get_user(each_liker).mention + " "
-        msg = 'Hey! %s. It seems like your video has been made unavailable.\n%s, %s\nReason: %s' % (likers_str, song.getTitle(), song.getURL(), emsg)
-        await self.safe_send_message(channel, msg)
+        if likers:
+            likers = list(filter(lambda liker: self._get_user(liker) != None, likers))
+            likers = [self._get_user(liker) for liker in likers]
+            log.warning(str(likers))
+            for each_liker in likers:
+                likers_str += each_liker.mention + " "
+
+            msg = 'Hey! %s. It seems like your video has been made unavailable.\n%s, %s\nReason: %s' % (likers_str, song.getTitle(), song.getURL(), emsg)
+            await self.safe_send_message(channel, msg)
 
     def __del__(self):
         # These functions return futures but it doesn't matter
@@ -1004,25 +1376,26 @@ class MusicBot(discord.Client):
         author = entry.meta.get('author', None)
 
         if player.current_entry.meta.get('channel', False) and player.current_entry.meta.get('author', False):
-            user = self.get_user(player.current_entry.meta['author'].id)
+            user = self.users_list[self.get_user(player.current_entry.meta['author'].id)[0]]
 
         else:
             # AutoPlayList playing
 
-            likers = ""
-            for each_user in self.get_likers(player.current_entry.url):
-                # strip off the unique identifiers
-                # I'm not using the meta data since technically it has no author so I wrote a get_likers function
-                if each_user == self._get_user(self.cur_author):
-                    user = self.get_user(each_user.id)
+            likers = self.get_likers(player.current_entry.url)
+            if likers:
+                for each_user in likers:
+                    # strip off the unique identifiers
+                    # I'm not using the meta data since technically it has no author so I wrote a get_likers function
+                    if each_user == self._get_user(self.cur_author):
+                        user = self.users_list[self.get_user(each_user)[0]]
 
         # updates title if it's not there
         song = self.find_song_by_url(entry.url)
         if song is not None:
-            if song.getTitle() == None:
+            if not song.getTitle() or song.getTitle() == "":
                 log.debug("[ON_PLAYER_PLAY] Updating title for {\"url\": \"" + entry.url + "\", \"title\": \"" + entry.title + "\"}")
                 song.setTitle(player.current_entry.title)
-                user.getSong(song).setTitle(player.current_entry.title)
+            player.volume = song.getVolume()
             song.addPlay()
 
         if channel and author:
@@ -1061,14 +1434,9 @@ class MusicBot(discord.Client):
 
     async def on_player_finished_playing(self, player, **_):
         # updates our pickles
-        if (get_latest_pickle_mtime(self.config.auto_playlist_pickle) > self.last_modified_ts_apl):
-            log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest APL pickle file")
-            self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
-            self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-        if (get_latest_pickle_mtime(self.config.users_list_pickle) > self.last_modified_ts_users):
-            log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest users pickle file")
-            self.users_list = load_pickle(self.config.users_list_pickle)
-            self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
+
+        if self.new_autoplaylist.needs_reloaded():
+            self._url_to_song_, self.users_list = self.new_autoplaylist.reload()
 
         # reset volume
         player.volume = self.config.default_volume;
@@ -1076,7 +1444,7 @@ class MusicBot(discord.Client):
         if len(player.playlist.entries) == 0 and not player.current_entry and self.config.auto_playlist:
 
             timeout = 0
-            while self.autoplaylist and timeout < 100 and not player.is_paused:
+            while self.new_autoplaylist.songs and timeout < 100 and not player.is_paused:
 
                 playURL = None
                 people = []
@@ -1117,7 +1485,7 @@ class MusicBot(discord.Client):
                 log.debug(author)
 
                 # takes discord obj and returns User object
-                user = self.get_user(author)
+                user = self.get_user(author)[1]
                 if user == None:
                     timeout = timeout + 1
                     continue
@@ -1152,7 +1520,8 @@ class MusicBot(discord.Client):
                         # Mood end
                         ####################
                         else:
-                            song = random.choice(user.getSongList())
+                            url = random.choice(user.getSongList())
+                            song = self.find_song_by_url(url)
                             if song == None:
                                 timeout = timeout + 1
                                 continue
@@ -1182,8 +1551,8 @@ class MusicBot(discord.Client):
                     else:
                         if list(filter(lambda personID: author in self.ghost_list[personID], self.ghost_list.keys())):
                             log.debug("GHOST IN CHANNEL!")
-                            song = random.choice(user.getSongList())
-                            song = self.find_song_by_url(song.getURL())
+                            url = random.choice(user.getSongList())
+                            song = self.find_song_by_url(url)
                             #check if repeat song
                             if song.getURL() in self.list_Played:
                                 log.debug("Song played too recently")
@@ -1205,8 +1574,6 @@ class MusicBot(discord.Client):
                 ####################
                 # Download song begin
                 ####################
-                log.warning("SONG : " + str(song))
-                log.warning("playURL : " + str(playURL))
                 try:
                     if playURL == None and song != None:
                         playURL = song.getURL()
@@ -1221,29 +1588,38 @@ class MusicBot(discord.Client):
                         log.error("Error processing \"{url}\": {ex}".format(url=playURL, ex=e))
 
                     song = self.find_song_by_url(playURL)
-                    if song != None:
+                    if song != None and "Invalid parameters" not in str(e):
                         await self.notify_likers(song, str(e))
-                    self.remove_from_autoplaylist(song.getTitle(), song.getURL())
-                    continue
+                        #self.remove_from_autoplaylist(song.getURL(), song.getTitle())
+                        print("\a")  # BEEPS
+
+                        self.new_autoplaylist.store()
+
+                        continue
+
                 except Exception as e:
 
                     log.error("Error processing \"{url}\": {ex}".format(url=playURL, ex=e))
                     log.exception(e)
 
-                    if "Cannot identify player" not in str(e) or "Signature extraction failed" not in str(e):
+                    if "Cannot identify player" not in str(e) or "Signature extraction failed" not in str(e) or "Invalid parameters" not in str(e):
                         song = self.find_song_by_url(playURL)
                         if song != None:
                             await self.notify_likers(song, str(e))
-                            self.remove_from_autoplaylist(song.getTitle(), song.getURL())
-                            author = self._get_user(user.getID())
-                            channel = self._get_channel(author.id)
+                            #self.remove_from_autoplaylist(song.getURL(), song.getTitle())
+                            #author = self._get_user(user.getID())
+                            #channel = self._get_channel(author.id)
                             #tags = song.getTags()
                             #for tag in tags:
                             #    await self._cmd_removetag(player, author, channel, tag, printing=False)
                             #this doesn't work because there's currently no song playing.. not sure how to do this
-                            await self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % playURL)
-                        print("\a")  # BEEPS
-                        continue
+                            #await self.safe_print("[Info] Removing unplayable song from autoplaylist: %s" % playURL)
+                            print("\a")  # BEEPS
+
+                            self.new_autoplaylist.store()
+
+                            continue
+
                     else:
                         log.error(e)
 
@@ -1273,16 +1649,18 @@ class MusicBot(discord.Client):
                 except exceptions.ExtractionError as e:
                     log.error("Error adding song from autoplaylist: {}".format(e))
                     log.debug('', exc_info=True)
+
+                    song = self.find_song_by_url(playURL)
+
+                    if "Cannot identify player" not in str(e) or "Signature extraction failed" not in str(e):
+                        await self.notify_likers(song, str(e))
+                        #self.remove_from_autoplaylist(playURL)
+
                     continue
+            
+            self.new_autoplaylist.store()
 
-            log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file")
-            store_pickle(self.config.auto_playlist_pickle, list(self._url_to_song_.values()))
-            self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-            log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file")
-            store_pickle(self.config.users_list_pickle, self.users_list)
-            self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
-
-            if not self.autoplaylist:
+            if not self.new_autoplaylist.songs:
                 # TODO: When I add playlist expansion, make sure that's not happening during this check
                 log.warning("No playable songs in the autoplaylist, disabling.")
                 self.config.auto_playlist = False
@@ -1731,17 +2109,19 @@ class MusicBot(discord.Client):
     def get_likers(self, song_url):
         likers = []
 
-        for each_song in self.autoplaylist:
-            if each_song != None:
-                if each_song.getURL() == song_url:
-                    likers = each_song.getLikers()
-
-        return self._get_likers(likers)
+        song = self.find_song_by_url(song_url)
+        if song:
+            return self._get_likers(song.getLikers())
+        else:
+            log.warning("[GET_LIKERS] No likers found for URL: " + str(song_url))
+        return None
 
     # takes a list of ids, returns a list of usernames
     def _get_likers(self, likers):
 
         names = []
+        if likers == None:
+            log.warning("[_GET_LIKERS] No likers found for URL: " + str(song_url))
         for each_id in likers:
             name = self._get_user(each_id)
             # what if the user has left the server?
@@ -1749,177 +2129,6 @@ class MusicBot(discord.Client):
                 names.append(name)
 
         return names
-
-    def add_to_autoplaylist(self, url, title="", author=None):
-
-        if type(url) != str:
-            log.error("[ADD_TO_AUTOPLAYLIST] URL was not a string: " + str(url))
-
-        if author == None:
-            log.warning("[ADD_TO_AUTOPLAYLIST] No Author... Don't know who to add to")
-            return False
-
-        if not author.isnumeric():
-            author = author.id
-
-        song = self.find_song_by_url(url)
-
-        # if not on anyone's list, let's add it to someone's
-        if song == None:
-            if title is None:
-                title = ""
-            log.debug("[ADD_TO_AUTOPLAYLIST] Creating new song object " + title)
-            song = Music(url, title, author)
-            try:
-                self._url_to_song_[url] = song
-            except:
-                log.error("[ADD_TO_AUTOPLAYLIST] Tried to add something that wasn't a url: " + str(url))
-                return False
-            #self.autoplaylist.append(song)
-        # otherwise we just want to add this liker to the list
-        else:
-            if song.hasLiker(author):
-                log.debug("[ADD_TO_AUTOPLAYLIST] Song already added " + url)
-                return False
-            else:
-                # appends current author to the end of the likers list
-                log.debug("[ADD_TO_AUTOPLAYLIST] Adding liker to song " + url)
-                song.addLiker(author)
-                try:
-                    self._url_to_song_[url] = song
-                except:
-                    log.error("[ADD_TO_AUTOPLAYLIST] Tried to add something that wasn't a url: " + str(url))
-                    return False
-
-        self._add_to_autoplaylist(url, title, author)
-
-        return True
-
-    def _add_to_autoplaylist(self, url, title, author=None):
-
-        if author == None:
-            song = self.find_song_by_url(url)
-            if song == None:
-                log.debug("[_ADD_TO_AUTOPLAYLIST] Tried to add a song that's not in our APL yet")
-                self.add_to_autoplaylist(url, title, author)
-
-            # trying to grab the likers from the apl
-            likers = song.getLikers()
-            if likers == None:
-                log.error("[_ADD_TO_AUTOPLAYLIST] No author and no likers. Can't add this song!")
-                return
-            else:
-                log.warning("[_ADD_TO_AUTOPLAYLIST] No author but we have list of likers, trying again!")
-                for liker in likers:
-                    author = self._get_user(liker)
-                    self._add_autoplaylist(url, title, author)
-                    return
-
-        user = self.get_user(author)
-
-        # if a user doesn't exist, we add them
-        if user == None:
-            if not author.isnumeric():
-                author = author.id
-
-            user = User(author)
-            self.users_list.append(user)
-
-        music_obj = self.find_song_by_url(url)
-
-        # add a new music obj and tries again (this should never fail unless _add_to_autoplaylist was explicitly called)
-        if music_obj == None:
-            log.warning("[_ADD_TO_AUTOPLAYLIST] Null Music object, trying again!")
-            music_obj = Music(url, title, author)
-
-            self.add_to_autoplaylist(url, title, author)
-            return
-
-        if not user.hasSong(music_obj):
-            user.addSong(music_obj)
-
-    def remove_from_autoplaylist(self, url, title, author=None):
-
-        if author == None:
-            #check if we can grab the likers from the apl
-            song = self.find_song_by_url(url)
-            if song != None:
-                if len(song.getLikers()) == 0:
-                    return False
-                else:
-                    for each_liker in song.getLikers():
-                        self.remove_from_autoplaylist(url, title, each_liker)
-                    return True
-            else:
-                log.warning("[REMOVE_FROM_AUTOPLAYLIST] No Author... Don't know who to remove from")
-                return False
-
-        if not str(author).isnumeric():
-            author = author.id
-
-        song = self.find_song_by_url(url)
-
-        if song != None:
-
-            if not song.hasLiker(author):
-                log.debug("[REMOVE_FROM_AUTOPLAYLIST] Hey! You can't remove a song that's not even yours!")
-                return False
-
-            if len(song.getLikers()) > 1:
-                log.debug("[REMOVE_FROM_AUTOPLAYLIST] MULTIPLE LIKERS, REMOVING: " + song.getTitle())
-                song.removeLiker(author)
-                try:
-                    self._url_to_song_[url] = song
-                except:
-                    log.error("[REMOVE_FROM_AUTOPLAYLIST] Tried to add something that wasn't a url: " + str(url))
-                    return False
-            
-            elif len(song.getLikers()) == 1:
-                log.debug("[REMOVE_FROM_AUTOPLAYLIST] ONE LIKER, REMOVING: " + song.getTitle())
-                try:
-                    self._url_to_song_.pop(url)
-                except:
-                    log.error("[REMOVE_FROM_AUTOPLAYLIST] Tried to remove something that wasn't a url: " + str(url))
-                    return False
-            else:
-                log.warning("[REMOVE_FROM_AUTOPLAYLIST] NO LIKERS, NOT REMOVING: " + song.getTitle())
-                return False
-
-            return self._remove_from_autoplaylist(url, title, author)
-
-        else:
-            log.warning("[REMOVE_FROM_AUTOPLAYLIST] Can't remove a song that's not in the auto playlist")
-            return False
-
-    # removes from user's list of songs
-    def _remove_from_autoplaylist(self, url, title, author=None):
-
-        if author == None:
-            likers = song.getLikers()
-            for liker in likers:
-                author = self._get_user(liker)
-                self._remove_autoplaylist(song, author)
-                #idk how to handle the return :/
-                return True
-
-        user = self.get_user(author)
-
-        if user == None:
-            log.warning("[_REMOVE_FROM_AUTOPLAYLIST] User is not in our server, can't remove from your list!")
-            return False
-
-        song = self.find_song_by_url(url)
-        if song == None:
-            song = Music(url, title, author)
-
-        if user.hasSong(song):
-            log.debug("[_REMOVE_FROM_AUTOPLAYLIST] REMOVE SUCCESS!")
-            user.removeSong(song)
-        else:
-            log.warning("[_REMOVE_FROM_AUTOPLAYLIST] The song isn't in the user's personal list")
-            return False
-
-        return True
 
     # finds the first instance a song URL is found or if a string is found in a title and returns the object
     def find_song_by_url(self, url):
@@ -2076,7 +2285,7 @@ class MusicBot(discord.Client):
         curMood = "none"
 
         # gets user from self.users_list
-        user = self.get_user(author.id)
+        user = self.get_user(author.id)[1]
 
         if (args is ""):
 
@@ -2142,7 +2351,7 @@ class MusicBot(discord.Client):
         #(m.name, m.id) for m in server.members
         for m in server.members:
             #print("Process: " + m.name + " : " + str(m.id))
-            user = self.get_user(m.id)
+            user = self.get_user(m.id)[1]
             if user != None:
                 listNumbers[m.name] = len(user.getSongList())
             else:
@@ -2179,7 +2388,7 @@ class MusicBot(discord.Client):
 
         t0 = time.clock()
         #If author no music printing
-        user = self.get_user(author.id)
+        user = self.get_user(author.id)[1]
         if user == None:
             prntStr = "You have no music"
             return Response(prntStr, delete_after=35)
@@ -2188,7 +2397,7 @@ class MusicBot(discord.Client):
         prntStr = "**__Affinity to Others__**\n\n"
         similarSongs = {}
         #Goes through each song
-        for songObj in self.autoplaylist:
+        for songObj in self.new_autoplaylist.songs:
             #If you liked
             if author.id in songObj.getLikers():
                 likeList = songObj.getLikers()
@@ -2514,7 +2723,7 @@ class MusicBot(discord.Client):
         for link in self.metaData[leftover_args]:
             t0 = time.clock()
             #Getting people with the url in their list
-            prsnLists = list(filter(lambda person: [song for song in person.getSongList() if link == song.getURL()], self.users_list))
+            prsnLists = list(filter(lambda person: [song for song in person.getSongList() if link == song], self.users_list))
             #prsnLists = []
             #for person in self.users_list:
             #    for song in person.getSongList():
@@ -2525,7 +2734,7 @@ class MusicBot(discord.Client):
                 continue
             #Getting song name
             #print(prsnLists[0].getSongList())
-            song = list(filter(lambda songs: link in songs.getURL(), prsnLists[0].getSongList()))
+            song = list(filter(lambda songs: link in songs, prsnLists[0].getSongList()))
 
             if len(song) == 0:
                 continue
@@ -2846,21 +3055,56 @@ class MusicBot(discord.Client):
 
         data = []
 
-        user = self.get_user(author.id)
-        log.warning("START - " + str(len(user.getSongList())))
+        user = self.get_user(author.id)[1]
         if user != None:
 
             if len(user.getSongList()) == 0:
                 data.append("Your auto playlist is empty.")
             else:
-                sorted_songs = sorted(user.getSongList(), key=lambda song: song.title.lower())
+
+                song_list = list(map(lambda key: self._url_to_song_[key], user.getSongList()))
+
+                sorted_songs = sorted(song_list, key=lambda song: song.title.lower() if song.title else "")
                 for song in sorted_songs:
                     if song != None:
                         data.append(str(song) + ", Playcount: " + str(song.getPlays()) + "\r\n")
                     else:
                         log.warning("[MYLIST] Null song")
 
-            log.warning("END - " + str(len(data)))
+            with BytesIO() as sdata:
+                sdata.writelines(d.encode('utf8') for d in data)
+                sdata.seek(0)
+
+                # TODO: Fix naming (Discord20API-ids.txt)
+                await self.send_file(author, sdata, filename='%s-autoplaylist.txt' % (author))
+
+        return Response(":mailbox_with_mail:", delete_after=20)
+
+    async def cmd_mylist2(self, player, channel, author, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}mylist
+
+        View the songs in your personal autoplaylist.
+        """
+
+        data = []
+
+        user = self.get_user(author.id)[1]
+        if user != None:
+
+            if len(user.getSongList()) == 0:
+                data.append("Your auto playlist is empty.")
+            else:
+
+                songs = await self.get_user_songs(author.id)
+
+                sorted_songs = sorted(songs, key=lambda song: song.title.lower() if song.title else "")
+                for song in sorted_songs:
+                    if song != None:
+                        data.append(str(song) + ", Playcount: " + str(song.getPlays()) + "\r\n")
+                    else:
+                        log.warning("[MYLIST] Null song")
 
             with BytesIO() as sdata:
                 sdata.writelines(d.encode('utf8') for d in data)
@@ -2894,8 +3138,12 @@ class MusicBot(discord.Client):
             song_url = -1
 
         if song_url is None:
-            url = player.current_entry.url
-            title = player.current_entry.title
+            if player.current_entry != None:
+                url = player.current_entry.url
+                title = player.current_entry.title
+            else:
+                log.warning("Can't like a song while the player isn't playing")
+                return Response("ERROR: Can't like a song while the player isn't playing", delete_after=30)
         elif type(song_url) == int:
             position = int(song_url)
             entry = await player.playlist.get_entry(position)
@@ -2907,6 +3155,8 @@ class MusicBot(discord.Client):
                 url = entry.url
                 title = entry.title
         else:
+
+            song_url = self.check_url(song_url)
             url = song_url
             cached_song = self.find_song_by_url(url)
             if cached_song != None:
@@ -2914,7 +3164,7 @@ class MusicBot(discord.Client):
             else:
                 title = None
 
-        if self.add_to_autoplaylist(url, title, author.id):
+        if self.new_autoplaylist.add_to_autoplaylist(url, title, author.id):
             reply_text = "**%s**, the song **%s** has been added to your auto playlist."
         else:
             reply_text = "**%s**, this song **%s** is already added to your auto playlist."
@@ -2971,6 +3221,7 @@ class MusicBot(discord.Client):
                 url = entry.url
                 title = entry.title
         else:
+            song_url = self.check_url(song_url)
             url = song_url
             cached_song = self.find_song_by_url(url)
             if cached_song != None:
@@ -2978,7 +3229,7 @@ class MusicBot(discord.Client):
             else:
                 title = None;
 
-        if self.remove_from_autoplaylist(url, title, author.id):
+        if self.new_autoplaylist.remove_from_autoplaylist(url, title, author.id):
             reply_text = "**%s**, the song **%s** has been removed from your auto playlist."
             if (player.current_entry.url == url):
                 player.current_entry.disliked = True
@@ -3075,12 +3326,11 @@ class MusicBot(discord.Client):
         # let's see if we already have this song or a similar one. i feel like this will help 70% of the time
         # let's check the songs the user likes before looking at other people's
 
-        temp_song = await self.check_songs(song_url, author)
-        if temp_song != None:
+        song_url = self.check_url(song_url)
+
+        temp_song = self.find_song_by_url(song_url)
+        if temp_song:
             song_url = temp_song.getURL()
-        else:
-            if "http" not in song_url and "www." in song_url:
-                song_url = "http://" + song_url
 
         try:
             info = await self.downloader.extract_info(player.playlist.loop, song_url, download=False, process=False)
@@ -3263,7 +3513,7 @@ class MusicBot(discord.Client):
 
         try:
             log.info("[PLAY] " + author.name + ": " + entry.title)
-            self.add_to_autoplaylist(song_url, entry.title, author.id)
+            self.new_autoplaylist.add_to_autoplaylist(song_url, entry.title, author.id)
         except:
             log.error("Failed to add song to apl in play command " + entry.title)
 
@@ -3569,6 +3819,7 @@ class MusicBot(discord.Client):
                     progress=prog_str,
                     url=player.current_entry.url
                 )
+                self.cur_author = player.current_entry.meta['author'].id
             else:
                 np_text = "Now {action}: **{title}**\nProgress: {progress_bar} {progress}\n\N{WHITE RIGHT POINTING BACKHAND INDEX} <{url}>".format(
                     action=action_text,
@@ -3579,23 +3830,24 @@ class MusicBot(discord.Client):
                 )
 
             likers = ""
-            for each_user in self.get_likers(player.current_entry.url):
-                # strip off the unique identifiers
-                # I'm not using the meta data since technically it has no author so I wrote a get_likers function
-                if each_user == self._get_user(self.cur_author):
-                    likers = likers + "**" + str(each_user)[:-5] + "**" + ", "
-                else:
-                    likers = likers + str(each_user)[:-5] + ", "
+            if self.get_likers(player.current_entry.url):
+                for each_user in self.get_likers(player.current_entry.url):
+                    # strip off the unique identifiers
+                    # I'm not using the meta data since technically it has no author so I wrote a get_likers function
+                    if each_user == self._get_user(self.cur_author):
+                        likers = likers + "**" + str(each_user)[:-5] + "**" + ", "
+                    else:
+                        likers = likers + str(each_user)[:-5] + ", "
 
-            # slice off last " ,""
-            likers = likers[:-2]
+                # slice off last " ,""
+                likers = likers[:-2]
 
             #Getting all tags for song
             list_tags = list(filter(lambda tag: player.current_entry.url in self.metaData[tag], self.metaData.keys()))
             if len(list_tags) > 0:
                 the_tags = "\nTags: "
                 for each_tag in list_tags:
-                    if self.get_user(self._get_user(self.cur_author)).getMood() == each_tag:
+                    if self.get_user(self._get_user(self.cur_author))[1].getMood() == each_tag:
                         the_tags += "**[" + each_tag + "]**, "
                     else:
                         the_tags += "[" + each_tag + "], "
@@ -3755,11 +4007,15 @@ class MusicBot(discord.Client):
                 print("Something strange is happening.  "
                       "You might want to restart the bot if it doesn't start working.")
 
+        likers = self.get_likers(player.current_entry.url)
+        if not likers:
+            likers = []
+
         if author.id == self.config.owner_id \
                 or permissions.instaskip \
                 or author == player.current_entry.meta.get('author', None) \
-                or author in self.get_likers(player.current_entry.url) \
-                or any(list(filter(lambda userID: userID in self.get_likers(player.current_entry.url), self.get_ghost_exist(author.id)))) \
+                or author in likers \
+                or any(list(filter(lambda userID: userID in likers, self.get_ghost_exist(author.id)))) \
                 or player.current_entry.disliked == True:
 
             player.skip()  # check autopause stuff here
@@ -4091,7 +4347,7 @@ class MusicBot(discord.Client):
         file = load_file(self.config.last_commit_file)
         textblock = ""
         for each_line in file:
-            textblock += each_line;
+            textblock += each_line
 
         return Response("```\n" + textblock + "\n```", delete_after=30)
 
@@ -4270,11 +4526,11 @@ class MusicBot(discord.Client):
 
         data = []
 
-        user = self.get_user(user_id)
+        user = self.get_user(user_id)[1]
         if user != None:
-            for song in user.getSongList():
+            for each_url in user.getSongList():
                 # yikes
-                song = self.find_song_by_url(song.getURL())
+                song = self.find_song_by_url(each_url)
                 if (song != None):
                     data.append(str(song) + ", Playcount: " + str(song.getPlays()) + "\r\n")
 
@@ -4307,14 +4563,8 @@ class MusicBot(discord.Client):
         if self.config.bound_channels and message.channel.id not in self.config.bound_channels and not message.channel.is_private:
             return  # if I want to log this I just move it under the prefix check
         
-        if (get_latest_pickle_mtime(self.config.auto_playlist_pickle) > self.last_modified_ts_apl):
-            log.debug("[ON_MESSAGE] Loading latest APL pickle file")
-            self.autoplaylist = load_pickle(self.config.auto_playlist_pickle)
-            self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-        if (get_latest_pickle_mtime(self.config.users_list_pickle) > self.last_modified_ts_users):
-            log.debug("[ON_MESSAGE] Loading latest users pickle file")
-            self.users_list = load_pickle(self.config.users_list_pickle)
-            self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
+        if self.new_autoplaylist.needs_reloaded():
+            self._url_to_song_, self.users_list = self.new_autoplaylist.reload()
 
         command, *args = message_content.split(' ') # Uh, doesn't this break prefixes with spaces in them (it doesn't, config parser already breaks them)
         command = command[len(self.config.command_prefix):].lower().strip()
@@ -4454,7 +4704,6 @@ class MusicBot(discord.Client):
 
             log.info("[" + str(datetime.now()) + "][" + command.upper() + "] " + str(message.author))
 
-
         except (exceptions.CommandError, exceptions.HelpfulError, exceptions.ExtractionError) as e:
             log.error("Error in {0}: {1.__class__.__name__}: {1.message}".format(command, e), exc_info=True)
 
@@ -4481,12 +4730,7 @@ class MusicBot(discord.Client):
                 await asyncio.sleep(5)
                 await self.safe_delete_message(message, quiet=True)
 
-        log.debug("[ON_MESSAGE] Storing latest APL pickle file")
-        store_pickle(self.config.auto_playlist_pickle, list(self._url_to_song_.values()))
-        self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-        log.debug("[ON_MESSAGE] Storing latest users pickle file")
-        store_pickle(self.config.users_list_pickle, self.users_list)
-        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
+        self.new_autoplaylist.store()
 
     async def on_voice_state_update(self, before, after):
         if not self.init_ok:

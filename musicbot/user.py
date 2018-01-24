@@ -7,13 +7,16 @@ class User:
         User keeps track of information about a user either for data science or for managing cooldowns to prevent abuse.
     """
 
-    def __init__(self, user_id):
+    def __init__(self, user_id, user_name):
         self.can_play = True
         self.can_skip = True
         self.can_playnow = True
         self.can_tag_add = True
 
         self.user_id = user_id
+        self.user_name = user_name
+
+        self.mood = None
 
         self.song_list = []
 
@@ -22,6 +25,7 @@ class User:
     #   Getting from Class
 
     ###########################################################################
+    '''
     def getSong(self, music_obj):
 
         # if given a string, force into music object type
@@ -38,6 +42,7 @@ class User:
             if music_obj.getTitle() is not None and music_obj.getTitle().lower() in each_song.getTitle().lower():
                 return each_song
         return None
+    '''
 
     def getSongList(self):
         return self.song_list
@@ -47,6 +52,9 @@ class User:
 
     def getID(self):
         return self.user_id
+
+    def getName(self):
+        return self.user_name
 
     ###########################################################################
 
@@ -59,21 +67,21 @@ class User:
     def setMood(self, mood):
         self.mood = mood
 
+    def setID(self, user_id):
+        self.user_id = user_id
+
+    def setName(self, name):
+        self.user_name = user_name
+
     ###########################################################################
 
     #   Check if has
 
     ###########################################################################
-    def hasSong(self, music_obj):
-        for each_song in self.song_list:
-            if music_obj.getURL() != None and each_song.getURL() != None:
-                if music_obj.getURL() == each_song.getURL():
-                    return True
-
-            if music_obj.getTitle() != None and each_song.getTitle() != None:
-                if  music_obj.getTitle() in each_song.getTitle():
-                    return True
-        return False
+    def hasSong(self, url):
+        if type(url) == Music:
+            url = url.getURL()
+        return url in self.song_list
 
     def hasMood(self, tag):
         return tag == self.mood
@@ -83,9 +91,13 @@ class User:
     #   Adding to Class
 
     ###########################################################################
-    def addSong(self, music_obj):
-        self.song_list.append(music_obj)
+    def addSong(self, url):
+        if not self.hasSong(url):
+            self.song_list.append(url)
+            return True
+        return False
 
+    # same as setMood for now
     def addMood(self, tag):
         self.mood = tag
 
@@ -94,12 +106,13 @@ class User:
     #   Removing from Class
 
     ###########################################################################
-    def removeSong(self, music_obj):
-        if self.hasSong(music_obj):
-            toDelete = self.getSong(music_obj)
-            self.song_list.remove(toDelete)
+    def removeSong(self, url):
+        if self.hasSong(url):
+            self.song_list.remove(url)
             return True
         return False
 
     def __repr__(self):
-        return (self.user_id if self.user_id != None else "") + ": " + (self.mood if self.mood != None else "")
+        return "Name: {name}, ID: {id}".format(
+            name=getattr(self, 'user_name', "NO_NAME"),
+            id=getattr(self, 'user_id', "NO_ID"))
