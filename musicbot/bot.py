@@ -1514,12 +1514,12 @@ class MusicBot(discord.Client):
 
                 #THIS IS THE MULTI-LINE EQUIVILENT OF BELOW
                 # for user_obj in list_people:
-                #     if user_obj.getMood() == None or user_obj.getMood() == "":
-                #         self.list_heard.extend(user_obj.getHeard())
+                #     if user_obj.mood == None or user_obj.mood == "":
+                #         self.list_heard.extend(user_obj.heard_list)
                 #     else:
-                #         self.list_heard.extend(user_obj.getHeard()[:len(self.metadata[user_obj.getMood()])])
+                #         self.list_heard.extend(user_obj.heard_list[:len(self.metadata[user_obj.mood])])
 
-                list(filter(lambda user_obj : self.list_heard.extend(user_obj.getHeard()) if user_obj.getMood() == None else self.list_heard.extend(user_obj.getHeard()[:len(self.metadata[user_obj.getMood()])]), list_people))
+                list(filter(lambda user_obj : self.list_heard.extend(user_obj.heard_list) if user_obj.mood == None else self.list_heard.extend(user_obj.list_heard[:len(self.metadata[user_obj.mood])]), list_people))
 
                 self.list_heard = list(set(self.list_heard))
                 # print("1st time: " + str(time.perf_counter() - tmpClock))
