@@ -1,7 +1,7 @@
 import logging
 
 from .config import Config, ConfigDefaults
-from .musicClass import Music
+from .song import Music
 from .user import User
 from .utils import load_file, write_file, get_latest_pickle_mtime, load_pickle, store_pickle
 log = logging.getLogger(__name__)
@@ -58,15 +58,15 @@ class AutoPlaylist:
                 return False
         # otherwise we just want to add this liker to the list
         else:
-            if song.hasLiker(author):
+            if song.has_liker(author):
                 log.debug("[ADD_TO_AUTOPLAYLIST] Song already added " + url)
                 return False
             else:
                 # appends current author to the end of the likers list
                 log.debug("[ADD_TO_AUTOPLAYLIST] Adding liker to song " + url)
-                song.addLiker(author)
+                song.add_liker(author)
 
-                if not self._url_to_song_[url].hasLiker(author):
+                if not self._url_to_song_[url].has_liker(author):
                     log.error("[ADD_TO_AUTOPLAYLIST] Failed to add liker to song " + url)
 
         self._add_to_autoplaylist(url, title, author)
@@ -84,7 +84,7 @@ class AutoPlaylist:
                 self.add_to_autoplaylist(url, title, author)
 
             # trying to grab the likers from the apl
-            likers = song.getLikers()
+            likers = song.likers
             if likers == None:
                 log.error("[_ADD_TO_AUTOPLAYLIST] No author and no likers. Can't add this song!")
                 return
@@ -114,7 +114,7 @@ class AutoPlaylist:
             log.error("[_ADD_TO_AUTOPLAYLIST] No valid URL given, cannot add.")
             return
 
-        user.addSong(url)
+        user.add_song(url)
         self.store()
 
     def remove_from_autoplaylist(self, url, title=None, author=None):
@@ -125,12 +125,12 @@ class AutoPlaylist:
             #check if we can grab the likers from the apl
             song = self.find_song_by_url(url)
             if song:
-                if len(song.getLikers()) == 0:
+                if len(song.likers) == 0:
                     log.warning("[REMOVE_FROM_AUTOPLAYLIST] No Author... Don't know who to remove from")
                     return False
                 else:
-                    log.warning("MULTIPLE LIKERS: " + ', '.join(song.getLikers()))
-                    for each_liker in song.getLikers():
+                    log.warning("MULTIPLE LIKERS: " + ', '.join(song.likers))
+                    for each_liker in song.likers:
                         if self.remove_from_autoplaylist(url, title, each_liker):
                             log.warning("SUCCESS for user: " + self._get_user(each_liker).name)
                             self.store()
@@ -150,23 +150,23 @@ class AutoPlaylist:
 
             if song:
 
-                if not song.hasLiker(author):
+                if not song.has_liker(author):
                     log.debug("[REMOVE_FROM_AUTOPLAYLIST] Hey! You can't remove a song that's not even yours!")
                     return False
 
-                if len(song.getLikers()) > 1:
-                    log.debug("[REMOVE_FROM_AUTOPLAYLIST] MULTIPLE LIKERS, REMOVING: " + song.getTitle())
-                    song.removeLiker(author)
+                if len(song.likers) > 1:
+                    log.debug("[REMOVE_FROM_AUTOPLAYLIST] MULTIPLE LIKERS, REMOVING: " + song.title)
+                    song.remove_liker(author)
                 
-                elif len(song.getLikers()) == 1:
-                    log.debug("[REMOVE_FROM_AUTOPLAYLIST] ONE LIKER, REMOVING: " + song.getTitle())
+                elif len(song.likers) == 1:
+                    log.debug("[REMOVE_FROM_AUTOPLAYLIST] ONE LIKER, REMOVING: " + song.title)
 
                     #removing the song from the metadata dict (tags)
                     try:
-                        if song.getURL() in list(self.metaData.values()):
+                        if song.url in list(self.metaData.values()):
                             for each_key in list(self.metaData.keys()):
-                                if song.getURL() in self.metaData[each_key]:
-                                    self.metaData[each_key].remove(song.getURL())
+                                if song.url in self.metaData[each_key]:
+                                    self.metaData[each_key].remove(song.url)
                     except:
                         pass
 
@@ -177,7 +177,7 @@ class AutoPlaylist:
                         log.error("[REMOVE_FROM_AUTOPLAYLIST] Tried to remove something that wasn't a url: " + str(url))
                         return False
                 else:
-                    log.warning("[REMOVE_FROM_AUTOPLAYLIST] NO LIKERS, NOT REMOVING: " + song.getTitle())
+                    log.warning("[REMOVE_FROM_AUTOPLAYLIST] NO LIKERS, NOT REMOVING: " + song.title)
                     return False
 
                 return self._remove_from_autoplaylist(url, title, author)
@@ -194,8 +194,8 @@ class AutoPlaylist:
         user = self.get_user(author)
 
         if user:
-            if user.hasSong(url):
-                if user.removeSong(url):
+            if user.has_song(url):
+                if user.remove_song(url):
                     log.debug("[_REMOVE_FROM_AUTOPLAYLIST] REMOVE SUCCESS!")
                     self.store()
                     return True
@@ -260,7 +260,7 @@ class AutoPlaylist:
             discord_id = discord_user
 
         for each_user in self.users_list:
-            if each_user.getID() == discord_id:
+            if each_user.user_id == discord_id:
                 return each_user
 
         return None

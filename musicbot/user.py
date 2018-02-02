@@ -1,102 +1,142 @@
+import logging
+
 from discord import utils
-from .musicClass import Music
+from .song import Music
+log = logging.getLogger(__name__)
 
 class User:
 
     """
-        User keeps track of information about a user either for data science or for managing cooldowns to prevent abuse.
+        User keeps track of music information about a user.
     """
 
     def __init__(self, user_id, user_name):
-        self.can_play = True
-        self.can_skip = True
-        self.can_playnow = True
-        self.can_tag_add = True
 
-        self.user_id = user_id
-        self.user_name = user_name
+        self._user_id = user_id
+        self._user_name = user_name
 
-        self.mood = None
+        self._mood = None
 
-        self.song_list = []
-        self.heard_length = 15
-        self.heard_list = []
-		
-    ###########################################################################
+        self._song_list = []
+        self._heard_length = 15
+        self._heard_list = []
 
-    #   Getting from Class
+    @property
+    def user_id(self):
+        return self._user_id
 
-    ###########################################################################
-    '''
-    def getSong(self, music_obj):
-        if (type(music_obj) == str):
-            music_obj()
-        for each_song in self.song_list:
-            if each_song.getURL() == music_obj.getURL() or each_song.getURL() == music_obj.getURL():
-                return each_song
-        return None
-    '''
-
-    def getSongList(self):
-        return self.song_list
-
-    def getMood(self):
-        return self.mood
-
-    def getID(self):
-        return self.user_id
-
-    def getName(self):
-        return self.user_name
-
-    def getHeard(self):
-        return self.heard_list
-		
-    def getHeardLen(self):
-        return self.heard_length
-		
-    ###########################################################################
-
-    #   Setting values
-
-    ###########################################################################
-    def setSongList(self, song_list):
-        self.song_list = song_list
-
-    def setMood(self, mood):
-        self.mood = mood
-		
-    def setHeardLen(self, heard_len):
-        if self.heard_length > len(self.song_list):
-            return False
+    @user_id.setter
+    def user_id(self, new_user_id):
+        if new_user_id != None:
+            if type(new_user_id) != str:
+                new_user_id = str(new_user_id)
         else:
-            self.heard_length = heard_len
-            return True
+            log.warning("User tried to use user_id setter but argument was None")
+        self._user_id = new_user_id
+
+    @property
+    def user_name(self):
+        return self._user_name
+
+    @user_name.setter
+    def user_name(self, new_user_name):
+        if new_user_name != None:
+            if type(new_user_name) != str:
+                new_user_name = str(new_user_name)
+        else:
+            log.warning("User tried to use user_name setter but argument was None")
+        self._user_name = new_user_name
+
+    @property
+    def mood(self):
+        return self._mood
+
+    @mood.setter
+    def mood(self, new_mood):
+        if new_mood != None:
+            if type(new_mood) != str:
+                new_mood = str(new_mood)
+        else:
+            log.warning("User tried to use mood setter but argument was None")
+        self._mood = new_mood
 		
-    def setupHeard(self):
+    @property
+    def song_list(self):
+        return self._song_list
+
+    @song_list.setter
+    def song_list(self, new_song_list):
+        if new_song_list != None:
+            if type(new_song_list) == str:
+                assert ', ' in new_song_list
+                new_song_list = new_song_list.split(', ')
+            elif type(new_song_list) != list:
+                new_song_list = list(new_song_list)
+        else:
+            log.warning("User tried to use song_list setter but argument was None")
+        self._song_list = new_song_list
+
+    @property
+    def heard_length(self):
+        return self._heard_length
+
+    @heard_length.setter
+    def heard_length(self, new_heard_length):
+        if new_heard_length != None:
+            if type(new_heard_length) != int:
+                new_heard_length = int(new_heard_length)
+        else:
+            raise ValueError("User tried to use heard_length setter but argument was None")
+
+        if new_heard_length > len(self.song_list):
+            log.error("Heard length cannot exceed the length of the user's song list: " + str(len(self.song_list)))
+            new_heard_length = len(self.song_list)
+        else:
+            self._heard_length = new_heard_length
+
+    @property
+    def heard_list(self):
+        return self._heard_list
+
+    @heard_list.setter
+    def heard_list(self, new_heard_list):
+        if new_heard_list != None:
+            if type(new_heard_list) == str:
+                assert ', ' in new_heard_list
+                new_heard_list = new_heard_list.split(', ')
+            elif type(new_heard_list) != list:
+                new_heard_list = list(new_heard_list)
+        else:
+            log.warning("User tried to use heard_list setter but argument was None")
+            new_heard_list = []
+
+        self._heard_list = new_heard_list
+
+    ###########################################################################
+
+    #   Setting up the Class
+
+    ###########################################################################
+				
+    def setup_heard(self):
         try:
             self.heard_list
         except:
             self.heard_list = []
             self.heard_length = 15
 
-    def setID(self, user_id):
-        self.user_id = user_id
-
-    def setName(self, name):
-        self.user_name = user_name
-
     ###########################################################################
 
     #   Check if has
 
     ###########################################################################
-    def hasSong(self, url):
-        if type(url) == Music:
-            url = url.getURL()
+
+    def has_song(self, url):
+        if hasattr(url, 'url'):
+            url = url.url
         return url in self.song_list
 
-    def hasMood(self, tag):
+    def has_mood(self, tag):
         return tag == self.mood
 
     ###########################################################################
@@ -104,28 +144,29 @@ class User:
     #   Adding to Class
 
     ###########################################################################
-    def addSong(self, url):
-        if not self.hasSong(url):
+
+    def add_song(self, url):
+        if not self.has_song(url):
             self.song_list.append(url)
             return True
         return False
 
-    # same as setMood for now
-    def addMood(self, tag):
-        self.mood = tag
-
-    def addHeard(self, music_obj):
-        self.heard_list.append(music_obj)
-        while len(self.heard_list) > self.heard_length:
-            del self.heard_list[0]
+    def add_heard(self, music_obj):
+        if self.heard_list != None:
+            self.heard_list.append(music_obj)
+            while len(self.heard_list) > self.heard_length:
+                del self.heard_list[0]
+        else:
+            raise AttributeError("Tried to add a heard song but heard_list was None")
 		
     ###########################################################################
 
     #   Removing from Class
 
     ###########################################################################
-    def removeSong(self, url):
-        if self.hasSong(url):
+
+    def remove_song(self, url):
+        if self.has_song(url):
             self.song_list.remove(url)
             return True
         return False
