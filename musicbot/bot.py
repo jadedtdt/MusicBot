@@ -922,7 +922,8 @@ class MusicBot(discord.Client):
             for each_liker in likers:
                 likers_str += each_liker.mention + " "
 
-            msg = 'Hey! %s. It seems like your video has been made unavailable.\n%s, %s\nReason: %s' % (likers_str, song.title, song.url, emsg)
+            msg = 'Hey! %s. It seems like your video has been made unavailable.\n%s, %s\nReason: %s' % (likers_str, getattr(song, 'title', 'NO_TITLE'), getattr(song, 'url', 'NO_URL'), emsg)
+
             await self.safe_send_message(channel, msg)
 
     def __del__(self):
@@ -1510,7 +1511,16 @@ class MusicBot(discord.Client):
                 tmpClock = time.perf_counter()
                 self.list_heard = []
 
-                list(filter(lambda user_obj : self.list_heard.extend(user_obj.heard_list), list_people))
+
+                #THIS IS THE MULTI-LINE EQUIVILENT OF BELOW
+                # for user_obj in list_people:
+                #     if user_obj.getMood() == None or user_obj.getMood() == "":
+                #         self.list_heard.extend(user_obj.getHeard())
+                #     else:
+                #         self.list_heard.extend(user_obj.getHeard()[:len(self.metadata[user_obj.getMood()])])
+
+                list(filter(lambda user_obj : self.list_heard.extend(user_obj.getHeard()) if user_obj.getMood() == None else self.list_heard.extend(user_obj.getHeard()[:len(self.metadata[user_obj.getMood()])]), list_people))
+
                 self.list_heard = list(set(self.list_heard))
                 # print("1st time: " + str(time.perf_counter() - tmpClock))
                 
@@ -2417,6 +2427,7 @@ class MusicBot(discord.Client):
                 return await self._cmd_compat(server, player, channel, author)
         listNumbers = {}
         longStr = ""
+        isTopTen = False
 
         await self.send_typing(channel)
         #Get ids of all users
@@ -2430,13 +2441,6 @@ class MusicBot(discord.Client):
                 #print("skipped")
                 pass
 
-        #Printing the users song number
-        if author.name in list(listNumbers.keys()):
-            longStr += "`" + str(author)[:-5] + ": " + str(listNumbers[str(author)[:-5]]) + "`\n\n"
-        else:
-            print("A. " + author.id)
-            print("B. " + str(listNumbers.keys()))
-            longStr += "`" + str(author)[:-5] + ": 0`\n\n"
         longStr += "*--Number of Songs--*\n"
         for i in range(0,10):
             #gets the key with the largest value
@@ -2445,11 +2449,21 @@ class MusicBot(discord.Client):
             del listNumbers[tempLarge[0]]
             tempStr = str(i + 1) + "." + str(tempLarge[0]) + ": " + str(tempLarge[1])
             #If the person asked for it their name is bold
-            if tempLarge[0] == str(author)[:-5]:
+            if tempLarge[0] == str(author.name):
                 tempStr = "**__" + tempStr + "__**"
+                isTopTen = True
             longStr += tempStr + "\n"
             if len(listNumbers) == 0:
                 break
+
+        #Printing the users song number
+        if not isTopTen:
+            if author.name in list(listNumbers.keys()):
+                longStr = "`" + str(author.display_name) + ": " + str(listNumbers[str(author.name)]) + "`\n\n" + longStr
+            else:
+                print("A. " + author.id)
+                print("B. " + str(listNumbers.keys()))
+                longStr += "`" + str(author)[:-5] + ": 0`\n\n"
 
         return Response(longStr, delete_after=35)
 
@@ -2644,9 +2658,9 @@ class MusicBot(discord.Client):
                 if tags != "":
                     if (tags[0] == '[' and ']' in tags[1:-1]) and ('[' in tags[1:-1] and tags[-1] == ']') and (tags[1:-1].find(']') < tags[1:-1].find('[')):
                         tag1 = tags[1:tags[1:-1].find(']') + 1]
-                        tag2 = tags[tags[1:-1].find('[') + 1:-1]
+                        tag2 = tags[tags[1:-1].find('[') + 2:-1]
                         return await self._cmd_replacetag(author, tag1, tag2)
-                prntStr = "Please put the command of replace in the form of\n ```{command_prefix}tag replace [tag_initial] [tag_final]```"
+                prntStr = "Please put the command of replace in the form of `" + self.config.command_prefix + "tag replace [tag_initial] [tag_final]`, and include the brackets."
                 return Response(prntStr, delete_after=20)
 
             if "http" in leftover_args[1] and "://" in leftover_args[1] or "www." in leftover_args[1]:
@@ -2786,7 +2800,7 @@ class MusicBot(discord.Client):
         #Will sort the metaData by the number of songs in it largest at top
         #for key,value in sorted(self.metaData.items(), key=lambda tuple: (len(tuple[1]),tuple[0]), reverse=True):
         #Will sort the metaData by the
-        for key,value in sorted(self.metaData.items()):
+        for key,value in sorted(self.metaData.items(), key=lambda set : set[0].lower()):
             if len(prntStr + key) < 1990:
                 prntStr += "**[" + key + "]** : " + str(len(value)) + "\n"
             else:
@@ -2861,9 +2875,8 @@ class MusicBot(discord.Client):
             print(list(map(lambda song_url : song_url , self.metaData[tag1])))
             if author.id in list(map(lambda song_url : self.find_song_by_url(song_url).likers, self.metaData[tag1])):
                 return Response("Woah buckaroo", delete_after=20)
-            self.metaData[tag2] = self.metaData[tag1]
-            del self.metaData[tag1]
-            self.cmd_updatetags()
+            self.metaData[tag2] = self.metaData.pop(tag1)
+            self._cmd_updatetags()
             await self.tag_update_apl([tag1, tag2], None, 'replace')
             prntStr = "The tag **[" + tag1 + "]** was replaced with the tag **[" + tag2 + "]**"
         else:
@@ -2902,6 +2915,14 @@ class MusicBot(discord.Client):
                     song.remove_tag(tag[0])
                     song.add_tag(tag[1])
                 
+                #OUTDATED since url in User's list
+                # #Changing song in User's list
+                # song_likers = song.getLikers()
+                # for user_id in song_likers:
+                #     users_Song = self.get_user(user_id).getSong(song)
+                #     users_Song.removeTag(tag[0])
+                #     users_Song.addTag(tag[1])
+
     def remove_song_from_tags(self, song):
         print("Looking for: " + song.url)
         updated_tags = False
@@ -2916,6 +2937,14 @@ class MusicBot(discord.Client):
             del self.metaData[delete_tag]
         if updated_tags == True:
             self._cmd_updatetags()
+
+    def cleanup_tags(self):
+        for key, values in sorted(self.metaData.items()):
+            self.metaData[key] = list(filter(lambda url : self.find_song_by_url(url) != None, values))
+        print("Deleting Tags: " + str(", ".join(list(filter(lambda tag : len(self.metaData[tag]) == 0, self.metaData)))))
+        for delete_tag in list(filter(lambda tag : len(self.metaData[tag]) == 0, self.metaData)):
+            del self.metaData[delete_tag]
+        self._cmd_updatetags()
 
     async def cmd_embed(self, player, author, channel, permissions, leftover_args):
         em = discord.Embed(type="rich")
@@ -2978,7 +3007,7 @@ class MusicBot(discord.Client):
             #Printing: Yours
             char_cnt = 0
             if author.id in peopleListSongs:
-                messages.append(await self._embed_listhas(channel, author.display_name, peopleListSongs[author.id], title))
+                messages.append(await self._embed_listhas(channel, author.display_name, peopleListSongs[author.id], title, 0xffb900))
                 del peopleListSongs[author.id]
                 title = None
             print("2nd run: " + str(time.perf_counter() - t0))
@@ -3007,10 +3036,9 @@ class MusicBot(discord.Client):
             # # await self.add_reaction(msgr, ":arrow_backward:")
             # await self.add_reaction(msgr, "▶") #:arrow_forward:
     
-    async def _embed_listhas(self, channel, userName, songList, title=None):
+    async def _embed_listhas(self, channel, userName, songList, title=None, color=0x006600):
         #Right now will be one embed per person
-        #Possibly do color later for the author vs. others
-        em = discord.Embed(title=title, type="rich", color=0x006600)
+        em = discord.Embed(title=title, type="rich", color=color)
         EM_CHAR_LIMIT = 6000
         FIELDS_LIMIT = 25
         prntStr = ""
@@ -3038,10 +3066,10 @@ class MusicBot(discord.Client):
                 prntStr += lnprnt
                 lnprnt = ""
         # print(em.fields)
-        if len(em.fields) < FIELDS_LIMIT and lnprnt == "":
-            #print(userName + "\aIt happened")
-            #em.add_field(name='\u200b', value=prntStr, inline=True)
-            print(prntStr)
+
+        if len(em.fields) < FIELDS_LIMIT and (char_cnt + len(prntStr)) < EM_CHAR_LIMIT and lnprnt == "":
+            # log.debug(userName + " : " + prntStr)
+            em.add_field(name='\u200b', value=prntStr, inline=True)
 
         return await self.send_message(channel, embed=em)
 

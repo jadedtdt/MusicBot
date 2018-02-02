@@ -92,3 +92,27 @@
 [23.0498037338256836] 2018-02-02 01:37:24,727 - INFO - musicbot.bot | In bot.py::MainThread(7708), line 4967 in on_message: [2018-02-02 01:37:24.727473][LISTHAS] Jadedtdt#1164
 [23.0513048171997070] 2018-02-02 01:37:24,728 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(7708), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
 [23.1028540134429932] 2018-02-02 01:37:24,780 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(7708), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[241.6523540019989014] 2018-02-02 01:41:03,330 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1558 in on_player_finished_playing: 127966571300651008
+[241.6537442207336426] 2018-02-02 01:41:03,331 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1573 in on_player_finished_playing: Toaxt#9949
+[241.6542439460754395] 2018-02-02 01:41:03,331 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1613 in on_player_finished_playing: KPM Music - Future Classic
+[241.6547434329986572] 2018-02-02 01:41:03,332 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1614 in on_player_finished_playing: {'_config': <musicbot.config.Config object at 0x000001B177579F98>, '_url': 'https://www.youtube.com/watch?v=UwbY3DHWVQ4', '_title': 'KPM Music - Future Classic', '_likers': ['127966571300651008'], '_play_count': 1, '_tags': [], '_volume': 0.15}
+[242.4269905090332031] 2018-02-02 01:41:04,104 - INFO - musicbot.bot | In bot.py::MainThread(7708), line 1718 in on_player_finished_playing: Stored song volume: 0.15
+[243.1694235801696777] 2018-02-02 01:41:04,847 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(7708), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[243.2434942722320557] 2018-02-02 01:41:04,921 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(7708), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[243.2595093250274658] 2018-02-02 01:41:04,937 - INFO - musicbot.entry | In entry.py::MainThread(7708), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=UwbY3DHWVQ4
+[245.3258817195892334] 2018-02-02 01:41:07,003 - INFO - musicbot.entry | In entry.py::MainThread(7708), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=UwbY3DHWVQ4
+[245.3323881626129150] 2018-02-02 01:41:07,010 - FFMPEG - musicbot.player | In player.py::MainThread(7708), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\audio_cache\youtube-UwbY3DHWVQ4-KPM_Music_-_Future_Classic.webm
+[245.5570826530456543] 2018-02-02 01:41:07,234 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1828 in serialize_queue: Serializing queue for 138532599181213696
+[271.5443263053894043] 2018-02-02 01:41:33,221 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(7708), line 5020 in on_voice_state_update: Voice state update for 138532752038297600/Dynamic Menace#7801 on Catch The Rainbow!/Casuals -> [LEAVE, DISCONNECT]
+[271.5443263053894043] 2018-02-02 01:41:33,221 - INFO - musicbot.bot | In bot.py::MainThread(7708), line 5031 in on_voice_state_update: 138532752038297600/Dynamic Menace#7801 has left Catch The Rainbow!/Casuals
+[469.7393667697906494] 2018-02-02 01:44:51,417 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1558 in on_player_finished_playing: 181268300301336576
+[469.7418665885925293] 2018-02-02 01:44:51,419 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1573 in on_player_finished_playing: Jadedtdt#1164
+[469.7433679103851318] 2018-02-02 01:44:51,421 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1613 in on_player_finished_playing: Nightcore - Mi Mi Mi
+[469.7448697090148926] 2018-02-02 01:44:51,422 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1614 in on_player_finished_playing: {'_config': <musicbot.config.Config object at 0x000001B175EC2F60>, '_url': 'https://www.youtube.com/watch?v=FPrGnCbDnbU', '_title': 'Nightcore - Mi Mi Mi', '_likers': ['181268300301336576'], '_play_count': 1, '_tags': [], '_volume': 0.15}
+[470.8850648403167725] 2018-02-02 01:44:52,562 - INFO - musicbot.bot | In bot.py::MainThread(7708), line 1718 in on_player_finished_playing: Stored song volume: 0.15
+[472.0529704093933105] 2018-02-02 01:44:53,730 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(7708), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[472.0912790298461914] 2018-02-02 01:44:53,768 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(7708), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[472.1017887592315674] 2018-02-02 01:44:53,779 - INFO - musicbot.entry | In entry.py::MainThread(7708), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=FPrGnCbDnbU
+[474.4548413753509521] 2018-02-02 01:44:56,132 - INFO - musicbot.entry | In entry.py::MainThread(7708), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=FPrGnCbDnbU
+[474.4573450088500977] 2018-02-02 01:44:56,135 - FFMPEG - musicbot.player | In player.py::MainThread(7708), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\audio_cache\youtube-FPrGnCbDnbU-Nightcore_-_Mi_Mi_Mi.webm
+[474.6758596897125244] 2018-02-02 01:44:56,353 - DEBUG - musicbot.bot | In bot.py::MainThread(7708), line 1828 in serialize_queue: Serializing queue for 138532599181213696
