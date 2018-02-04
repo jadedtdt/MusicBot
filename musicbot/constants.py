@@ -5,6 +5,7 @@ SUB_VERSION = '-review'
 VERSION = MAIN_VERSION + SUB_VERSION
 
 AUDIO_CACHE_PATH = os.path.join(os.getcwd(), '../MusicBot/audio_cache')
+BACKUP_PATH = os.path.join(os.getcwd(), '../MusicBot/data/backup')
 DISCORD_MSG_CHAR_LIMIT = 2000
 
 LIKERS_DELIMETER = "; "

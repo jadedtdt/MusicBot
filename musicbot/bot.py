@@ -45,7 +45,7 @@ from .utils import load_file, write_file, sane_round_int, fixg, ftimedelta, get_
 from .yti import YouTubeIntegration
 
 from .constants import VERSION as BOTVERSION
-from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
+from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH, BACKUP_PATH
 
 load_opus_lib()
 
@@ -132,18 +132,26 @@ class MusicBot(discord.Client):
         self.aiosession = aiohttp.ClientSession(loop=self.loop)
         self.http.user_agent += ' MusicBot/%s' % BOTVERSION
 
-        #self.update_songs()
-        #self.update_users()
+    # takes ONLY the name of file, not the path or anything else
+    async def archive(self, input_file_name, input_file_contents):
+        if os.path.isdir(BACKUP_PATH):
+            if input_file_contents != None:
+                todays_date = str(datetime.now().strftime("%m-%d-%y"))
+                input_file_name = '{base_path}/{file_name}-{date}.pickle'.format(
+                    base_path=BACKUP_PATH, file_name=input_file_name, date=todays_date)
+                if input_file_name not in os.listdir(BACKUP_PATH):
+                    store_pickle(input_file_name, input_file_contents)
+                else:
+                    log.debug("[ARCHIVE] Already archived this file: {file} for today: {date}".format(
+                        file=input_file_name, date=todays_date))
+            else:
+                log.error("[ARCHIVE] Tried to archive a None file")
+        else:
+            log.error("[ARCHIVE] Could not find backups folder in {} folder so we are creating it".format(BACKUP_PATH))
+            os.makedirs(BACKUP_PATH)
+            return await self.archive(input_file_name, input_file_name)
 
-    async def archive(self, file):
-        if file:
-            pass
-
-    async def test_apl(self):
-        log.debug("BEFORE: " + str(len(self._url_to_song_.values())))
-        #self.new_autoplaylist.add_to_autoplaylist('https://www.youtube.com/watch?v=w2IuYn1PIiA', 'Andrew Applepie & Bjurman - Drowning World', '181268300301336576')
-        #self.new_autoplaylist.remove_from_autoplaylist('https://www.youtube.com/watch?v=w2IuYn1PIiA', 'Andrew Applepie & Bjurman - Drowning World', '181268300301336576')
-        log.debug("AFTER: " + str(len(self._url_to_song_.values())))
+        return 'Successfully archived today\'s files'
 
     async def import_songs(self):
         discord_member = None
@@ -167,7 +175,7 @@ class MusicBot(discord.Client):
                 if discord_member != None:
                     log.error(discord_member)
                 else:
-                    log.error("import_songs: could not identify this user's discord account - " + filename[:dashIndex])
+                    log.error("[IMPORT_SONGS] Could not identify this user's discord account - " + filename[:dashIndex])
                     continue
 
                 # loading lines into memory
@@ -1423,6 +1431,9 @@ class MusicBot(discord.Client):
         # This is the one event where its ok to serialize autoplaylist entries
         await self.serialize_queue(player.voice_client.channel.server)
 
+        await self.archive('autoplaylist', self._url_to_song_)
+        await self.archive('users_list', self.users_list)
+
         channel = entry.meta.get('channel', None)
         author = entry.meta.get('author', None)
 
@@ -1510,7 +1521,6 @@ class MusicBot(discord.Client):
                 list_people = list(filter(lambda user_obj : user_obj.user_id in people, self.users_list))
                 tmpClock = time.perf_counter()
                 self.list_heard = []
-
 
                 #THIS IS THE MULTI-LINE EQUIVILENT OF BELOW
                 # for user_obj in list_people:
