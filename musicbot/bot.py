@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from datetime import datetime
 import shlex
 import shutil
 import random
@@ -1159,7 +1160,9 @@ class MusicBot(discord.Client):
             if len(messages) == 1:
                 await self.delete_message(message[0])
             else:
-                await self.delete_messages(messages)
+                for msg in messages:
+                    await self.delete_message(msg)
+                #await self.delete_messages(messages)
         except Exception as e:
             print("Something went wrong: ", e)
 
@@ -1670,6 +1673,7 @@ class MusicBot(discord.Client):
                 try:
                     if playURL == None and song != None:
                         playURL = song.url
+                        song.last_played = datetime.now().strftime("%a, %B %d, %Y %I:%M %p")
                     info = await self.downloader.extract_info(player.playlist.loop, playURL, download=False, process=False)
                 except downloader.youtube_dl.utils.DownloadError as e:
                     if 'YouTube said:' in e.args[0]:
@@ -1760,7 +1764,7 @@ class MusicBot(discord.Client):
                 self.config.auto_playlist = False
 
         else: # Don't serialize for autoplaylist events
-
+            self.find_song_by_url(player.current_entry.url).last_played = datetime.now().strftime("%a, %B %d, %Y %I:%M %p")
             log.debug("serializing queue")
             await self.serialize_queue(player.voice_client.channel.server)
 
@@ -3017,16 +3021,16 @@ class MusicBot(discord.Client):
             #Printing: Yours
             char_cnt = 0
             if author.id in peopleListSongs:
-                messages.append(await self._embed_listhas(channel, author.display_name, peopleListSongs[author.id], title, 0xffb900))
+                messages.append(await self._embed_listhas(channel, author, peopleListSongs[author.id], title, 0xffb900))
                 del peopleListSongs[author.id]
                 title = None
             print("2nd run: " + str(time.perf_counter() - t0))
 
             #Printing: Others
             for author_id in peopleListSongs.keys():
-                userName = "Unknown User" if self._get_user(author_id) == None else self._get_user(author_id).display_name
-                if userName != "Unknown User":
-                    messages.append(await self._embed_listhas(channel, userName, peopleListSongs[author_id], title))
+                member = self._get_user(author_id)
+                if member != None: #Unknown User
+                    messages.append(await self._embed_listhas(channel, member, peopleListSongs[author_id], title))
                     title = None
 
             await self.safe_delete_message(thinkingMsg)
@@ -3053,8 +3057,8 @@ class MusicBot(discord.Client):
         FIELDS_LIMIT = 25
         prntStr = ""
         
-        em.description = "\t:busts_in_silhouette:__" + userName + "__\n"
-        em.set_footer(text=userName)
+        em.description = "\t:busts_in_silhouette:__" + userName.display_name + "__\n"
+        em.set_footer(text=userName.name)
         char_cnt = len(em.description + em.footer.text)
         
         for songObj in songList:
@@ -4161,6 +4165,7 @@ class MusicBot(discord.Client):
             if song != None:
                 np_text += "\nVolume: %s" % str(int(song.volume * 100))
                 np_text += "\nPlay Count: %d" % song.play_count
+                np_text += "\nLast Played: %s" % song.last_played
                 if len(likers) > 0:
                     np_text += "\nLiked by: %s%s" % (likers, the_tags)
 
