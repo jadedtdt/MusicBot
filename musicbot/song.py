@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime 
 
 from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
 from .config import Config, ConfigDefaults
@@ -37,6 +38,7 @@ class Music:
         self._play_count = 0
         self._tags = []
         self._volume = self._config.default_volume
+        self._last_played = [datetime.now().strftime("%a, %B %d, %Y %I:%M %p"), datetime.now().strftime("%a, %B %d, %Y %I:%M %p")]
 
     ###########################################################################
 
@@ -46,6 +48,8 @@ class Music:
 
     @property
     def url(self):
+        if not hasattr(self, '_last_played'):
+            self._last_played = [datetime.now().strftime("%a, %B %d, %Y %I:%M %p"), datetime.now().strftime("%a, %B %d, %Y %I:%M %p")]
         return self._url
 
     @url.setter
@@ -133,6 +137,17 @@ class Music:
         else:
             raise ValueError("Music tried to use volume setter but argument was None")
         self._volume = new_volume
+
+    @property
+    def last_played(self):
+        return self._last_played[0]
+
+    @last_played.setter
+    def last_played(self, new_time_play):
+        self._last_played.append(new_time_play)
+        self._last_played.pop(0)
+        
+
 
     ###########################################################################
 
