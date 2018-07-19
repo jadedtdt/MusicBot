@@ -1699,7 +1699,7 @@ class MusicBot(discord.Client):
                     log.error("Error processing \"{url}\": {ex}".format(url=playURL, ex=e))
                     log.exception(e)
 
-                    if "Cannot identify player" not in str(e) or "Signature extraction failed" not in str(e) or "Invalid parameters" not in str(e):
+                    if "Cannot identify player" not in str(e) or "Signature extraction failed" not in str(e) or "Invalid parameters" not in str(e) or "The read operation timed out" not in str(e):
                         song = self.find_song_by_url(playURL)
                         if song != None:
                             await self.notify_likers(song, str(e))
@@ -2521,39 +2521,6 @@ class MusicBot(discord.Client):
 
         print("Time to process compat: " + str(time.clock() - t0) + " sec")
         return Response(prntStr, delete_after=35)
-        ###########
-
-        '''
-        OLD WAY
-        user_index = getUserIndex(author.id)
-        if user_index == None:
-        user = self.get_user(author.id)
-        if user == None:
-            prntStr = "You have no music"
-            return Response(prntStr, delete_after=35)
-
-        #List of people with similar songs
-        peopleCompare = {}
-        prntStr = "**__Affinity to Others__**\n\n"
-
-        #Finds each link for the author who called command
-        for link in self.users_list[user_index]:
-            #Gets the people who liked the url
-            listOfPeople = self.get_likers(link)
-            for person in listOfPeople:
-                if person in peopleCompare:
-                    peopleCompare[person] += 1
-                else:
-                    peopleCompare[person] = 1
-        #Organizes the list from largest to smallest
-        for i in range(0,len(peopleCompare.keys())):
-            pplInfo = max(peopleCompare.items(), key=lambda k: k[1])
-            del peopleCompare[pplInfo[0]]
-            if pplInfo[0].id != author.id:
-                prntStr += pplInfo[0].name + ": *" + str(pplInfo[1]) + " of " + str(len(self.users_list[author.id])) + "*\n"
-        print("Time to process compat: " + str(time.clock() - t0) + " sec")
-        return Response(prntStr, delete_after=35)
-        '''
 
     async def cmd_ghost(self, player, server, author, channel, permissions, leftover_args):
         """
@@ -3168,160 +3135,6 @@ class MusicBot(discord.Client):
             if len(prntStr) != 0:
                 return Response(prntStr, delete_after=50)
             return
-
-        #######################
-        '''
-            prntStr = ""
-            toPlay = None
-            searchWord = ""
-            #Combining all search words
-            if leftover_args[0] == "-w":
-                for words in leftover_args[1:]:
-                    searchWord += words + " "
-                searchWord = " " + searchWord.lower()
-            elif "-p" in leftover_args[0]:
-                 for words in leftover_args[1:]:
-                     searchWord += words + " "
-                 searchWord = searchWord.strip().lower()
-                 toPlay = leftover_args[0].split("-p")[1]
-                 if toPlay == "":
-                     toPlay = 1
-            else:
-                for words in leftover_args:
-                    searchWord += words + " "
-                searchWord = searchWord.strip().lower()
-            prntStr += "**Autoplay lists containing: \"" + searchWord + "\"**\n\n"
-            t0 = time.clock()
-
-            user = self.get_user(author.id)
-            if user == None:
-                print("NULL USER")
-                return
-
-            #Gets all songs with the input word in your list
-            #ContainsList = list(filter(lambda element: searchWord in element.title, user.song_list))
-            ContainsList = []
-            for element in user.song_list:
-                if element.title != None:
-                    if searchWord.lower() in element.title.lower():
-                        ContainsList.append(element)
-            print("Time pass on your list: %s", time.clock() - t0)
-            #Removing unprocessed songs
-            for song in ContainsList:
-                if song.title == None:
-                    ContainsList.remove(link)
-            prsnPrint = "\t\t:busts_in_silhouette:__Yours__\n"
-            #Printing the list with the word
-            for song in ContainsList:
-                #Making the song list
-                try:
-                    title = song.title
-                    link = song.url
-                    prsnPrint += ":point_right:" + title + " (" + link + ")" + "\n"
-                except:
-                    print("Fail to parse yours: " + link)
-                    ContainsList.remove(link)
-                    continue
-                #Dealing with -p command
-                try:
-                    if (ContainsList.index(link) + 1) == int(toPlay):
-                        #await self.cmd_play(player, channel, author, permissions, "", link.split(" --- ")[1])
-                        info = await self.downloader.extract_info(player.playlist.loop, link.split(TITLE_URL_SEPARATOR)[1], download=False, process=False)
-                        if not info:
-                            raise exceptions.CommandError("That video cannot be played.", expire_in=30)
-                        entry, position = await player.playlist.add_entry(link.split(TITLE_URL_SEPARATOR)[1], channel=channel, author=author)
-                        #Not sure if needed
-                        #await entry.get_ready_future()
-                        if position == 1 and player.is_stopped:
-                            position = 'Up next!'
-                        else:
-                            try:
-                                time_until = await player.playlist.estimate_time_until(position, player)
-                            except:
-                                time_until = ''
-                        shrtPrint = "Enqueued **%s** to be played. Position in queue: %s - estimated time until playing: %s" %(entry.title, position, time_until)
-                        await self.safe_send_message(channel, shrtPrint, expire_in=30)
-                except Exception:
-                    pass
-            #Getting number of songs added
-            songsInList += len(ContainsList)
-            if ContainsList:
-                prntStr += prsnPrint + "\n"
-
-            #Looking in other peoples lists for the song
-            t0 = time.clock()
-            for each_user in self.users_list:
-                #If the key being looked at isn't the same as the author
-                if each_user.user_id != author.id:
-                    userName = self._get_user(each_user.user_id)
-                    #Converting the name accordinly (if user doesn't exist anymore)
-                    userName = "Unknown User" if str(userName) == "None" else str(userName)[:-5]
-                    ContainsList = []
-                    for element in each_user.song_list:
-                        if element.title != None:
-                            if searchWord.lower() in element.title.lower():
-                                ContainsList.append(element)
-                    for song in ContainsList:
-                        if song.title == None:
-                            ContainsList.remove(song)
-                    prsnPrint += "\t\t:busts_in_silhouette:__" + userName + "__\n"
-                    #Prints other peoples list
-                    for song in ContainsList:
-                        try:
-                            title = song.title
-                            link = song.url
-                            prsnPrint += ":point_right:" + title + " (" + link + ")" + "\n"
-                        except:
-                            print("Fail to parse " + userName + ": " + link)
-                            ContainsList.remove(song)
-                            pass
-                    #Number of songs added
-                    songsInList += len(ContainsList)
-                    if ContainsList:
-                        prntStr += prsnPrint + "\n"
-                    prsnPrint = ""
-            print("Time pass on others list: %s", time.clock() - t0)
-
-            #PRINTING TIME
-            #Print string limit 2000, go into special printing
-            await self.safe_delete_message(thinkingMsg)
-            if len(prntStr) > 2000:
-                #Splits into each person
-                eachPersonList = prntStr.split("\t\t")
-                #Prints the inital line
-                await self.send_typing(channel)
-                await self.safe_send_message(channel, eachPersonList[0], expire_in=(0.1*songsInList+5))
-                del eachPersonList[0]
-                print("ppl: " + str(len(eachPersonList)) + " - # of songs " + str(songsInList))
-                toPrintStr = ""
-                for prsnList in eachPersonList:
-                    #Prints abbrivated version of list
-                    #Note: another option is to print without urls
-                    if len(prsnList) > 2000:
-                        [firstHalf, secondHalf] = prsnList.split("__\n")
-                        secondHalfList = secondHalf.split(":point_right:")
-                        secondHalf = secondHalfList[0]
-                        del secondHalfList[0]
-                        while (len(secondHalf) + len(":point_right:") + len(secondHalfList[0])) < 1905:
-                            secondHalf += ":point_right:" + secondHalfList[0]
-                            del secondHalfList[0]
-                        prntLn = "```Partial List: " + firstHalf[23:] + "```\n" + secondHalf
-                        await self.send_typing(channel)
-                        await self.safe_send_message(channel, prntLn, expire_in=(0.1*songsInList+5))
-                    #If adding next person list to current too large, print
-                    elif (len(toPrintStr) + len(prsnList) > 2000):
-                        await self.send_typing(channel)
-                        await self.safe_send_message(channel, toPrintStr, expire_in=(0.1*songsInList+5))
-                        toPrintStr = prsnList
-                    #Can add person's list to printing queue
-                    else:
-                        toPrintStr += prsnList
-                if len(toPrintStr) != 0:
-                    await self.send_typing(channel)
-                    await self.safe_send_message(channel, toPrintStr, expire_in=(0.1*songsInList+5))
-                return
-        return Response(prntStr, delete_after=(1.1*songsInList+50))
-        '''
 
     async def find_song_by_title(self, search_words, search_list=None):
         """
