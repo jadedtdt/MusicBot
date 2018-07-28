@@ -1,72 +1,13 @@
-[170.966386795] 2018-07-27 20:16:46,746 - INFO - launcher: Starting sanity checks
-[170.966386795] 2018-07-27 20:16:46,746 - INFO - launcher: Checking for python 3.5+
-[172.965526581] 2018-07-27 20:16:46,748 - INFO - launcher: Checking console encoding
-[172.965526581] 2018-07-27 20:16:46,748 - INFO - launcher: Setting console encoding to UTF-8
-[172.965526581] 2018-07-27 20:16:46,748 - INFO - launcher: Ensuring we're in the right folder
-[173.965454102] 2018-07-27 20:16:46,749 - INFO - launcher: Adding local bins/ folder to path
-[174.964189529] 2018-07-27 20:16:46,750 - INFO - launcher: Checks passed.
-[174.964189529] 2018-07-27 20:16:46,750 - INFO - launcher: Moving old musicbot log
+[18.982887268] 2018-07-28 14:51:11,472 - INFO - launcher: Starting sanity checks
+[19.242763519] 2018-07-28 14:51:11,472 - INFO - launcher: Checking for python 3.5+
+[19.431114197] 2018-07-28 14:51:11,473 - INFO - launcher: Checking console encoding
+[19.618749619] 2018-07-28 14:51:11,473 - INFO - launcher: Ensuring we're in the right folder
+[20.041465759] 2018-07-28 14:51:11,473 - INFO - launcher: Checks passed.
+[20.237922668] 2018-07-28 14:51:11,473 - INFO - launcher: Moving old musicbot log
 
 ######################### PRE-RUN SANITY CHECKS PASSED #########################
 
-[7.7062344551086426] 2018-07-27 20:16:54,281 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1064 in _setup_logging: Set logging level to DEBUG
-[7.8371913433074951] 2018-07-27 20:16:54,412 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 104 in __init__: [__INIT__] Loaded autoplaylist with 3699 entries
-[7.842189312] launcher-INFO: Connecting
-[10.1178140640258789] 2018-07-27 20:16:56,693 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 2076 in on_ready: Connection established, ready to go.
-[10.1188139915466309] 2018-07-27 20:16:56,694 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1186 in _cache_app_info: Caching app info
-[10.1548073291778564] 2018-07-27 20:16:56,730 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1899 in _scheck_ensure_env: Ensuring data folders exist
-[10.3735847473144531] 2018-07-27 20:16:56,949 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1909 in _scheck_ensure_env: Deleted old audio cache
-[10.3745844364166260] 2018-07-27 20:16:56,950 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1915 in _scheck_server_permissions: Checking server permissions
-[10.3745844364166260] 2018-07-27 20:16:56,950 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1919 in _scheck_autoplaylist: Auditing autoplaylist
-[10.3745844364166260] 2018-07-27 20:16:56,950 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1923 in _scheck_configs: Validating config
-[10.3745844364166260] 2018-07-27 20:16:56,950 - DEBUG - musicbot.config | In config.py::MainThread(19664), line 176 in async_validate: Validating options...
-[10.3755843639373779] 2018-07-27 20:16:56,951 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1926 in _scheck_configs: Validating permissions config
-[10.3755843639373779] 2018-07-27 20:16:56,951 - DEBUG - musicbot.permissions | In permissions.py::MainThread(19664), line 58 in async_validate: Validating permissions...
-[10.3755843639373779] 2018-07-27 20:16:56,951 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2087 in on_ready: Connected! Musicbot v1.9.6-review
-
-[10.3765840530395508] 2018-07-27 20:16:56,952 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2097 in on_ready: Bot:   398230945704050700/JadeMusicBot#5329 [BOT]
-[10.3765840530395508] 2018-07-27 20:16:56,952 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2105 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
-
-[10.3775835037231445] 2018-07-27 20:16:56,953 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2108 in on_ready: Server List:
-[10.3775835037231445] 2018-07-27 20:16:56,953 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2109 in <listcomp>:  - Jadedtdt's Server
-[10.3775835037231445] 2018-07-27 20:16:56,953 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2140 in on_ready: Bound to text channels:
-[10.3785834312438965] 2018-07-27 20:16:56,954 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2141 in <listcomp>:  - Jadedtdt's Server/bot_commands
-[10.3785834312438965] 2018-07-27 20:16:56,954 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2179 in on_ready: Not autojoining any voice channels
-[10.3795831203460693] 2018-07-27 20:16:56,955 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2183 in on_ready: Options:
-[10.3795831203460693] 2018-07-27 20:16:56,955 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2185 in on_ready:   Command prefix: ~
-[10.3795831203460693] 2018-07-27 20:16:56,955 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2186 in on_ready:   Default volume: 15%
-[10.3805830478668213] 2018-07-27 20:16:56,956 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2188 in on_ready:   Skip threshold: 4 votes or 50%
-[10.3805830478668213] 2018-07-27 20:16:56,956 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2189 in on_ready:   Now Playing @mentions: Disabled
-[10.3805830478668213] 2018-07-27 20:16:56,956 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2190 in on_ready:   Auto-Summon: Enabled
-[10.3815834522247314] 2018-07-27 20:16:56,957 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2191 in on_ready:   Auto-Playlist: Enabled
-[10.3815834522247314] 2018-07-27 20:16:56,957 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2192 in on_ready:   Auto-Pause: Enabled
-[10.3815834522247314] 2018-07-27 20:16:56,957 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2193 in on_ready:   Delete Messages: Enabled
-[10.3825824260711670] 2018-07-27 20:16:56,958 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2195 in on_ready:   Delete Invoking: Disabled
-[10.3825824260711670] 2018-07-27 20:16:56,958 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2196 in on_ready:   Debug Mode: Enabled
-[10.3825824260711670] 2018-07-27 20:16:56,958 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 2197 in on_ready:   Downloaded songs will be deleted
-[10.3855810165405273] 2018-07-27 20:16:56,961 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 1108 in _join_startup_channels: Found owner in "General"
-[10.3855810165405273] 2018-07-27 20:16:56,961 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 1117 in _join_startup_channels: Attempting to join Jadedtdt's Server/General
-[10.3865807056427002] 2018-07-27 20:16:56,962 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1273 in get_voice_client: Connection attempt 1 to General
-[10.3865807056427002] 2018-07-27 20:16:56,962 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1213 in join_voice_channel: (join_voice_channel) creating futures
-[10.3865807056427002] 2018-07-27 20:16:56,962 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1219 in join_voice_channel: (join_voice_channel) setting voice state
-[10.3875806331634521] 2018-07-27 20:16:56,963 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1222 in join_voice_channel: (join_voice_channel) waiting for session id
-[10.4115722179412842] 2018-07-27 20:16:56,987 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19664), line 4876 in on_voice_state_update: Voice state update for 398230945704050700/JadeMusicBot#5329 on Jadedtdt's Server/General -> [JOIN, CONNECT]
-[10.4115722179412842] 2018-07-27 20:16:56,987 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 4887 in on_voice_state_update: 398230945704050700/JadeMusicBot#5329 has joined Jadedtdt's Server/General
-[10.4125721454620361] 2018-07-27 20:16:56,988 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1226 in join_voice_channel: (join_voice_channel) waiting for voice data
-[10.4245686531066895] 2018-07-27 20:16:57,000 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1240 in join_voice_channel: (join_voice_channel) connecting...
-[10.4895467758178711] 2018-07-27 20:16:57,064 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1252 in join_voice_channel: (join_voice_channel) connection successful
-[10.4895467758178711] 2018-07-27 20:16:57,064 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1299 in get_voice_client: Connected in 0.1s
-[10.4905464649200439] 2018-07-27 20:16:57,065 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 1300 in get_voice_client: Connected to Jadedtdt's Server/General
-[10.4905464649200439] 2018-07-27 20:16:57,065 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 1133 in _join_startup_channels: Joined Jadedtdt's Server/General
-[10.5045416355133057] 2018-07-27 20:16:57,079 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1581 in on_player_finished_playing: 181268300301336576
-[10.5055420398712158] 2018-07-27 20:16:57,080 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1596 in on_player_finished_playing: Jadedtdt#1164
-[10.5065414905548096] 2018-07-27 20:16:57,081 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1636 in on_player_finished_playing: A Day To Remember - Im Already Gone
-[10.5075409412384033] 2018-07-27 20:16:57,082 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1637 in on_player_finished_playing: {'_config': <musicbot.config.Config object at 0x0000027D2A5557B8>, '_url': 'https://www.youtube.com/watch?v=egukdbH2olk', '_title': 'A Day To Remember - Im Already Gone', '_likers': ['181268300301336576', '136665080820400128'], '_play_count': 11, '_tags': [], '_volume': 0.15, '_last_played': ['Fri, July 27, 2018 08:16 PM', 'Fri, July 27, 2018 08:16 PM']}
-[10.5215363502502441] 2018-07-27 20:16:57,096 - VOICEDEBUG - musicbot.player | In player.py::MainThread(19664), line 336 in websocket_check: Starting websocket check loop for Jadedtdt's Server
-[12.0270740985870361] 2018-07-27 20:16:58,602 - INFO - musicbot.bot | In bot.py::MainThread(19664), line 1742 in on_player_finished_playing: Stored song volume: 0.15
-[12.8317663669586182] 2018-07-27 20:16:59,407 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(19664), line 225 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
-[12.8727540969848633] 2018-07-27 20:16:59,448 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(19664), line 229 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
-[12.9037446975708008] 2018-07-27 20:16:59,479 - INFO - musicbot.entry | In entry.py::MainThread(19664), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=egukdbH2olk
-[14.1546573638916016] 2018-07-27 20:17:00,730 - INFO - musicbot.entry | In entry.py::MainThread(19664), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=egukdbH2olk
-[14.8315529823303223] 2018-07-27 20:17:01,407 - FFMPEG - musicbot.player | In player.py::MainThread(19664), line 293 in _play: Creating player with options: -nostdin -vn C:\Users\Gene\MusicBot\audio_cache\youtube-egukdbH2olk-A_Day_To_Remember_-_I_m_Already_Gone.webm
-[15.1224565505981445] 2018-07-27 20:17:01,697 - DEBUG - musicbot.bot | In bot.py::MainThread(19664), line 1852 in serialize_queue: Serializing queue for 302845065188081664
+[0.9218480587005615] 2018-07-28 14:51:12,375 - WARNING - musicbot.config | In config.py::MainThread(140409318045440), line 218 in find_config: Options file not found, copying example_options.ini
+[0.9233837127685547] 2018-07-28 14:51:12,377 - INFO - musicbot.permissions | In permissions.py::MainThread(140409318045440), line 33 in __init__: Permissions file not found, copying example_permissions.ini
+[0.9277756214141846] 2018-07-28 14:51:12,381 - DEBUG - musicbot.bot | In bot.py::MainThread(140409318045440), line 1101 in _setup_logging: Set logging level to INFO
+[1.025164127] launcher-INFO: All done.
