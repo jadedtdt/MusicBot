@@ -239,12 +239,13 @@ class MusicBot(discord.Client):
         return "Imported {} songs into {}'s AutoPlaylist".format(num_songs, uname)
 
     def check_url(self, url):
-        if 'www.' in url and 'http' not in url:
-            url = 'https://' + url
-        if '?t=' in url:            
-            return url.split('?')[0]
-        if '&t' in url or '&index' in url or '&list' in url:
-            return url.split('&')[0]
+        if url:
+            if 'www.' in url and 'https://' not in url:
+                url = 'https://' + url
+            if '?t=' in url:            
+                url = url.split('?t=')[0]
+            if '&t' in url or '&index' in url or '&list' in url:
+                url = url.split('&')[0]
         return url
 
     async def bruh(self):
@@ -896,23 +897,59 @@ class MusicBot(discord.Client):
 
         # Creates users' playlists in youtube if they dont have one
         for each_user in self.users_list:
-            member = self._get_user(each_user.user_id)
-            if member != None:
-                name = member.name.replace(' ', '-')
+            if each_user:
+                if each_user.user_name:
+                    name = each_user.user_name.replace(' ', '-')
+                    playlist_id = yti.lookup_playlist(name)
+                    if playlist_id:
+                        log.debug("Creating playlist for user: " + name)
+                        yti.create_playlist(name.replace(' ', '-'))
+
+                    for each_song in each_user.song_list:
+                        if type(each_song) == Music:
+                            each_song = each_song.get_url()
+                            log.error("Song{} in user's{} list is a Music obj, extracting URL".format(each_song, name))                        
+
+                        if "youtube" in each_song or "youtu.be" in each_song:
+                            video_id = yti.extract_youtube_video_id(each_song)
+                            if video_id != None:
+                                log.debug("yti.add_video({}, {})".format(name, video_id))
+                                #yti.add_video(name, video_id)
+                            else:
+                                print("video_id is None")
+                        else:
+                            #print("Not a youtube URL: " + each_song)
+                            pass
+                else:
+                    #log.error(each_user)
+                    pass
+
+    def init_yti(self):
+        yti = YouTubeIntegration()
+
+        # Creates users' playlists in youtube if they dont have one
+        for each_user in self.users_list:
+            if each_user:
+                name = each_user.user_name.replace(' ', '-')
                 playlist_id = yti.lookup_playlist(name)
-                if playlist_id == None:
+                if playlist_id:
                     log.debug("Creating playlist for user: " + name)
-                    yti.create_playlist(member.name.replace(' ', '-'))
+                    yti.create_playlist(name.replace(' ', '-'))
 
                 for each_song in each_user.song_list:
-                    if "youtube" in each_song.url or "youtu.be" in each_song.url:
-                        video_id = yti.extract_youtube_uid(each_song.url)
+                    if type(each_song) == Music:
+                        each_song = each_song.get_url()
+                        log.error("Song{} in user's{} list is a Music obj, extracting URL".format(each_song, name))                        
+
+                    if "youtube" in each_song or "youtu.be" in each_song:
+                        video_id = yti.extract_youtube_video_id(each_song)
                         if video_id != None:
-                            log.debug("yti.add_video({}, {})".format(name, video_id))
+                            #log.debug("yti.add_video({}, {})".format(name, video_id))
+                            yti.add_video(name, video_id)
                         else:
                             print("video_id is None")
                     else:
-                        print("Not a youtube URL: " + each_song.url)
+                        print("Not a youtube URL: " + each_song)
 
     async def notify_likers(self, song, emsg=""):
         if song == None:
@@ -1764,7 +1801,9 @@ class MusicBot(discord.Client):
                 self.config.auto_playlist = False
 
         else: # Don't serialize for autoplaylist events
-            self.find_song_by_url(player.current_entry.url).last_played = datetime.now().strftime("%a, %B %d, %Y %I:%M %p")
+            song = self.find_song_by_url(player.current_entry.url)
+            if song:
+                song.last_played = datetime.now().strftime("%a, %B %d, %Y %I:%M %p")
             log.debug("serializing queue")
             await self.serialize_queue(player.voice_client.channel.server)
 
@@ -3633,6 +3672,7 @@ class MusicBot(discord.Client):
             self.new_autoplaylist.add_to_autoplaylist(song_url, entry.title, author.id)
         except:
             log.error("Failed to add song to apl in play command " + entry.title)
+            traceback.print_exc()
 
         return Response(reply_text, delete_after=30)
 

@@ -4,11 +4,18 @@ from .config import Config, ConfigDefaults
 from .song import Music
 from .user import User
 from .utils import load_file, write_file, get_latest_pickle_mtime, load_pickle, store_pickle
+from .yti import YouTubeIntegration
 log = logging.getLogger(__name__)
 
+# note the scheme:
+# add_* and remove_* refers to our dictionary of all users with Key: user_id, Value: list of Music objects
+# _add_* and _remove_* refers to our list of python Users
+# __add_* and __remove_* refers to our YTI (YouTubeIntegration)
 class AutoPlaylist:
 
     def __init__(self, url_song_dict=None, users_list=None):
+
+        self.yti = YouTubeIntegration()
 
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
@@ -29,6 +36,7 @@ class AutoPlaylist:
 
         self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
+    # adds to the master dictionary
     def add_to_autoplaylist(self, url, title="", author=None):
 
         url = self.check_url(url)
@@ -73,6 +81,7 @@ class AutoPlaylist:
 
         return True
 
+    # adds to the user's list
     def _add_to_autoplaylist(self, url, title, author=None):
 
         url = self.check_url(url)
@@ -86,8 +95,7 @@ class AutoPlaylist:
             # trying to grab the likers from the apl
             likers = song.likers
             if likers == None:
-                log.error("[_ADD_TO_AUTOPLAYLIST] No author and no likers. Can't add this song!")
-                return
+                raise ValueError("No author and no likers. Can't add this song!")
             else:
                 log.warning("[_ADD_TO_AUTOPLAYLIST] No author but we have list of likers, trying again!")
                 for liker in likers:
@@ -98,25 +106,61 @@ class AutoPlaylist:
 
         # if a user doesn't exist, we add them
         if user == None:
-            if not author.isnumeric():
-                try:
-                    author = author.id
-                except:
-                    log.warning("[_ADD_TO_AUTOPLAYLIST] Tried to get the id but failed")
-                    return
-
-            member = self._get_user(author)
-            user = User(member.id, member.name)
-            self.users_list.append(user)
+            raise NameError("User doesn't exist")
 
         # add a new url to users list of liked songs
         if url == None:
-            log.error("[_ADD_TO_AUTOPLAYLIST] No valid URL given, cannot add.")
-            return
+            raise ValueError("No valid URL given, cannot add.")
 
         user.add_song(url)
         self.store()
 
+        self.__add_to_autoplaylist(url, title, author)
+
+    # adds to the user's YTI playlist
+    def __add_to_autoplaylist(self, url, title, author=None):
+
+        if type(url) == Music:
+            url = url.get_url()
+            log.error("[__ADD_TO_AUTOPLAYLIST] URL {} passed is a Music obj, extracting URL".format(url))
+
+        if author:
+            musicbot_user = self.get_user(author)
+            if musicbot_user:
+                if url:
+                    url = self.check_url(url)
+
+                    if musicbot_user.user_id:
+                        playlist_id = self.yti.lookup_playlist(musicbot_user.user_id)
+                        if playlist_id == None:
+                            if musicbot_user.user_name:
+                                log.debug("[__ADD_TO_AUTOPLAYLIST] Creating playlist for user: {}".format(musicbot_user.user_name))
+                                self.yti.create_playlist(musicbot_user.user_name.replace(' ', '-'), musicbot_user.user_id)
+                            else:
+                                log.error("[__ADD_TO_AUTOPLAYLIST] Name was null. ID: {}".format(musicbot_user.user_id))
+
+                        if "youtube" in url or "youtu.be" in url:
+                            video_id = self.yti.extract_youtube_video_id(url)
+                            if video_id:
+                                video_playlist_id = self.yti.lookup_video(video_id, playlist_id)
+                                if video_playlist_id == None:
+                                    self.yti.add_video(musicbot_user.user_id, video_id)
+                                else:
+                                    log.debug("Song {} already added to YTI Playlist {}".format(title, musicbot_user.user_name))
+                            else:
+                                log.error("[__ADD_TO_AUTOPLAYLIST] video_id is None for url {}".format(url))
+                        else:
+                            log.warning("[__ADD_TO_AUTOPLAYLIST] Not a youtube URL: {}".format(url))
+                    else:
+                        log.error("[__ADD_TO_AUTOPLAYLIST] user_id was null. Author: {}".format(musicbot_user.user_name))
+                else:
+                    log.error("[__ADD_TO_AUTOPLAYLIST] url was null. Author: {}".format(musicbot_user.user_name))
+            else:
+                log.error("[__ADD_TO_AUTOPLAYLIST] musicbot_user was null.")
+        else:
+            log.error("[__ADD_TO_AUTOPLAYLIST] author was null")
+
+    # removes the master dictionary
     def remove_from_autoplaylist(self, url, title=None, author=None):
 
         url = self.check_url(url)
@@ -132,10 +176,10 @@ class AutoPlaylist:
                     log.warning("MULTIPLE LIKERS: " + ', '.join(song.likers))
                     for each_liker in song.likers:
                         if self.remove_from_autoplaylist(url, title, each_liker):
-                            log.warning("SUCCESS for user: " + self._get_user(each_liker).name)
+                            log.warning("SUCCESS for user: " + self.get_user(each_liker).user_name)
                             self.store()
                         else:
-                            log.warning("FAILURE for user: " + self._get_user(each_liker).name)
+                            log.warning("FAILURE for user: " + self.get_user(each_liker).user_name)
                             return False
             else:
                 log.error("[REMOVE_FROM_AUTOPLAYLIST] Song doesn't exist, can't remove it!")
@@ -189,21 +233,60 @@ class AutoPlaylist:
     # removes from user's list of songs
     def _remove_from_autoplaylist(self, url, title=None, author=None):
 
-        url = self.check_url(url)
-
         user = self.get_user(author)
 
         if user:
+            url = self.check_url(url)
+
             if user.has_song(url):
                 if user.remove_song(url):
                     log.debug("[_REMOVE_FROM_AUTOPLAYLIST] REMOVE SUCCESS!")
                     self.store()
-                    return True
+                    return self.__remove_from_autoplaylist(url, title, author)
                 else:
                     log.debug("[_REMOVE_FROM_AUTOPLAYLIST] REMOVE FAILED!")
             else:
                 log.warning("[_REMOVE_FROM_AUTOPLAYLIST] The song isn't in the user's personal list")
 
+        return False
+
+    # removes from user's YTI playlist
+    def __remove_from_autoplaylist(self, url, title, author=None):
+
+        if type(url) == Music:
+            url = url.get_url()
+            log.error("[__REMOVE_FROM_AUTOPLAYLIST] URL {} passed is a Music obj, extracting URL".format(url))
+
+        if author:
+            musicbot_user = self.get_user(author)
+            if musicbot_user:
+                if url:
+                    url = self.check_url(url)
+
+                    if musicbot_user.user_id:
+                        playlist_id = self.yti.lookup_playlist(musicbot_user.user_id)
+                        if playlist_id:
+                            if "youtube" in url or "youtu.be" in url:
+                                video_id = self.yti.extract_youtube_video_id(url)
+                                if video_id:
+                                    if self.yti.lookup_video(video_id, playlist_id):
+                                        self.yti.remove_video(musicbot_user.user_id, video_id)
+                                    else:
+                                        log.error("[__REMOVE_FROM_AUTOPLAYLIST] Video {} is not in playlist {}".format(title, musicbot_user.user_name))
+                                else:
+                                    log.error("[__REMOVE_FROM_AUTOPLAYLIST] video_id is None for url {}".format(title))
+                            else:
+                                log.warning("[__REMOVE_FROM_AUTOPLAYLIST] Not a youtube URL: {}".format(url))
+                        else:
+                            log.warning("[__REMOVE_FROM_AUTOPLAYLIST] Playlist doesn't exist, can't delete from it. ID: {}".format(musicbot_user.user_id))
+                    else:
+                        log.error("[__REMOVE_FROM_AUTOPLAYLIST] user_id was null. Author: {}".format(musicbot_user.user_name))
+                else:
+                    log.error("[__REMOVE_FROM_AUTOPLAYLIST] url was null. Author: {}".format(musicbot_user.user_name))
+            else:
+                log.error("[__REMOVE_FROM_AUTOPLAYLIST] musicbot_user was null")
+        else:
+            log.error("[__REMOVE_FROM_AUTOPLAYLIST] author was null")
         return False
 
     # finds the first instance a song URL is found or if a string is found in a title and returns the object
@@ -265,10 +348,13 @@ class AutoPlaylist:
 
         return None
         
-    # nate wrote this
     def check_url(self, url):
-        if 'www.' in url and 'https://' not in url:
-            url = 'https://' + url
-        if '&index' in url or '&list' in url:
-            return url.split('&')[0]
+
+        if url:
+            if 'www.' in url and 'https://' not in url:
+                url = 'https://' + url
+            if '?t=' in url:
+                url = url.split('?t=')[0]
+            if '&t' in url or '&index' in url or '&list' in url:
+                url = url.split('&')[0]
         return url
