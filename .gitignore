@@ -11,8 +11,8 @@ data/*
 config/options.ini
 config/permissions.ini
 config/autoplaylist.txt
+secrets/*
 
 *.command
 *.pickle
 logs/musicbot.log
-*.json

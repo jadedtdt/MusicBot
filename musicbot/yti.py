@@ -32,7 +32,7 @@ class YouTubeIntegration:
         #   https://developers.google.com/youtube/v3/guides/authentication
         # For more information about the client_secrets.json file format, see:
         #   https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
-        self.CLIENT_SECRETS_FILE = "client_secrets.json"
+        self.CLIENT_SECRETS_FILE = "secrets/client_secrets.json"
 
         # This variable defines a message to display if the CLIENT_SECRETS_FILE is
         # missing.
