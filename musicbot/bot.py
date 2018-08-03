@@ -3504,8 +3504,10 @@ class MusicBot(discord.Client):
 
         if self.new_autoplaylist.remove_from_autoplaylist(url, title, author.id):
             reply_text = "**%s**, the song **%s** has been removed from your auto playlist."
-            if (player.current_entry.url == url):
-                player.current_entry.disliked = True
+            if player.current_entry:
+                if player.current_entry.url:
+                    if player.current_entry.url == url:
+                        player.current_entry.disliked = True
         else:
             reply_text = "**%s**, the song **%s** wasn't in your auto playlist or something went wrong."
             self.email_util.send_exception(author, title, "[cmd_dislike] The song wasn't in your auto playlist or something went wrong.")
