@@ -33,7 +33,6 @@ class Email:
         server = smtplib.SMTP(self.HOST, 587)
         server.ehlo()
         server.starttls()
-        server.set_debuglevel(1)
         server.login(self.username, self.password)
         server.sendmail(self.FROM, self.TO, BODY)
         server.quit()

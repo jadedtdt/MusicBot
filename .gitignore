@@ -7,6 +7,8 @@ logs/*
 config/options.ini
 config/permissions.ini
 config/autoplaylist.txt
+config/email_auth.ini
 secrets/*
 *.command
+*.json
 logs/musicbot.log

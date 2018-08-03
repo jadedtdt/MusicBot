@@ -8,7 +8,6 @@ import pickle
 
 from hashlib import md5
 from .constants import DISCORD_MSG_CHAR_LIMIT
-
 log = logging.getLogger(__name__)
 
 def load_file(filename, skip_commented_lines=True, comment_char='#'):

@@ -1215,6 +1215,18 @@ class MusicBot(discord.Client):
         shandler.setLevel(self.config.debug_level)
         logging.getLogger(__package__).addHandler(shandler)
 
+        ehandler = logging.FileHandler('logs/{date}.{package}.err.log'.format(
+            date=datetime.today().strftime('%Y-%m-%d'), package=__package__), encoding='utf-8', mode='w')
+        ehandler.setFormatter(logging.Formatter('{asctime} [{levelname}:{name}] {message}', style='{'))
+        ehandler.setLevel(logging.WARNING)
+        logging.getLogger(__package__).addHandler(ehandler)
+
+        fhandler = logging.FileHandler('logs/{date}.{package}.log'.format(
+            date=datetime.today().strftime('%Y-%m-%d'), package=__package__), encoding='utf-8', mode='w')
+        fhandler.setFormatter(logging.Formatter('{asctime} [{levelname}:{name}] {message}', style='{'))
+        fhandler.setLevel(logging.DEBUG)
+        logging.getLogger(__package__).addHandler(fhandler)
+
         log.debug("Set logging level to {}".format(self.config.debug_level_str))
 
         if self.config.debug_mode:
