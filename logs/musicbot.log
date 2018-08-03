@@ -1,13 +1,220 @@
-[18.982887268] 2018-07-28 14:51:11,472 - INFO - launcher: Starting sanity checks
-[19.242763519] 2018-07-28 14:51:11,472 - INFO - launcher: Checking for python 3.5+
-[19.431114197] 2018-07-28 14:51:11,473 - INFO - launcher: Checking console encoding
-[19.618749619] 2018-07-28 14:51:11,473 - INFO - launcher: Ensuring we're in the right folder
-[20.041465759] 2018-07-28 14:51:11,473 - INFO - launcher: Checks passed.
-[20.237922668] 2018-07-28 14:51:11,473 - INFO - launcher: Moving old musicbot log
+[16.996145248] 2018-08-02 23:34:37,211 - INFO - launcher: Starting sanity checks
+[17.358541489] 2018-08-02 23:34:37,211 - INFO - launcher: Checking for python 3.5+
+[17.616987228] 2018-08-02 23:34:37,211 - INFO - launcher: Checking console encoding
+[17.856597900] 2018-08-02 23:34:37,212 - INFO - launcher: Ensuring we're in the right folder
+[18.324375153] 2018-08-02 23:34:37,212 - INFO - launcher: Checks passed.
+[18.583536148] 2018-08-02 23:34:37,212 - INFO - launcher: Moving old musicbot log
 
 ######################### PRE-RUN SANITY CHECKS PASSED #########################
 
-[0.9218480587005615] 2018-07-28 14:51:12,375 - WARNING - musicbot.config | In config.py::MainThread(140409318045440), line 218 in find_config: Options file not found, copying example_options.ini
-[0.9233837127685547] 2018-07-28 14:51:12,377 - INFO - musicbot.permissions | In permissions.py::MainThread(140409318045440), line 33 in __init__: Permissions file not found, copying example_permissions.ini
-[0.9277756214141846] 2018-07-28 14:51:12,381 - DEBUG - musicbot.bot | In bot.py::MainThread(140409318045440), line 1101 in _setup_logging: Set logging level to INFO
-[1.025164127] launcher-INFO: All done.
+[0.5040016174316406] 2018-08-02 23:34:37,698 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1218 in _setup_logging: Set logging level to DEBUG
+[0.6631269454956055] 2018-08-02 23:34:37,857 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 106 in __init__: [__INIT__] Loaded autoplaylist with 3721 entries
+[0.664293766] launcher-INFO: Connecting
+[2.8180336952209473] 2018-08-02 23:34:40,012 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2231 in on_ready: Connection established, ready to go.
+[2.8183691501617432] 2018-08-02 23:34:40,012 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1340 in _cache_app_info: Caching app info
+[2.8573226928710938] 2018-08-02 23:34:40,051 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2054 in _scheck_ensure_env: Ensuring data folders exist
+[2.8580334186553955] 2018-08-02 23:34:40,052 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2064 in _scheck_ensure_env: Deleted old audio cache
+[2.8583302497863770] 2018-08-02 23:34:40,052 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2070 in _scheck_server_permissions: Checking server permissions
+[2.8586306571960449] 2018-08-02 23:34:40,052 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2074 in _scheck_autoplaylist: Auditing autoplaylist
+[2.8589262962341309] 2018-08-02 23:34:40,053 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2078 in _scheck_configs: Validating config
+[2.8591949939727783] 2018-08-02 23:34:40,053 - DEBUG - musicbot.config | In config.py::MainThread(140641757443840), line 176 in async_validate: Validating options...
+[2.8594651222229004] 2018-08-02 23:34:40,053 - DEBUG - musicbot.config | In config.py::MainThread(140641757443840), line 190 in async_validate: Aquired owner id via API
+[2.8596987724304199] 2018-08-02 23:34:40,054 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2081 in _scheck_configs: Validating permissions config
+[2.8599257469177246] 2018-08-02 23:34:40,054 - DEBUG - musicbot.permissions | In permissions.py::MainThread(140641757443840), line 58 in async_validate: Validating permissions...
+[2.8601677417755127] 2018-08-02 23:34:40,054 - DEBUG - musicbot.permissions | In permissions.py::MainThread(140641757443840), line 62 in async_validate: Fixing automatic owner group
+[2.8604633808135986] 2018-08-02 23:34:40,054 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2242 in on_ready: Connected! Musicbot v1.9.6-review
+
+[2.8607726097106934] 2018-08-02 23:34:40,055 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2252 in on_ready: Bot:   254089547447533569/Elegiggle#3010 [BOT]
+[2.8610446453094482] 2018-08-02 23:34:40,055 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2260 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
+
+[2.8613393306732178] 2018-08-02 23:34:40,055 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2263 in on_ready: Server List:
+[2.8615648746490479] 2018-08-02 23:34:40,055 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2264 in <listcomp>:  - Catch The Rainbow!
+[2.8618798255920410] 2018-08-02 23:34:40,056 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2295 in on_ready: Bound to text channels:
+[2.8621156215667725] 2018-08-02 23:34:40,056 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2296 in <listcomp>:  - Catch The Rainbow!/bot_commands
+[2.8623476028442383] 2018-08-02 23:34:40,056 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2296 in <listcomp>:  - Catch The Rainbow!/dev_only
+[2.8626294136047363] 2018-08-02 23:34:40,056 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2334 in on_ready: Not autojoining any voice channels
+[2.8629415035247803] 2018-08-02 23:34:40,057 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2338 in on_ready: Options:
+[2.8631625175476074] 2018-08-02 23:34:40,057 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2340 in on_ready:   Command prefix: ~
+[2.8633885383605957] 2018-08-02 23:34:40,057 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2341 in on_ready:   Default volume: 15%
+[2.8636143207550049] 2018-08-02 23:34:40,057 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2343 in on_ready:   Skip threshold: 4 votes or 50%
+[2.8638341426849365] 2018-08-02 23:34:40,058 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2344 in on_ready:   Now Playing @mentions: Disabled
+[2.8640518188476562] 2018-08-02 23:34:40,058 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2345 in on_ready:   Auto-Summon: Enabled
+[2.8642675876617432] 2018-08-02 23:34:40,058 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2346 in on_ready:   Auto-Playlist: Enabled
+[2.8644874095916748] 2018-08-02 23:34:40,058 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2347 in on_ready:   Auto-Pause: Enabled
+[2.8647065162658691] 2018-08-02 23:34:40,059 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2348 in on_ready:   Delete Messages: Enabled
+[2.8649210929870605] 2018-08-02 23:34:40,059 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2350 in on_ready:   Delete Invoking: Disabled
+[2.8651356697082520] 2018-08-02 23:34:40,059 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2351 in on_ready:   Debug Mode: Enabled
+[2.8653485774993896] 2018-08-02 23:34:40,059 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2352 in on_ready:   Downloaded songs will be deleted
+[2.8657515048980713] 2018-08-02 23:34:40,060 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 1262 in _join_startup_channels: Found owner in "Propreantepenultimate"
+[2.8660268783569336] 2018-08-02 23:34:40,060 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 1271 in _join_startup_channels: Attempting to join Catch The Rainbow!/Propreantepenultimate
+[2.8663933277130127] 2018-08-02 23:34:40,060 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1427 in get_voice_client: Connection attempt 1 to Propreantepenultimate
+[2.8666968345642090] 2018-08-02 23:34:40,061 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1367 in join_voice_channel: (join_voice_channel) creating futures
+[2.8668649196624756] 2018-08-02 23:34:40,061 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1373 in join_voice_channel: (join_voice_channel) setting voice state
+[2.8670992851257324] 2018-08-02 23:34:40,061 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1376 in join_voice_channel: (join_voice_channel) waiting for session id
+[2.8854773044586182] 2018-08-02 23:34:40,079 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5034 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Propreantepenultimate -> [JOIN, CONNECT]
+[2.8856008052825928] 2018-08-02 23:34:40,079 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 5045 in on_voice_state_update: 254089547447533569/Elegiggle#3010 has joined Catch The Rainbow!/Propreantepenultimate
+[2.8860535621643066] 2018-08-02 23:34:40,080 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1380 in join_voice_channel: (join_voice_channel) waiting for voice data
+[2.9201076030731201] 2018-08-02 23:34:40,114 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1394 in join_voice_channel: (join_voice_channel) connecting...
+[17.9236445426940918] 2018-08-02 23:34:55,117 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1399 in join_voice_channel: (join_voice_channel) connection failed, disconnecting
+[17.9238514900207520] 2018-08-02 23:34:55,118 - WARNING - musicbot.bot | In bot.py::MainThread(140641757443840), line 1436 in get_voice_client: Failed to connect, retrying (1/5)
+[18.4251089096069336] 2018-08-02 23:34:55,619 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1427 in get_voice_client: Connection attempt 2 to Propreantepenultimate
+[18.4256255626678467] 2018-08-02 23:34:55,619 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1367 in join_voice_channel: (join_voice_channel) creating futures
+[18.4257395267486572] 2018-08-02 23:34:55,620 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1373 in join_voice_channel: (join_voice_channel) setting voice state
+[18.4259936809539795] 2018-08-02 23:34:55,620 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1376 in join_voice_channel: (join_voice_channel) waiting for session id
+[18.4495556354522705] 2018-08-02 23:34:55,643 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5022 in on_voice_state_update: Resumed voice connection to Catch The Rainbow!/Propreantepenultimate
+[18.4500894546508789] 2018-08-02 23:34:55,644 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5034 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Propreantepenultimate -> [RESUME, CONNECT]
+[18.4503068923950195] 2018-08-02 23:34:55,644 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1380 in join_voice_channel: (join_voice_channel) waiting for voice data
+[33.4514665603637695] 2018-08-02 23:35:10,645 - WARNING - musicbot.bot | In bot.py::MainThread(140641757443840), line 1436 in get_voice_client: Failed to connect, retrying (2/5)
+[33.9530553817749023] 2018-08-02 23:35:11,147 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1427 in get_voice_client: Connection attempt 3 to Propreantepenultimate
+[33.9535741806030273] 2018-08-02 23:35:11,147 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1367 in join_voice_channel: (join_voice_channel) creating futures
+[33.9536912441253662] 2018-08-02 23:35:11,148 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1373 in join_voice_channel: (join_voice_channel) setting voice state
+[33.9539468288421631] 2018-08-02 23:35:11,148 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1376 in join_voice_channel: (join_voice_channel) waiting for session id
+[33.9750072956085205] 2018-08-02 23:35:11,169 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5022 in on_voice_state_update: Resumed voice connection to Catch The Rainbow!/Propreantepenultimate
+[33.9754946231842041] 2018-08-02 23:35:11,169 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5034 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Propreantepenultimate -> [RESUME, CONNECT]
+[33.9757015705108643] 2018-08-02 23:35:11,170 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1380 in join_voice_channel: (join_voice_channel) waiting for voice data
+[48.9778795242309570] 2018-08-02 23:35:26,172 - WARNING - musicbot.bot | In bot.py::MainThread(140641757443840), line 1436 in get_voice_client: Failed to connect, retrying (3/5)
+[49.4789888858795166] 2018-08-02 23:35:26,673 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1427 in get_voice_client: Connection attempt 4 to Propreantepenultimate
+[49.4795045852661133] 2018-08-02 23:35:26,673 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1367 in join_voice_channel: (join_voice_channel) creating futures
+[49.4796266555786133] 2018-08-02 23:35:26,673 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1373 in join_voice_channel: (join_voice_channel) setting voice state
+[49.4799003601074219] 2018-08-02 23:35:26,674 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1376 in join_voice_channel: (join_voice_channel) waiting for session id
+[49.5074141025543213] 2018-08-02 23:35:26,701 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5022 in on_voice_state_update: Resumed voice connection to Catch The Rainbow!/Propreantepenultimate
+[49.5078661441802979] 2018-08-02 23:35:26,702 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5034 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Propreantepenultimate -> [RESUME, CONNECT]
+[49.5080540180206299] 2018-08-02 23:35:26,702 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1380 in join_voice_channel: (join_voice_channel) waiting for voice data
+[64.5097448825836182] 2018-08-02 23:35:41,704 - WARNING - musicbot.bot | In bot.py::MainThread(140641757443840), line 1436 in get_voice_client: Failed to connect, retrying (4/5)
+[65.0111229419708252] 2018-08-02 23:35:42,205 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1427 in get_voice_client: Connection attempt 5 to Propreantepenultimate
+[65.0116510391235352] 2018-08-02 23:35:42,205 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1367 in join_voice_channel: (join_voice_channel) creating futures
+[65.0117664337158203] 2018-08-02 23:35:42,206 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1373 in join_voice_channel: (join_voice_channel) setting voice state
+[65.0120217800140381] 2018-08-02 23:35:42,206 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1376 in join_voice_channel: (join_voice_channel) waiting for session id
+[65.0864913463592529] 2018-08-02 23:35:42,280 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5022 in on_voice_state_update: Resumed voice connection to Catch The Rainbow!/Propreantepenultimate
+[65.0870161056518555] 2018-08-02 23:35:42,281 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5034 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Propreantepenultimate -> [RESUME, CONNECT]
+[65.0872242450714111] 2018-08-02 23:35:42,281 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1380 in join_voice_channel: (join_voice_channel) waiting for voice data
+[73.6879839897155762] 2018-08-02 23:35:50,882 - WARNING - musicbot.bot | In bot.py::MainThread(140641757443840), line 5092 in on_server_update: Server "Catch The Rainbow!" changed regions: us-central -> us-east
+[73.6883814334869385] 2018-08-02 23:35:50,882 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1462 in reconnect_voice_client: Reconnecting voice client on "Catch The Rainbow!"
+[73.7224497795104980] 2018-08-02 23:35:50,916 - ERROR - musicbot.bot | In bot.py::MainThread(140641757443840), line 1445 in get_voice_client: Unknown error attempting to connect to voice
+Traceback (most recent call last):
+  File "/home/ubuntu/MusicBot/musicbot/bot.py", line 2180, in run
+    self.loop.run_until_complete(self.start(*self.config.auth))
+  File "/usr/lib/python3.5/asyncio/base_events.py", line 387, in run_until_complete
+    return future.result()
+  File "/usr/lib/python3.5/asyncio/futures.py", line 274, in result
+    raise self._exception
+  File "/usr/lib/python3.5/asyncio/tasks.py", line 239, in _step
+    result = coro.send(None)
+  File "/usr/local/lib/python3.5/dist-packages/discord/client.py", line 491, in start
+    yield from self.connect()
+  File "/usr/local/lib/python3.5/dist-packages/discord/client.py", line 448, in connect
+    yield from self.ws.poll_event()
+  File "/usr/local/lib/python3.5/dist-packages/discord/gateway.py", line 387, in poll_event
+    yield from self.received_message(msg)
+  File "/usr/local/lib/python3.5/dist-packages/discord/gateway.py", line 367, in received_message
+    future.set_result(ret)
+  File "/usr/lib/python3.5/asyncio/futures.py", line 329, in set_result
+    raise InvalidStateError('{}: {!r}'.format(self._state, self))
+asyncio.futures.InvalidStateError: CANCELLED: <Future cancelled>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/MusicBot/musicbot/bot.py", line 1431, in get_voice_client
+    vc = await self.join_voice_channel(channel)
+  File "/home/ubuntu/MusicBot/musicbot/bot.py", line 1381, in join_voice_channel
+    data = await asyncio.wait_for(voice_data_future, timeout=15, loop=self.loop)
+  File "/usr/lib/python3.5/asyncio/tasks.py", line 385, in wait_for
+    yield from waiter
+  File "/usr/lib/python3.5/asyncio/futures.py", line 361, in __iter__
+    yield self  # This tells Task to wait for completion.
+  File "/usr/lib/python3.5/asyncio/tasks.py", line 296, in _wakeup
+    future.result()
+  File "/usr/lib/python3.5/asyncio/futures.py", line 266, in result
+    raise CancelledError
+concurrent.futures._base.CancelledError
+[73.729196310] launcher-ERROR: Error starting bot
+Traceback (most recent call last):
+  File "runCTR.py", line 350, in main
+    m.run()
+  File "/home/ubuntu/MusicBot/musicbot/bot.py", line 2180, in run
+    self.loop.run_until_complete(self.start(*self.config.auth))
+  File "/usr/lib/python3.5/asyncio/base_events.py", line 387, in run_until_complete
+    return future.result()
+  File "/usr/lib/python3.5/asyncio/futures.py", line 274, in result
+    raise self._exception
+  File "/usr/lib/python3.5/asyncio/tasks.py", line 239, in _step
+    result = coro.send(None)
+  File "/usr/local/lib/python3.5/dist-packages/discord/client.py", line 491, in start
+    yield from self.connect()
+  File "/usr/local/lib/python3.5/dist-packages/discord/client.py", line 448, in connect
+    yield from self.ws.poll_event()
+  File "/usr/local/lib/python3.5/dist-packages/discord/gateway.py", line 387, in poll_event
+    yield from self.received_message(msg)
+  File "/usr/local/lib/python3.5/dist-packages/discord/gateway.py", line 367, in received_message
+    future.set_result(ret)
+  File "/usr/lib/python3.5/asyncio/futures.py", line 329, in set_result
+    raise InvalidStateError('{}: {!r}'.format(self._state, self))
+asyncio.futures.InvalidStateError: CANCELLED: <Future cancelled>
+[73.731788397] launcher-INFO: Restarting in 2 seconds...
+[75.7397196292877197] 2018-08-02 23:35:52,934 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1183 in _setup_logging: Skipping logger setup, already set up
+[75.8684802055358887] 2018-08-02 23:35:53,062 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 106 in __init__: [__INIT__] Loaded autoplaylist with 3721 entries
+[75.869651556] launcher-INFO: Connecting
+[78.0685806274414062] 2018-08-02 23:35:55,262 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2231 in on_ready: Connection established, ready to go.
+[78.0690212249755859] 2018-08-02 23:35:55,263 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1340 in _cache_app_info: Caching app info
+[78.1019761562347412] 2018-08-02 23:35:55,296 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2054 in _scheck_ensure_env: Ensuring data folders exist
+[78.1025698184967041] 2018-08-02 23:35:55,296 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2070 in _scheck_server_permissions: Checking server permissions
+[78.1029109954833984] 2018-08-02 23:35:55,297 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2074 in _scheck_autoplaylist: Auditing autoplaylist
+[78.1032052040100098] 2018-08-02 23:35:55,297 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2078 in _scheck_configs: Validating config
+[78.1034779548645020] 2018-08-02 23:35:55,297 - DEBUG - musicbot.config | In config.py::MainThread(140641757443840), line 176 in async_validate: Validating options...
+[78.1037611961364746] 2018-08-02 23:35:55,298 - DEBUG - musicbot.config | In config.py::MainThread(140641757443840), line 190 in async_validate: Aquired owner id via API
+[78.1039998531341553] 2018-08-02 23:35:55,298 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2081 in _scheck_configs: Validating permissions config
+[78.1042301654815674] 2018-08-02 23:35:55,298 - DEBUG - musicbot.permissions | In permissions.py::MainThread(140641757443840), line 58 in async_validate: Validating permissions...
+[78.1044769287109375] 2018-08-02 23:35:55,298 - DEBUG - musicbot.permissions | In permissions.py::MainThread(140641757443840), line 62 in async_validate: Fixing automatic owner group
+[78.1047694683074951] 2018-08-02 23:35:55,299 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2242 in on_ready: Connected! Musicbot v1.9.6-review
+
+[78.1050746440887451] 2018-08-02 23:35:55,299 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2252 in on_ready: Bot:   254089547447533569/Elegiggle#3010 [BOT]
+[78.1053459644317627] 2018-08-02 23:35:55,299 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2260 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
+
+[78.1056425571441650] 2018-08-02 23:35:55,299 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2263 in on_ready: Server List:
+[78.1058733463287354] 2018-08-02 23:35:55,300 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2264 in <listcomp>:  - Catch The Rainbow!
+[78.1061794757843018] 2018-08-02 23:35:55,300 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2295 in on_ready: Bound to text channels:
+[78.1064102649688721] 2018-08-02 23:35:55,300 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2296 in <listcomp>:  - Catch The Rainbow!/bot_commands
+[78.1066358089447021] 2018-08-02 23:35:55,300 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2296 in <listcomp>:  - Catch The Rainbow!/dev_only
+[78.1069459915161133] 2018-08-02 23:35:55,301 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2334 in on_ready: Not autojoining any voice channels
+[78.1072285175323486] 2018-08-02 23:35:55,301 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2338 in on_ready: Options:
+[78.1074535846710205] 2018-08-02 23:35:55,301 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2340 in on_ready:   Command prefix: ~
+[78.1076738834381104] 2018-08-02 23:35:55,302 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2341 in on_ready:   Default volume: 15%
+[78.1078984737396240] 2018-08-02 23:35:55,302 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2343 in on_ready:   Skip threshold: 4 votes or 50%
+[78.1081173419952393] 2018-08-02 23:35:55,302 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2344 in on_ready:   Now Playing @mentions: Disabled
+[78.1083366870880127] 2018-08-02 23:35:55,302 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2345 in on_ready:   Auto-Summon: Enabled
+[78.1085526943206787] 2018-08-02 23:35:55,302 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2346 in on_ready:   Auto-Playlist: Enabled
+[78.1087739467620850] 2018-08-02 23:35:55,303 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2347 in on_ready:   Auto-Pause: Enabled
+[78.1090760231018066] 2018-08-02 23:35:55,303 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2348 in on_ready:   Delete Messages: Enabled
+[78.1093378067016602] 2018-08-02 23:35:55,303 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2350 in on_ready:   Delete Invoking: Disabled
+[78.1095936298370361] 2018-08-02 23:35:55,303 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2351 in on_ready:   Debug Mode: Enabled
+[78.1098463535308838] 2018-08-02 23:35:55,304 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 2352 in on_ready:   Downloaded songs will be deleted
+[78.1102247238159180] 2018-08-02 23:35:55,304 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 1262 in _join_startup_channels: Found owner in "Propreantepenultimate"
+[78.1105005741119385] 2018-08-02 23:35:55,304 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 1271 in _join_startup_channels: Attempting to join Catch The Rainbow!/Propreantepenultimate
+[78.1108615398406982] 2018-08-02 23:35:55,305 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1427 in get_voice_client: Connection attempt 1 to Propreantepenultimate
+[78.1111459732055664] 2018-08-02 23:35:55,305 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1367 in join_voice_channel: (join_voice_channel) creating futures
+[78.1112494468688965] 2018-08-02 23:35:55,305 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1373 in join_voice_channel: (join_voice_channel) setting voice state
+[78.1114771366119385] 2018-08-02 23:35:55,305 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1376 in join_voice_channel: (join_voice_channel) waiting for session id
+[78.1479699611663818] 2018-08-02 23:35:55,342 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5034 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Propreantepenultimate -> [JOIN, CONNECT]
+[78.1480801105499268] 2018-08-02 23:35:55,342 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 5045 in on_voice_state_update: 254089547447533569/Elegiggle#3010 has joined Catch The Rainbow!/Propreantepenultimate
+[78.1484987735748291] 2018-08-02 23:35:55,342 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1380 in join_voice_channel: (join_voice_channel) waiting for voice data
+[78.1488516330718994] 2018-08-02 23:35:55,343 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1394 in join_voice_channel: (join_voice_channel) connecting...
+[78.1752870082855225] 2018-08-02 23:35:55,369 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1406 in join_voice_channel: (join_voice_channel) connection successful
+[78.1753814220428467] 2018-08-02 23:35:55,369 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1453 in get_voice_client: Connected in 0.1s
+[78.1757302284240723] 2018-08-02 23:35:55,370 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 1454 in get_voice_client: Connected to Catch The Rainbow!/Propreantepenultimate
+[78.1761558055877686] 2018-08-02 23:35:55,370 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 1287 in _join_startup_channels: Joined Catch The Rainbow!/Propreantepenultimate
+[78.1782538890838623] 2018-08-02 23:35:55,372 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1735 in on_player_finished_playing: 138532752038297600
+[78.1786208152770996] 2018-08-02 23:35:55,372 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1750 in on_player_finished_playing: Dynamic Menace#7801
+[78.1800177097320557] 2018-08-02 23:35:55,374 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1790 in on_player_finished_playing: Eptic - Underworld
+[78.1803009510040283] 2018-08-02 23:35:55,374 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 1791 in on_player_finished_playing: {'_play_count': 2, '_tags': [], '_url': 'https://www.youtube.com/watch?v=j33UsWPalwg', '_title': 'Eptic - Underworld', '_config': <musicbot.config.Config object at 0x7fe9ad802978>, '_volume': 0.15, '_likers': ['138532752038297600'], '_last_played': ['Tue, July 24, 2018 12:59 AM', 'Tue, July 24, 2018 12:59 AM']}
+[78.1861770153045654] 2018-08-02 23:35:55,380 - VOICEDEBUG - musicbot.player | In player.py::MainThread(140641757443840), line 336 in websocket_check: Starting websocket check loop for Catch The Rainbow!
+[79.2915606498718262] 2018-08-02 23:35:56,485 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 1895 in on_player_finished_playing: Stored song volume: 0.15
+[80.1443824768066406] 2018-08-02 23:35:57,338 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(140641757443840), line 322 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file
+[80.1800098419189453] 2018-08-02 23:35:57,374 - DEBUG - musicbot.autoplaylist | In autoplaylist.py::MainThread(140641757443840), line 326 in store: [ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file
+[80.2010476589202881] 2018-08-02 23:35:57,395 - INFO - musicbot.entry | In entry.py::MainThread(140641757443840), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=j33UsWPalwg
+[82.1133811473846436] 2018-08-02 23:35:59,307 - INFO - musicbot.entry | In entry.py::MainThread(140641757443840), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=j33UsWPalwg
+[82.1454992294311523] 2018-08-02 23:35:59,339 - FFMPEG - musicbot.player | In player.py::MainThread(140641757443840), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/MusicBot/../MusicBot/audio_cache/youtube-j33UsWPalwg-Eptic_-_Underworld.webm
+[82.1598670482635498] 2018-08-02 23:35:59,354 - DEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 2007 in serialize_queue: Serializing queue for 138532599181213696
+[87.3595786094665527] 2018-08-02 23:36:04,553 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140641757443840), line 5034 in on_voice_state_update: Voice state update for 181268300301336576/Jadedtdt#1164 on Catch The Rainbow!/Propreantepenultimate -> [LEAVE, DISCONNECT]
+[87.3597149848937988] 2018-08-02 23:36:04,554 - INFO - musicbot.bot | In bot.py::MainThread(140641757443840), line 5045 in on_voice_state_update: 181268300301336576/Jadedtdt#1164 has left Catch The Rainbow!/Propreantepenultimate
+[97.8838496208190918] 2018-08-02 23:36:15,078 - DEBUG - musicbot.player | In player.py::MainThread(140641757443840), line 222 in _playback_finished: Deleting file: audio_cache/youtube-j33UsWPalwg-Eptic_-_Underworld.webm

@@ -1,6 +1,7 @@
 import logging
 
 from .config import Config, ConfigDefaults
+from .email import Email
 from .song import Music
 from .user import User
 from .utils import load_file, write_file, get_latest_pickle_mtime, load_pickle, store_pickle
@@ -16,6 +17,7 @@ class AutoPlaylist:
     def __init__(self, url_song_dict=None, users_list=None):
 
         self.yti = YouTubeIntegration()
+        self.email_util = Email()
 
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
@@ -115,7 +117,7 @@ class AutoPlaylist:
         user.add_song(url)
         self.store()
 
-        self.__add_to_autoplaylist(url, title, author)
+        #self.__add_to_autoplaylist(url, title, author)
 
     # adds to the user's YTI playlist
     def __add_to_autoplaylist(self, url, title, author=None):
@@ -136,6 +138,8 @@ class AutoPlaylist:
                             if musicbot_user.user_name:
                                 log.debug("[__ADD_TO_AUTOPLAYLIST] Creating playlist for user: {}".format(musicbot_user.user_name))
                                 self.yti.create_playlist(musicbot_user.user_name.replace(' ', '-'), musicbot_user.user_id)
+                                #have to wait for our api request to take effect
+                                time.sleep(2)
                             else:
                                 log.error("[__ADD_TO_AUTOPLAYLIST] Name was null. ID: {}".format(musicbot_user.user_id))
 
@@ -163,6 +167,8 @@ class AutoPlaylist:
     # removes the master dictionary
     def remove_from_autoplaylist(self, url, title=None, author=None):
 
+
+
         url = self.check_url(url)
 
         if author == None:
@@ -178,6 +184,7 @@ class AutoPlaylist:
                         if self.remove_from_autoplaylist(url, title, each_liker):
                             log.warning("SUCCESS for user: " + self.get_user(each_liker).user_name)
                             self.store()
+                            self.load()
                         else:
                             log.warning("FAILURE for user: " + self.get_user(each_liker).user_name)
                             return False
@@ -200,7 +207,10 @@ class AutoPlaylist:
 
                 if len(song.likers) > 1:
                     log.debug("[REMOVE_FROM_AUTOPLAYLIST] MULTIPLE LIKERS, REMOVING: " + song.title)
-                    song.remove_liker(author)
+                    if self._remove_from_autoplaylist(url, title, author):
+                        return song.remove_liker(author)
+                    else:
+                        return False
                 
                 elif len(song.likers) == 1:
                     log.debug("[REMOVE_FROM_AUTOPLAYLIST] ONE LIKER, REMOVING: " + song.title)
@@ -216,7 +226,11 @@ class AutoPlaylist:
 
                     #removing the song from the APL for GOOD
                     try:
-                        self._url_to_song_.pop(url)
+                        if self._remove_from_autoplaylist(url, title, author):
+                            self._url_to_song_.pop(url)
+                            return True
+                        else:
+                            return False
                     except:
                         log.error("[REMOVE_FROM_AUTOPLAYLIST] Tried to remove something that wasn't a url: " + str(url))
                         return False
@@ -224,7 +238,6 @@ class AutoPlaylist:
                     log.warning("[REMOVE_FROM_AUTOPLAYLIST] NO LIKERS, NOT REMOVING: " + song.title)
                     return False
 
-                return self._remove_from_autoplaylist(url, title, author)
 
             else:
                 log.warning("[REMOVE_FROM_AUTOPLAYLIST] Can't remove a song that's not in the auto playlist")
@@ -242,7 +255,8 @@ class AutoPlaylist:
                 if user.remove_song(url):
                     log.debug("[_REMOVE_FROM_AUTOPLAYLIST] REMOVE SUCCESS!")
                     self.store()
-                    return self.__remove_from_autoplaylist(url, title, author)
+                    return True
+                    #return self.__remove_from_autoplaylist(url, title, author)
                 else:
                     log.debug("[_REMOVE_FROM_AUTOPLAYLIST] REMOVE FAILED!")
             else:

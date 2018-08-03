@@ -252,7 +252,11 @@ class Music:
             raise ValueError("Tried to call remove_liker but argument was None")
 
         if self.has_liker(liker):
-            self.likers.remove(liker)
+            try:
+                self.likers.remove(liker)
+                return True
+            except:
+                return False
 
     def remove_tag(self, tag):
         if tag != None:

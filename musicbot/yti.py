@@ -144,20 +144,25 @@ class YouTubeIntegration:
 
         playlist_id=None
         if user_id:
-            playlists = self.youtube.playlists().list(
+            playlists_request = self.youtube.playlists().list(
                 part="snippet",
-                mine=True
-            ).execute()
+                mine=True,
+                maxResults=50
+            )
 
-            if playlists:
-                if playlists["items"]:
-                    for each_playlist in playlists["items"]:
-                        if each_playlist["snippet"]["description"] == user_id:
-                            playlist_id = each_playlist["id"]
+            while playlists_request:
+                playlists_response = playlists_request.execute()
+                if playlists_response:
+                    if playlists_response["items"]:
+                        for each_playlist in playlists_response["items"]:
+                            if each_playlist["snippet"]["description"] == user_id:
+                                playlist_id = each_playlist["id"]
+                    else:
+                        log.error("[LOOKUP_PLAYLIST] There were no playlists to fetch - " + user_id)
                 else:
-                    log.error("[LOOKUP_PLAYLIST] There were no playlists to fetch - " + user_id)
-            else:
-                log.error("[LOOKUP_PLAYLIST] YT account couldn't fetch playlists - " + user_id)
+                    log.error("[LOOKUP_PLAYLIST] Failed to execute the request")
+
+                playlists_request = self.youtube.playlists().list_next(playlists_request, playlists_response)
         else:
             log.error("[LOOKUP_PLAYLIST] user_id was null")
 
@@ -168,28 +173,20 @@ class YouTubeIntegration:
     def update_playlist_name(self, user_id, user_name):
 
         if user_id:
-            if user_name:
-                playlists = self.youtube.playlists().list(
-                    part="snippet",
-                    mine=True
-                ).execute()
-
-                if playlists:
-                    playlist_id = self.lookup_playlist(user_id)
-                    if playlist_id:
-                        self.youtube.playlists().update(
-                            part="snippet",
-                            body=dict(
-                                id=playlist_id,
-                                snippet=dict(
-                                    title=user_name + ("" if suffix == "" else DELIMETER + suffix)
-                                )
+            if user_name:                
+                playlist_id = self.lookup_playlist(user_id)
+                if playlist_id:
+                    self.youtube.playlists().update(
+                        part="snippet",
+                        body=dict(
+                            id=playlist_id,
+                            snippet=dict(
+                                title=user_name + ("" if suffix == "" else DELIMETER + suffix)
                             )
-                        ).execute()
-                    else:
-                        log.error("[UPDATE_PLAYLIST_NAME] Playlist not found - " + user_id)
+                        )
+                    ).execute()
                 else:
-                    log.error("[UPDATE_PLAYLIST_NAME] YT account couldn't fetch playlists or there are none - " + user_id)
+                    log.error("[UPDATE_PLAYLIST_NAME] Playlist not found - " + user_id)
             else:
                 log.error("[UPDATE_PLAYLIST_NAME] user_name was null. ID: {}".format(user_id))
         else:
@@ -197,26 +194,37 @@ class YouTubeIntegration:
 
     # Updates the playlists name to users latest name
     # True if needs updated, False if doesn't
-    def check_playlist_name(self, user_id, user_name):
+    def check_playlist_name(self, user_id, user_name, playlist_id=None):
 
         needsChanged = True
         if user_id:
             if user_name:
-                playlists = self.youtube.playlists().list(
-                    part="snippet",
-                    mine=True
-                ).execute()
+                if not playlist_id:
+                    playlist_id = self.lookup_playlist(user_id)
 
-                if playlists["items"]:
-                    for each_playlist in playlists["items"]:
-                        if each_playlist["snippet"]["description"] == user_id:
-                            log.debug("[CHECK_PLAYLIST_NAME] Found playlist {} for user {}", each_playlist["snippet"]["title"], user_name)
-                            needsChanged = (each_playlist["snippet"]["title"] == user_name)
-                            return needsChanged
+                if playlist_id:
+                    playlists_request = self.youtube.playlists().list(
+                        part="snippet",
+                        mine=True,
+                        maxResults=50,
+                        id=playlist_id
+                        )
+                    while playlists_request:
+                        playlists_response = playlists_request.execute()
 
+                        if playlists_response:
+                            for each_playlist in playlists_response["items"]:
+                                if each_playlist["snippet"]["description"] == user_id:
+                                    log.debug("[CHECK_PLAYLIST_NAME] Found playlist {} for user {}", each_playlist["snippet"]["title"], user_name)
+                                    needsChanged = (each_playlist["snippet"]["title"] != user_name)
+                                    return needsChanged
+                        else:
+                            log.error("[LOOKUP_PLAYLIST] Failed to execute the request")
+
+                        playlists_request = self.youtube.playlistItems().list_next(playlists_request, playlists_response)
                     log.warning("[CHECK_PLAYLIST_NAME] Couldn't find playlist matching user! {}:{}".format(user_id, user_name))
-                else:
-                    log.error("[CHECK_PLAYLIST_NAME] YT account couldn't fetch playlists or there are none")
+
+                log.warning("[CHECK_PLAYLIST_NAME] playlist_id was null. ID: {}".format(user_id, user_name))
             else:
                 log.error("[CHECK_PLAYLIST_NAME] user_name was null. ID: {}".format(user_id))
         else:
@@ -230,22 +238,28 @@ class YouTubeIntegration:
         video_playlist_id = None
         if video_id:
             if playlist_id:
-                items = self.youtube.playlistItems().list(
+                items_request = self.youtube.playlistItems().list(
                     part = "snippet",
-                    playlistId = playlist_id
-                ).execute()
+                    playlistId = playlist_id,
+                    maxResults=50
+                )
 
-                if items:
-                    if items["items"]:
-                        for each_item in items["items"]:
-                            if each_item["snippet"]["resourceId"]["videoId"] == video_id:
-                                video_playlist_id = each_item["id"]
-                    else:
-                        log.error("[LOOKUP_VIDEO] There were no videos to fetch - " + video_id)
-                else:
-                    log.error("[LOOKUP_VIDEO] YT account couldn't fetch videos - " + video_id)
+                while items_request:
+                    items_response = items_request.execute()
+                    if items_response:
+                        if items_response["items"]:
+                            for each_item in items_response["items"]:
+                                if each_item["snippet"]["resourceId"]["videoId"] == video_id:
+                                    video_playlist_id = each_item["id"]
+                        else:
+                            log.error("[LOOKUP_VIDEO] There were no videos to fetch - " + video_id)
+
+                        items_request = self.youtube.playlistItems().list_next(items_request, items_response)
+
+                if not video_playlist_id:
+                    log.error("[LOOKUP_VIDEO] Couldn't find video - " + video_id)
             else:
-                log.error("[LOOKUP_VIDEO] playlist_id was null. ID: {}".format(video_id))
+                log.error("[LOOKUP_VIDEO] playlist_id was null. Video ID: {}".format(video_id))
         else:
             log.error("[LOOKUP_VIDEO] video_id was null")
 
@@ -287,7 +301,7 @@ class YouTubeIntegration:
                     video_playlist_id = lookup_video(video_id, playlist_id)
                     if video_playlist_id:
                         self.youtube.playlistItems().delete(
-                            id = video_playlist_id
+                            id = video_playlist_id,
                         ).execute()
 
                     else:

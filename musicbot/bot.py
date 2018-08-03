@@ -35,12 +35,13 @@ from . import downloader
 from .autoplaylist import AutoPlaylist
 from .config import Config, ConfigDefaults
 from .constructs import SkipState, Response, VoiceStateUpdate
+from .email import Email
 from .entry import StreamPlaylistEntry
-from .song import Music
 from .opus_loader import load_opus_lib
 from .permissions import Permissions, PermissionsDefaults
 from .player import MusicPlayer
 from .playlist import Playlist
+from .song import Music
 from .user import User
 from .utils import load_file, write_file, sane_round_int, fixg, ftimedelta, get_latest_pickle_mtime, load_pickle, store_pickle, sanitize_string, join_str
 from .yti import YouTubeIntegration
@@ -49,7 +50,6 @@ from .constants import VERSION as BOTVERSION
 from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH, BACKUP_PATH
 
 load_opus_lib()
-
 log = logging.getLogger(__name__)
 
 class MusicBot(discord.Client):
@@ -96,6 +96,8 @@ class MusicBot(discord.Client):
         # Metadata
         self.metaData = {}
         self.wholeMetadata = load_file(self.config.metadata_file)
+
+        self.email_util = Email()
 
         if not self.new_autoplaylist.songs:
             log.warning("[__INIT__] Autoplaylist is empty, disabling.")
@@ -160,7 +162,7 @@ class MusicBot(discord.Client):
         #TODO delete files after importing them
 
         if os.path.isdir("./data/import"):
-            for filename in os.listdir(os.getcwd() + '\data\import'):
+            for filename in os.listdir(os.getcwd() + '/data/import'):
                 # loading autoplaylist file + identifying discord user
                 if "-" in filename:
                     dashIndex = filename.index("-")
@@ -316,6 +318,7 @@ class MusicBot(discord.Client):
                             log.debug("Failed to add")
                     else:
                         log.debug("Failed to remove")
+                        self.email_util.send_exception(self.users_list[i].user_id, each_url, "[clean_songs] Failed to remove")
 
         log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file")
         store_pickle(self.config.auto_playlist_pickle, self._url_to_song_)
@@ -369,6 +372,66 @@ class MusicBot(discord.Client):
                 if song:
                     self._url_to_song_.pop(song.url)
         log.debug("########DEBUG SONG LIKERS END#########")
+
+    async def dump_url_to_song(self):
+        import json
+        with open('data/_url_to_song_.json', 'w') as fp:
+            for each_key in self._url_to_song_.keys():
+                each_value = self._url_to_song_[each_key]
+                fp.write("\"{key}\" : \"{value}\"\n".format(key=each_key, value=str(each_value)))
+
+    async def dump_users_list(self):
+        import json
+        with open('data/users_list.json', 'w') as fp:
+            for each_user in self.users_list:
+                for each_song in each_user.song_list:
+                    fp.write("\"{key}\" : \"{value}\"\n".format(key=str(each_user), value=str(each_song)))
+
+    async def dump_song2user(self):
+        import json
+        lines = []
+        with open('data/_url_to_song_.json', 'w') as fp:
+            for each_key in self._url_to_song_.keys():
+                for each_value in self._url_to_song_[each_key].likers:
+                    lines.append("\"{key}\" : \"{value}\"\n".format(key=each_key, value=str(each_value)))
+            fp.writelines(sorted(lines))
+
+        with open('data/_url_to_song_likers.json', 'w') as fp:
+            for each_key in self._url_to_song_.keys():
+                for each_value in self._url_to_song_[each_key].likers:
+                    lines.append("\"{key}\" : \"{value}\"\n".format(key=each_key, value=str(each_value)))
+            fp.writelines(sorted(lines))
+
+    async def dump_user2song(self):
+        import json
+        lines = []
+        with open('data/users_list.json', 'w') as fp:
+            for each_user in self.users_list:
+                lines.append("\"{key}\" : \"{value}\"\n".format(key=str(each_user.user_id), value=str(each_user.user_name)))
+            fp.writelines(sorted(lines))
+
+        with open('data/users_list_songs.json', 'w') as fp:
+            for each_user in self.users_list:
+                for each_song in each_user.song_list:
+                    lines.append("\"{key}\" : \"{value}\"\n".format(key=str(each_user.user_id), value=str(each_song)))
+            fp.writelines(sorted(lines))
+
+    async def dump_corruption(self):
+        import json
+        lines = []
+        with open('data/_url_to_song_Compare.json', 'w') as fp:
+            for each_key in self._url_to_song_.keys():
+                for each_value in self._url_to_song_[each_key].likers:
+                    lines.append("\"{key}\" : \"{value}\"\n".format(key=each_value, value=str(each_key)))
+            fp.writelines(sorted(lines))
+
+        import json
+        lines = []
+        with open('data/users_listCompare.json', 'w') as fp:
+            for each_user in self.users_list:
+                for each_song in each_user.song_list:
+                    lines.append("\"{key}\" : \"{value}\"\n".format(key=str(each_user.user_id), value=str(each_song)))
+            fp.writelines(sorted(lines))
 
     async def dump_songs_without_urls(self):
         log.debug("#######DEBUG SONG URLS START########")
@@ -892,18 +955,93 @@ class MusicBot(discord.Client):
         return 0, None
 
 
-    def test_yti(self):
-        yti = YouTubeIntegration()
+    # due to a latency in the YouTube API, this shouldn't be used.
+    def test_yti_pl(self):
+        yti = YouTubeIntegration() 
 
         # Creates users' playlists in youtube if they dont have one
         for each_user in self.users_list:
             if each_user:
                 if each_user.user_name:
                     name = each_user.user_name.replace(' ', '-')
-                    playlist_id = yti.lookup_playlist(name)
-                    if playlist_id:
+                    playlist_id = yti.lookup_playlist(each_user.user_id)
+                    if playlist_id == None:
+                        log.debug("Creating playlist for user: {} {}".format(name, each_user.user_id))
+                        #yti.create_playlist(name.replace(' ', '-'), each_user.user_id)
+                    else:
+                        log.warning("Playlist exists for user {} {} ".format(name, each_user.user_id))
+
+    async def test_yti_songs(self):
+        yti = YouTubeIntegration() 
+
+        # Creates users' playlists in youtube if they dont have one
+        for each_user in self.users_list:
+            if each_user:
+                if each_user.user_name:
+                    name = each_user.user_name.replace(' ', '-')
+                    playlist_id = yti.lookup_playlist(each_user.user_id)
+                    if playlist_id == None:
+                        log.debug("Creating playlist for user: {} {}".format(name, each_user.user_id))
+                        #yti.create_playlist(name.replace(' ', '-'), each_user.user_id)
+                    else:
+                        log.warning("Playlist exists for user {} {} ".format(name, each_user.user_id))
+
+                    if each_user.song_list:
+                        for each_song in each_user.song_list:
+                            if type(each_song) == Music:
+                                each_song = each_song.get_url()
+                                log.error("Song{} in user's{} list is a Music obj, extracting URL".format(each_song, name))                        
+
+                            if "youtube" in each_song or "youtu.be" in each_song:
+                                video_id = yti.extract_youtube_video_id(each_song)
+                                if video_id != None:
+                                    video_playlist_id = yti.lookup_video(video_id, playlist_id)
+                                    if video_playlist_id == None:
+                                        log.debug("yti.add_video({}, {})".format(name, video_id))
+                                        #yti.add_video(each_user.user_id, video_id)
+                                        time.sleep(.500)
+                                else:
+                                    log.warning("video_id is None")
+                            else:
+                                #print("Not a youtube URL: " + each_song)
+                                pass
+                    else:
+                        #log.error(each_user + " has no songs")
+                        pass
+                else:
+                    #log.error(each_user)
+                    pass
+
+    # due to a latency in the YouTube API, this shouldn't be used.
+    def init_yti_pl(self):
+        yti = YouTubeIntegration() 
+
+        # Creates users' playlists in youtube if they dont have one
+        for each_user in self.users_list:
+            if each_user:
+                if each_user.user_name:
+                    name = each_user.user_name.replace(' ', '-')
+                    playlist_id = yti.lookup_playlist(each_user.user_id)
+                    if playlist_id == None:
                         log.debug("Creating playlist for user: " + name)
-                        yti.create_playlist(name.replace(' ', '-'))
+                        yti.create_playlist(name.replace(' ', '-'), each_user.user_id)
+                    else:
+                        log.warning("Playlist exists for user: " + name)
+
+    async def init_yti_songs(self):
+        yti = YouTubeIntegration() 
+
+        # Creates users' playlists in youtube if they dont have one
+        for each_user in self.users_list:
+            if each_user:
+                if each_user.user_name:
+                    name = each_user.user_name.replace(' ', '-')
+                    playlist_id = yti.lookup_playlist(each_user.user_id)
+                    if playlist_id == None:
+                        log.debug("Creating playlist for user: {} {}".format(name, each_user.user_id))
+                        yti.create_playlist(name.replace(' ', '-'), each_user.user_id)
+                    else:
+                        log.warning("Playlist exists for user {} {} ".format(name, each_user.user_id))
 
                     for each_song in each_user.song_list:
                         if type(each_song) == Music:
@@ -913,47 +1051,26 @@ class MusicBot(discord.Client):
                         if "youtube" in each_song or "youtu.be" in each_song:
                             video_id = yti.extract_youtube_video_id(each_song)
                             if video_id != None:
-                                log.debug("yti.add_video({}, {})".format(name, video_id))
-                                #yti.add_video(name, video_id)
+                                video_playlist_id = yti.lookup_video(video_id, playlist_id)
+                                if video_playlist_id == None:
+                                    #log.debug("yti.add_video({}, {})".format(name, video_id))
+                                    yti.add_video(each_user.user_id, video_id)
+                                    #time.sleep(.500)
                             else:
-                                print("video_id is None")
+                                log.warning("video_id is None")
                         else:
-                            #print("Not a youtube URL: " + each_song)
+                            #log.error("Not a youtube URL: " + each_song)
                             pass
+                    else:
+                        #log.error(each_user + " has no songs")
+                        pass
                 else:
                     #log.error(each_user)
                     pass
 
-    def init_yti(self):
-        yti = YouTubeIntegration()
-
-        # Creates users' playlists in youtube if they dont have one
-        for each_user in self.users_list:
-            if each_user:
-                name = each_user.user_name.replace(' ', '-')
-                playlist_id = yti.lookup_playlist(name)
-                if playlist_id:
-                    log.debug("Creating playlist for user: " + name)
-                    yti.create_playlist(name.replace(' ', '-'))
-
-                for each_song in each_user.song_list:
-                    if type(each_song) == Music:
-                        each_song = each_song.get_url()
-                        log.error("Song{} in user's{} list is a Music obj, extracting URL".format(each_song, name))                        
-
-                    if "youtube" in each_song or "youtu.be" in each_song:
-                        video_id = yti.extract_youtube_video_id(each_song)
-                        if video_id != None:
-                            #log.debug("yti.add_video({}, {})".format(name, video_id))
-                            yti.add_video(name, video_id)
-                        else:
-                            print("video_id is None")
-                    else:
-                        print("Not a youtube URL: " + each_song)
-
     async def notify_likers(self, song, emsg=""):
         if song == None:
-            print("Null song, no one to notify")
+            log.debug("Null song, no one to notify")
             return
 
         channel = self.get_channel(list(self.config.bound_channels)[0])
@@ -1722,13 +1839,12 @@ class MusicBot(discord.Client):
                         log.error("Error processing \"{url}\": {ex}".format(url=playURL, ex=e))
 
                     song = self.find_song_by_url(playURL)
-                    if song != None and "Invalid parameters" not in str(e):
+                    if song != None and "Invalid parameters" not in str(e) or "The read operation timed out" not in str(e):
                         await self.notify_likers(song, str(e))
                         #self.remove_from_autoplaylist(song.url, song.title)
                         print("\a")  # BEEPS
 
                         self.new_autoplaylist.store()
-
                         continue
 
                 except Exception as e:
@@ -1736,7 +1852,7 @@ class MusicBot(discord.Client):
                     log.error("Error processing \"{url}\": {ex}".format(url=playURL, ex=e))
                     log.exception(e)
 
-                    if "Cannot identify player" not in str(e) or "Signature extraction failed" not in str(e) or "Invalid parameters" not in str(e) or "The read operation timed out" not in str(e):
+                    if "Cannot identify player" not in str(e) or "Signature extraction failed" not in str(e) or "Invalid parameters" not in str(e):
                         song = self.find_song_by_url(playURL)
                         if song != None:
                             await self.notify_likers(song, str(e))
@@ -3324,6 +3440,7 @@ class MusicBot(discord.Client):
             reply_text = "**%s**, the song **%s** has been added to your auto playlist."
         else:
             reply_text = "**%s**, this song **%s** is already added to your auto playlist."
+            self.email_util.send_exception(author, title, "[cmd_like] The song is already added to your auto playlist")
 
         user = str(author)[:-5]
         if title == None:
@@ -3391,6 +3508,7 @@ class MusicBot(discord.Client):
                 player.current_entry.disliked = True
         else:
             reply_text = "**%s**, the song **%s** wasn't in your auto playlist or something went wrong."
+            self.email_util.send_exception(author, title, "[cmd_dislike] The song wasn't in your auto playlist or something went wrong.")
 
         user = str(author)[:-5]
 
@@ -3672,7 +3790,7 @@ class MusicBot(discord.Client):
             self.new_autoplaylist.add_to_autoplaylist(song_url, entry.title, author.id)
         except:
             log.error("Failed to add song to apl in play command " + entry.title)
-            traceback.print_exc()
+            self.email_util.send_exception(author.name, entry.title, "Failed to add song to apl in play command")
 
         return Response(reply_text, delete_after=30)
 
