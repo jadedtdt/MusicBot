@@ -1156,10 +1156,26 @@ class MusicBot(discord.Client):
             return discord.utils.find(lambda m: m.id == user_id, self.get_all_members())
 
     def _get_owner(self, *, server=None, voice=False):
-            return discord.utils.find(
-                lambda m: m.id == self.config.owner_id and (m.voice_channel if voice else True),
-                server.members if server else self.get_all_members()
-            )
+        return discord.utils.find(
+            lambda m: m.id == self.config.owner_id and (m.voice_channel if voice else True),
+            server.members if server else self.get_all_members()
+        )
+
+    async def _get_restarter(self, voice=False):
+
+        for server in self.servers:
+            if server:
+                tchans = []
+                for chan in server.channels:
+                    if chan:
+                        if chan.type == discord.ChannelType.text:
+                            tchans.append(chan)
+
+                for channel in tchans:
+                    async for message in self.logs_from(channel, limit=50, after=datetime.today(), reverse=False):                        
+                        if message.content.startswith(self.config.command_prefix +'restart'):
+                            return message.author
+        return None
 
     def _delete_old_audiocache(self, path=AUDIO_CACHE_PATH):
         try:
@@ -1273,6 +1289,12 @@ class MusicBot(discord.Client):
                 if owner:
                     log.info("Found owner in \"{}\"".format(owner.voice_channel.name))
                     channel_map[server] = owner.voice_channel
+
+                restarter = await self._get_restarter(voice=True) or await self._get_restarter()
+
+                if restarter:
+                    log.info("Found restarter in \"{}\"".format(restarter.voice_channel.name))
+                    channel_map[server] = restarter.voice_channel
 
         for server, channel in channel_map.items():
             if server in joined_servers:
@@ -2272,9 +2294,6 @@ class MusicBot(discord.Client):
                 owner.discriminator
             ))
 
-            log.info('Server List:')
-            [log.info(' - ' + s.name) for s in self.servers]
-
         elif self.servers:
             log.warning("Owner could not be found on any server (id: %s)\n" % self.config.owner_id)
 
@@ -2330,7 +2349,7 @@ class MusicBot(discord.Client):
             self.config.autojoin_channels.difference_update(invalids)
 
             if chlist:
-                log.info("Autojoining voice chanels:")
+                log.info("Autojoining voice channels:")
                 [log.info(' - {}/{}'.format(ch.server.name.strip(), ch.name.strip())) for ch in chlist if ch]
             else:
                 log.info("Not autojoining any voice channels")
