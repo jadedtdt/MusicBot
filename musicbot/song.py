@@ -54,7 +54,7 @@ class Music:
 
     @url.setter
     def url(self, new_url):
-        if new_url != None:
+        if new_url:
             if type(new_url) != str:
                 new_url = str(new_url)
         else:
@@ -67,7 +67,7 @@ class Music:
 
     @title.setter
     def title(self, new_title):
-        if new_title != None:
+        if new_title:
             if type(new_title) != str:
                 new_title = str(new_title)
         self._title = new_title
@@ -78,7 +78,7 @@ class Music:
 
     @likers.setter
     def likers(self, new_likers):
-        if new_likers != None:
+        if new_likers:
             if type(new_likers) == str:
                 # looks like a list as a string was passed, let's make it back into a list
                 if ', ' in new_likers:
@@ -98,7 +98,7 @@ class Music:
 
     @play_count.setter
     def play_count(self, new_play_count):
-        if new_play_count != None:
+        if new_play_count:
             if type(new_play_count) != int:
                 new_play_count = int(new_play_count)
         else:
@@ -111,7 +111,7 @@ class Music:
 
     @tags.setter
     def tags(self, new_tags):
-        if new_tags != None:
+        if new_tags:
             if type(new_tags) == str:
                 # looks like a list as a string was passed, let's make it back into a list
                 if ', ' in new_tags:
@@ -131,7 +131,7 @@ class Music:
 
     @volume.setter
     def volume(self, new_volume):
-        if new_volume != None:
+        if new_volume:
             if type(new_volume) != float:
                 new_volume = float(new_volume)
         else:
@@ -146,8 +146,6 @@ class Music:
     def last_played(self, new_time_play):
         self._last_played.append(new_time_play)
         self._last_played.pop(0)
-        
-
 
     ###########################################################################
 
@@ -156,7 +154,7 @@ class Music:
     ###########################################################################
 
     def has_liker(self, liker):
-        if liker != None:
+        if liker:
             if type(liker) != str:                
                 if type(liker) == int:
                     liker = str(liker)
@@ -172,7 +170,7 @@ class Music:
         return liker in self.likers
 
     def has_tag(self, tag):
-        if tag != None:
+        if tag:
             if type(tag) != str:
                 if type(tag) == list:
                     has_all_tags = True
@@ -200,7 +198,7 @@ class Music:
         self.play_count += 1
 
     def add_liker(self, liker):
-        if liker != None:
+        if liker:
             if type(liker) != str:                
                 if type(liker) == int:
                     liker = str(liker)
@@ -218,7 +216,7 @@ class Music:
             self.likers.append(liker)
 
     def add_tag(self, tag):
-        if tag != None:
+        if tag:
             if not self.has_tag(tag):
                 self.tags.append(tag)
             else:
@@ -237,7 +235,7 @@ class Music:
             self.play_count -= 1
 
     def remove_liker(self, liker):
-        if liker != None:
+        if liker:
             if type(liker) != str:                
                 if type(liker) == int:
                     liker = str(liker)
@@ -259,7 +257,7 @@ class Music:
                 return False
 
     def remove_tag(self, tag):
-        if tag != None:
+        if tag:
             if self.has_tag(tag):
                 self.tags.remove(tag)
             else:

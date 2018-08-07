@@ -108,18 +108,22 @@ class YouTubeIntegration:
         DELIMETER = ":"
         if user_name:
             if user_id:
-                self.youtube.playlists().insert(
-                    part="snippet,status",
-                    body=dict(
-                        snippet=dict(
-                            title=user_name,
-                            description=user_id
-                        ),
-                        status=dict(
-                            privacyStatus="public"
+                try:
+                    self.youtube.playlists().insert(
+                        part="snippet,status",
+                        body=dict(
+                            snippet=dict(
+                                title=user_name,
+                                description=user_id
+                            ),
+                            status=dict(
+                                privacyStatus="public"
+                            )
                         )
-                    )
-                ).execute()
+                    ).execute()
+                except Exception as e:
+                    log.error("[CREATE_PLAYLIST] Failed to create playlist for User {}".format(user_id))
+                    self.email_util.send_exception(user_name if user_name else user_id, None, "[YTI][CREATE_PLAYLIST] " + str(e))
             else:
                 log.error("[CREATE_PLAYLIST] No user_id given")
         else:
@@ -131,11 +135,15 @@ class YouTubeIntegration:
         if user_id:
             playlist_id = self.lookup_playlist(user_id)
             if playlist_id:
-                self.youtube.playlists().delete(
-                    id=playlist_id
-                ).execute()
+                try:
+                    self.youtube.playlists().delete(
+                        id=playlist_id
+                    ).execute()
+                except Exception as e:
+                    log.error("[REMOVE_PLAYLIST] Failed to remove playlist for User: {}".format(user_id))
+                    self.email_util.send_exception(user_name if user_name else user_id, None, "[YTI][REMOVE_PLAYLIST] " + str(e))
             else:
-                log.error("[REMOVE_PLAYLIST] Playlist not found - " + user_id)
+                log.error("[REMOVE_PLAYLIST] Playlist not found - {}".format(user_id))
         else:
             log.error("[REMOVE_PLAYLIST] user_id was null")
 
@@ -158,7 +166,7 @@ class YouTubeIntegration:
                             if each_playlist["snippet"]["description"] == user_id:
                                 playlist_id = each_playlist["id"]
                     else:
-                        log.error("[LOOKUP_PLAYLIST] There were no playlists to fetch - " + user_id)
+                        log.error("[LOOKUP_PLAYLIST] There were no playlists to fetch - {}".format(user_id))
                 else:
                     log.error("[LOOKUP_PLAYLIST] Failed to execute the request")
 
@@ -173,20 +181,25 @@ class YouTubeIntegration:
     def update_playlist_name(self, user_id, user_name):
 
         if user_id:
-            if user_name:                
+            if user_name:
                 playlist_id = self.lookup_playlist(user_id)
                 if playlist_id:
-                    self.youtube.playlists().update(
-                        part="snippet",
-                        body=dict(
-                            id=playlist_id,
-                            snippet=dict(
-                                title=user_name + ("" if suffix == "" else DELIMETER + suffix)
+                    try:
+                        self.youtube.playlists().update(
+                            part="snippet",
+                            body=dict(
+                                id=playlist_id,
+                                snippet=dict(
+                                    title=user_name + ("" if suffix == "" else DELIMETER + suffix)
+                                )
                             )
-                        )
-                    ).execute()
+                        ).execute()
+                    except Exception as e:
+                        log.error("[UPDATE_PLAYLIST_NAME] Failed to update playlist for User: {}".format(user_name))
+                        self.email_util.send_exception(user_name if user_name else user_id, None, "[YTI][UPDATE_PLAYLIST_NAME] " + str(e))
+
                 else:
-                    log.error("[UPDATE_PLAYLIST_NAME] Playlist not found - " + user_id)
+                    log.error("[UPDATE_PLAYLIST_NAME] Playlist not found - {}".format(user_id))
             else:
                 log.error("[UPDATE_PLAYLIST_NAME] user_name was null. ID: {}".format(user_id))
         else:
@@ -219,7 +232,7 @@ class YouTubeIntegration:
                                     needsChanged = (each_playlist["snippet"]["title"] != user_name)
                                     return needsChanged
                         else:
-                            log.error("[LOOKUP_PLAYLIST] Failed to execute the request")
+                            log.error("[CHECK_PLAYLIST_NAME] Failed to execute the request")
 
                         playlists_request = self.youtube.playlistItems().list_next(playlists_request, playlists_response)
                     log.warning("[CHECK_PLAYLIST_NAME] Couldn't find playlist matching user! {}:{}".format(user_id, user_name))
@@ -252,12 +265,12 @@ class YouTubeIntegration:
                                 if each_item["snippet"]["resourceId"]["videoId"] == video_id:
                                     video_playlist_id = each_item["id"]
                         else:
-                            log.error("[LOOKUP_VIDEO] There were no videos to fetch - " + video_id)
+                            log.debug("[LOOKUP_VIDEO] There were no videos to fetch - {}".format(video_id))
 
                         items_request = self.youtube.playlistItems().list_next(items_request, items_response)
 
                 if not video_playlist_id:
-                    log.error("[LOOKUP_VIDEO] Couldn't find video - " + video_id)
+                    log.debug("[LOOKUP_VIDEO] Couldn't find video - {}".format(video_id))
             else:
                 log.error("[LOOKUP_VIDEO] playlist_id was null. Video ID: {}".format(video_id))
         else:
@@ -272,18 +285,22 @@ class YouTubeIntegration:
             if video_id:
                 playlist_id = self.lookup_playlist(user_id)
                 if playlist_id:
-                    self.youtube.playlistItems().insert(
-                        part = "snippet",
-                        body = dict(
-                            snippet = dict(
-                                playlistId = playlist_id,
-                                resourceId = dict(
-                                    kind = "youtube#video",
-                                    videoId = video_id
-                                ),
+                    try:
+                        self.youtube.playlistItems().insert(
+                            part = "snippet",
+                            body = dict(
+                                snippet = dict(
+                                    playlistId = playlist_id,
+                                    resourceId = dict(
+                                        kind = "youtube#video",
+                                        videoId = video_id
+                                    ),
+                                )
                             )
-                        )
-                    ).execute()
+                        ).execute()
+                    except Exception as e:
+                        log.error("[ADD_VIDEO] Failed to add video {} for User: {}".format(video_id, user_id))
+                        self.email_util.send_exception(user_id, None, "[YTI][ADD_VIDEO] " + str(e))
                 else:
                     log.error("[ADD_VIDEO] Playlist not found - {}".format(user_id))
             else:
@@ -298,12 +315,15 @@ class YouTubeIntegration:
             if video_id:
                 playlist_id = self.lookup_playlist(user_id)
                 if playlist_id:
-                    video_playlist_id = lookup_video(video_id, playlist_id)
+                    video_playlist_id = self.lookup_video(video_id, playlist_id)
                     if video_playlist_id:
-                        self.youtube.playlistItems().delete(
-                            id = video_playlist_id,
-                        ).execute()
-
+                        try:
+                            self.youtube.playlistItems().delete(
+                                id = video_playlist_id,
+                            ).execute()
+                        except Exception as e:
+                            log.error("[REMOVE_VIDEO] Failed to remove video {} for User: {}".format(video_id, user_id))
+                            self.email_util.send_exception(user_id, None, "[YTI][REMOVE_VIDEO] " + str(e))
                     else:
                         log.error("[REMOVE_VIDEO] Playlist does not contain video - {},{}".format(user_id, video_id))
                 else:

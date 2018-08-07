@@ -33,6 +33,12 @@ def write_file(filename, contents):
             f.write(str(item))
             f.write('\n')
 
+def null_check_string(obj, attribute):
+    return_string = getattr(obj, str(attribute), 'NO ' + str(attribute))
+    if not return_string:
+        return 'NO ' + str(attribute)
+    return return_string
+
 ########################
 # is_latest_pickle
 # 
