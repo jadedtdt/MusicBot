@@ -1741,28 +1741,28 @@ class MusicBot(discord.Client):
                 ####################
                 list_people = list(filter(lambda user_obj : user_obj.user_id in people, self.users_list))
                 tmpClock = time.perf_counter()
-                self.list_heard = []
+                self.heard_list = []
 
                 #THIS IS THE MULTI-LINE EQUIVILENT OF BELOW
                 # for user_obj in list_people:
                 #     if user_obj.mood == None or user_obj.mood == "":
-                #         self.list_heard.extend(user_obj.heard_list)
+                #         self.heard_list.extend(user_obj.heard_list)
                 #     else:
-                #         self.list_heard.extend(user_obj.heard_list[:len(self.metadata[user_obj.mood])])
+                #         self.heard_list.extend(user_obj.heard_list[:len(self.metaData[user_obj.mood])])
 
-                list(filter(lambda user_obj : self.list_heard.extend(user_obj.heard_list) if user_obj.mood == None else self.list_heard.extend(user_obj.list_heard[:len(self.metadata[user_obj.mood])]), list_people))
+                list(filter(lambda user_obj : self.heard_list.extend(user_obj.heard_list) if user_obj.mood == None else self.heard_list.extend(user_obj.heard_list[:len(self.metaData[user_obj.mood])]), list_people))
 
-                self.list_heard = list(set(self.list_heard))
+                self.heard_list = list(set(self.heard_list))
                 # print("1st time: " + str(time.perf_counter() - tmpClock))
                 
                 #log.debug("User and Heard Len: " + str(list(map(lambda user_obj : self._get_user(user_obj.user_id).display_name + " - " + str(user_obj.heard_len), list_people))))
-                #log.debug("List heard all: " + str(list(map(lambda song_obj : song_obj.title, self.list_heard))))
+                #log.debug("List heard all: " + str(list(map(lambda song_obj : song_obj.title, self.heard_list))))
                 
                 # tmpClock = time.perf_counter()
-                # self.list_heard = []
+                # self.heard_list = []
                 # for user_obj in list_people:
-                #     self.list_heard.extend(user_obj.heard_list)
-                # self.list_heard = list(set(self.list_heard))
+                #     self.heard_list.extend(user_obj.heard_list)
+                # self.heard_list = list(set(self.heard_list))
                 # print("2nd time " + str(time.perf_counter() - tmpClock))
                 ####################
                 # END: Prepare heard (repeating songs)
@@ -1824,11 +1824,11 @@ class MusicBot(discord.Client):
                         if user.mood != None:
                             log.debug("MOOD: " + null_check_string(user, 'mood'))
 
-                            song = self.find_song_by_url(random.choice(self.metaData[user.mood().lower()]))
-                            if user.mood().lower() in self.metaData.keys():
-                                playURL = random.choice(self.metaData[user.mood().lower()])
+                            if user.mood.lower() in self.metaData.keys():
+                                url = random.choice(self.metaData[user.mood.lower()])
+                                song = self.find_song_by_url(url)
                             else:
-                                prntStr = "The tag **[" + user.mood() + "]** does not exist."
+                                prntStr = "The tag **[" + user.mood + "]** does not exist."
                                 return Response(prntStr, delete_after=35)
                         ####################
                         # Mood end
@@ -1845,8 +1845,8 @@ class MusicBot(discord.Client):
                         # Repeat begin
                         ####################
                         if song:
-                            if None not in self.list_heard and len(self.list_heard) > 0:
-                                if any(filter(lambda song_obj : song_obj.url == song.url, self.list_heard)):
+                            if None not in self.heard_list and len(self.heard_list) > 0:
+                                if any(filter(lambda song_obj : song_obj.url == song.url, self.heard_list)):
                                     log.debug("Song played too recently: " + null_check_string(song, 'title'))
                                     timeout = timeout + 1
                                     continue
@@ -1869,7 +1869,7 @@ class MusicBot(discord.Client):
                             url = random.choice(user.song_list)
                             song = self.find_song_by_url(url)
                             #check if repeat song
-                            if any(filter(lambda song_obj : song_obj.url == song.url, self.list_heard)):
+                            if any(filter(lambda song_obj : song_obj.url == song.url, self.heard_list)):
                                 log.debug("Song played too recently")
                                 timeout = timeout + 1
                                 continue
