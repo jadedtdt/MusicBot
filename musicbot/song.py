@@ -273,9 +273,7 @@ class Music:
     ###########################################################################
 
     def __repr__(self):
-        return "Title: {title}, URL: {url}".format(
-            title=getattr(self, 'title', "NO_TITLE"),
-            url=getattr(self, 'url', "NO_URL"))
+        return self.title if self.title else self.url
 
     def __hash__(self):
         return hash(self.url)

@@ -217,7 +217,6 @@ class MusicPlayer(EventEmitter, Serializable):
         if not self.bot.config.save_videos and entry:
             if any([entry.filename == e.filename for e in self.playlist.entries]):
                 log.debug("Skipping deletion of \"{}\", found song in queue".format(entry.filename))
-
             else:
                 log.debug("Deleting file: {}".format(os.path.relpath(entry.filename)))
                 asyncio.ensure_future(self._delete_file(entry.filename))
@@ -241,7 +240,8 @@ class MusicPlayer(EventEmitter, Serializable):
     async def _delete_file(self, filename):
         for x in range(30):
             try:
-                os.unlink(filename)
+                if os.access(filename, os.W_OK):
+                    os.unlink(filename)
                 break
 
             except PermissionError as e:
@@ -275,7 +275,7 @@ class MusicPlayer(EventEmitter, Serializable):
 
                 except:
                     log.warning("Failed to get entry, retrying", exc_info=True)
-                    self.loop.call_later(0.1, self.play)
+                    self.loop.call_later(0.5, self.play)
                     return
 
                 # If nothing left to play, transition to the stopped state.

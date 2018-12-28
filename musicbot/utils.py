@@ -34,9 +34,9 @@ def write_file(filename, contents):
             f.write('\n')
 
 def null_check_string(obj, attribute):
-    return_string = getattr(obj, str(attribute), 'NO ' + str(attribute))
+    return_string = getattr(obj, str(attribute), 'no ' + str(attribute))
     if not return_string:
-        return 'NO ' + str(attribute)
+        return 'no ' + str(attribute)
     return return_string
 
 ########################
@@ -68,7 +68,10 @@ def get_latest_pickle_mtime(file_name):
 #
 ########################
 def store_pickle(file_name, contents):
-    pickle.dump(contents, open(file_name, "wb"), 4)
+    try:
+        pickle.dump(contents, open(file=file_name, mode="wb", buffering=0), 4)
+    except Exception as e:
+        log.error("Failed to store pickle {}".format())
 
 ########################
 # load_pickle
@@ -82,7 +85,10 @@ def store_pickle(file_name, contents):
 ########################
 def load_pickle(file_name):
     if (os.path.exists(file_name) and os.access(file_name, os.W_OK)):
-        return pickle.load(open(file_name, "rb"))
+        loadData = open(file=file_name, mode="rb", buffering=0)
+        contents = pickle.load(loadData)
+        loadData.close()
+        return contents
     raise FileNotFoundError('APL Pickle could not be found')
 
 def sane_round_int(x):

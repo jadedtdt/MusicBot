@@ -172,6 +172,4 @@ class User:
         return False
 
     def __repr__(self):
-        return "Name: {name}, ID: {id}".format(
-            name=getattr(self, 'user_name', "NO_NAME"),
-            id=getattr(self, 'user_id', "NO_ID"))
+        return self.user_name if self.user_name else self.user_id

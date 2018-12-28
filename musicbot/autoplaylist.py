@@ -1,4 +1,7 @@
+import asyncio
 import logging
+
+from datetime import datetime
 
 from .config import Config, ConfigDefaults
 from .email import Email
@@ -14,7 +17,7 @@ log = logging.getLogger(__name__)
 # __add_* and __remove_* refers to our YTI (YouTubeIntegration)
 class AutoPlaylist:
 
-    def __init__(self, url_song_dict=None, users_list=None):
+    def __init__(self):
 
         self.yti = YouTubeIntegration()
         self.email_util = Email()
@@ -22,298 +25,271 @@ class AutoPlaylist:
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
-        if url_song_dict:
-            self._url_to_song_ = url_song_dict
-        else:
-            self._url_to_song_ = load_pickle(self.config.auto_playlist_pickle)
-
+        self._url_to_song_ = load_pickle(self.config.auto_playlist_pickle)
         self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
+
+        self.users_list = load_pickle(self.config.users_list_pickle)
+        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
+
         self.songs = list(self._url_to_song_.values())
         self.urls = list(self._url_to_song_.keys())
 
-        if users_list:
-            self.users_list = users_list
-        else:
-            self.users_list = load_pickle(self.config.users_list_pickle)
-
-        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
-
-    # adds to the master dictionary
     async def add_to_autoplaylist(self, url, title=None, author=None):
 
-        url = self.check_url(url)
-
-        if type(url) != str:
-            log.error("[ADD_TO_AUTOPLAYLIST] URL was not a string: " + str(url))
-
-
-        if author == None:
-            log.warning("[ADD_TO_AUTOPLAYLIST] No Author... Don't know who to add to")
+        if not url:
+            log.error("[ADD_TO_AUTOPLAYLIST] No URL. Don't know what song to add.")
             return False
 
-        if not self.get_user(author)[1]:
-            new_user = self._get_user(author)
-            log.error("[ADD_TO_AUTOPLAYLIST] Alert: Creating User profile for " + utils.null_check_string(new_user, 'name'))
-            if self.new_autoplaylist.needs_reloaded():
-                self._url_to_song_, self.users_list = self.new_autoplaylist.reload()         
-            self.users_list.append(User(new_user.id, new_user.name))
-            self.new_autoplaylist.store()
+        if not author:
+            log.error("[ADD_TO_AUTOPLAYLIST] No author. Don't know who to add to.")
+            return False
 
         if not author.isnumeric():
             author = author.id
 
+        url = self.check_url(url)
+
+        # attempt the 3 process flow
+        if self.needs_reloaded():
+            self._url_to_song_, self.users_list = self.reload()
+
+        dict_success = await self._add_to_song_dictionary(url, title, author)
+        users_list_success = await self._add_to_users_list(url, title, author)
+
+        if dict_success and users_list_success:
+
+            # only do 3rd process for youtube links
+            if "youtube" in url or "youtu.be" in url:
+                await self._add_to_yti_add_file(url, title, author)
+
+            self.store(self._url_to_song_, self.users_list)
+            return True
+        elif (not dict_success and users_list_success) or (dict_success and not users_list_success):
+            self.email_util.send_exception(author, url, "[ADD_TO_AUTOPLAYLIST] CORRUPTION DETECTED! dict_success: {}, users_list: {}".format(dict_success, users_list))
+
+        # rollback
+        self._url_to_song_, self.users_list = self.reload()
+        return False
+
+    # adds to the master dictionary
+    async def _add_to_song_dictionary(self, url, title=None, author=None):
+
         song = self.find_song_by_url(url)
 
         # if not on anyone's list, let's add it to someone's
-        if song == None:
-            log.debug("[ADD_TO_AUTOPLAYLIST] Creating new song object " + (title if title else "NO_TITLE"))
+        if not song:
+            log.debug("[_ADD_TO_SONG_DICTIONARY] Creating new song object " + str(song))
             song = Music(url, title, author)
             try:
-                if await self._add_to_autoplaylist(url, title, author):
-                    self._url_to_song_[url] = song
-                    self.store()
-                    return True
+                self._url_to_song_[url] = song
+                return True
             except:
-                log.error("[ADD_TO_AUTOPLAYLIST] Tried to add something that wasn't a url: " + str(url))
-                return False
+                log.error("[_ADD_TO_SONG_DICTIONARY] Tried to add something that wasn't a url: " + str(url))
         # otherwise we just want to add this liker to the list
         else:
             if song.has_liker(author):
-                log.debug("[ADD_TO_AUTOPLAYLIST] Song already added " + url)
-                return False
+                log.debug("[_ADD_TO_SONG_DICTIONARY] Song already added " + url)
             else:
-                if await self._add_to_autoplaylist(url, title, author):
-                    # appends current author to the end of the likers list
-                    log.debug("[ADD_TO_AUTOPLAYLIST] Adding liker to song " + url)
-                    song.add_liker(author)
-                    return True
+                log.debug("[_ADD_TO_SONG_DICTIONARY] Adding liker to song " + url)
+                song.add_liker(author)
+                return True
 
-                if not self._url_to_song_[url].has_liker(author):
-                    log.error("[ADD_TO_AUTOPLAYLIST] Failed to add liker to song " + url)
         return False
 
     # adds to the user's list
-    async def _add_to_autoplaylist(self, url, title=None, author=None):
+    async def _add_to_users_list(self, url, title=None, author=None):
 
-        url = self.check_url(url)
-
-        if author == None:
-            song = self.find_song_by_url(url)
-            if song == None:
-                log.debug("[_ADD_TO_AUTOPLAYLIST] Tried to add a song that's not in our APL yet")
-                return self.add_to_autoplaylist(url, title, author)
-
-            # trying to grab the likers from the apl
-            likers = song.likers
-            if likers == None:
-                raise ValueError("No author and no likers. Can't add this song!")
-            else:
-                log.warning("[_ADD_TO_AUTOPLAYLIST] No author but we have list of likers, trying again!")
-                for liker in likers:
-                    success = await self._add_autoplaylist(url, title, liker)
-                    if success == False:
-                        return False
-                return True
-
-        user = self.get_user(author)[1]
-
-        # if a user doesn't exist, we add them
-        if user == None:
-            raise NameError("User doesn't exist")
-
-        # add a new url to users list of liked songs
-        if url == None:
-            raise ValueError("No valid URL given, cannot add.")
+        user = self.get_user(author)
 
         if user.add_song(url):
-            try:
-                await self.__add_to_autoplaylist(url, title, author)
-                return True
-            except Exception as e:
-                self.email_util.send_exception(user_id, title, "[_REMOVE_FROM_AUTOPLAYLIST] Failed to execute __remove_from_autoplaylist " + str(e))
-
+            return True
+        else:
+            log.error("[_ADD_TO_USERS_LIST] Failed to add URL {} to user's {} list ".format(url, str(user)))
 
         return False
 
+    # adds url to serialized dictionary to add to users' YT playlists
+    async def _add_to_yti_add_file(self, url, title=None, author=None):
+
+        try:
+            temp_pickle = load_pickle('../MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')))
+            yti_add_pickle = temp_pickle
+            yti_add_pickle.user_dict[author].append(url)
+            store_pickle('../MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_add_pickle)
+        except Exception as e:
+            yti_add_pickle = {}
+            yti_add_pickle[author] = [url]
+            store_pickle('../MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_add_pickle)
+
+    # deprecated :( this will be handled by a cron job
     # adds to the user's YTI playlist
-    async def __add_to_autoplaylist(self, url, title=None, author=None):
+    async def _add_to_yti_playlist(self, url, title=None, author=None):
 
-        if type(url) == Music:
-            url = url.get_url()
-            log.error("[__ADD_TO_AUTOPLAYLIST] URL {} passed is a Music obj, extracting URL".format(url))
+        user = self.get_user(author)
 
-        if author:
-            musicbot_user = self.get_user(author)[1]
-            if musicbot_user:
-                if url:
-                    url = self.check_url(url)
+        # temp reference for debugging
+        song = Music(url, title, author)
 
-                    if musicbot_user.user_id:
-                        playlist_id = self.yti.lookup_playlist(musicbot_user.user_id)
-                        if playlist_id == None:
-                            if musicbot_user.user_name:
-                                log.debug("[__ADD_TO_AUTOPLAYLIST] Creating playlist for user: {}".format(musicbot_user.user_name))
-                                self.yti.create_playlist(musicbot_user.user_name.replace(' ', '-'), musicbot_user.user_id)
-                                #have to wait for our api request to take effect
-                                time.sleep(2)
-                            else:
-                                log.error("[__ADD_TO_AUTOPLAYLIST] Name was null. ID: {}".format(musicbot_user.user_id))
+        # should be preprocessed but im a scaredy cat
+        if "youtube" not in url and "youtu.be" not in url:
+            log.debug("[_ADD_TO_YTI_PLAYLIST] Not a youtube URL: {}".format(url))
+            return True
 
-                        if "youtube" in url or "youtu.be" in url:
-                            video_id = self.yti.extract_youtube_video_id(url)
-                            if video_id:
-                                video_playlist_id = self.yti.lookup_video(video_id, playlist_id)
-                                if video_playlist_id == None:
-                                    try:
-                                        self.yti.add_video(musicbot_user.user_id, video_id)
-                                        return True
-                                    except Exception as e:
-                                        log.error("[__ADD_TO_AUTOPLAYLIST] Failed to add video {} for User: {}".format(title if title else url, musicbot_user.user_id))
-                                        self.email_util.send_exception(musicbot_user.user_id, None, "[__REMOVE_FROM_AUTOPLAYLIST] " + str(e))
-                                else:
-                                    log.debug("Song {} already added to YTI Playlist {}".format(title, musicbot_user.user_name))
-                            else:
-                                log.error("[__ADD_TO_AUTOPLAYLIST] video_id is None for url {}".format(url))
-                        else:
-                            log.warning("[__ADD_TO_AUTOPLAYLIST] Not a youtube URL: {}".format(url))
-                    else:
-                        log.error("[__ADD_TO_AUTOPLAYLIST] user_id was null. Author: {}".format(musicbot_user.user_name))
-                else:
-                    log.error("[__ADD_TO_AUTOPLAYLIST] url was null. Author: {}".format(musicbot_user.user_name))
+        playlist_id = self.yti.lookup_playlist(author)
+
+        if not playlist_id:
+            log.debug("[_ADD_TO_YTI_PLAYLIST] Creating playlist for user: {}".format(str(user)))
+            self.yti.create_playlist(self.null_check_string(user, 'user_name').replace(' ', '-'), user.user_id)
+            # let's wait for our api request to take effect
+            time.sleep(2)
+
+        playlist_id = self.yti.lookup_playlist(author)
+
+        try:
+            video_id = self.yti.extract_youtube_video_id(url)
+            video_playlist_id = self.yti.lookup_video(video_id, playlist_id)
+            if not video_playlist_id:
+                self.yti.add_video(user.user_id, video_id)
+                return True
             else:
-                log.error("[__ADD_TO_AUTOPLAYLIST] musicbot_user was null.")
-        else:
-            log.error("[__ADD_TO_AUTOPLAYLIST] author was null")
+                log.debug("[_ADD_TO_YTI_PLAYLIST] Song {} was already added to YTI Playlist {}".format(str(song), str(user)))
+        except Exception as e:
+            log.error("[_ADD_TO_YTI_PLAYLIST] Failed to add video {} for user {}".format(str(song), user.user_id))
+            self.email_util.send_exception(user.user_id, song, "[_ADD_TO_YTI_PLAYLIST] " + str(e))
+
         return False
 
     # removes the master dictionary
     async def remove_from_autoplaylist(self, url, title=None, author=None):
 
+        if not url:
+            log.error("[REMOVE_FROM_AUTOPLAYLIST] No URL. Don't know what song to add.")
+            return False
+
+        if not author:
+            log.error("[REMOVE_FROM_AUTOPLAYLIST] No author. Don't know who to add to.")
+            return False
+
+        if not author.isnumeric():
+            author = author.id
+
         url = self.check_url(url)
 
-        if author:
+        # attempt the 3 process flow
+        if self.needs_reloaded():
+            self._url_to_song_, self.users_list = self.reload()
 
-            if not str(author).isnumeric():
-                author = author.id
-            user = self.get_user(author)[1]
+        dict_success = await self._remove_from_song_dictionary(url, title, author)
+        users_list_success = await self._remove_from_users_list(url, title, author)
+
+        if dict_success and users_list_success:
+
+            # only do 3rd process for youtube links
+            if "youtube" in url or "youtu.be" in url:
+                await self._add_to_yti_remove_file(url, title, author)
+
+            self.store(self._url_to_song_, self.users_list)
+            return True
+        elif (not dict_success and users_list_success) or (dict_success and not users_list_success):
+            self.email_util.send_exception(author, url, "[REMOVE_FROM_AUTOPLAYLIST] CORRUPTION DETECTED! dict_success: {}, users_list: {}".format(dict_success, users_list_success))
+
+        # rollback
+        self._url_to_song_, self.users_list = self.reload()
+        return False
+
+    # removes the master dictionary
+    async def _remove_from_song_dictionary(self, url, title=None, author=None):
 
             song = self.find_song_by_url(url)
 
-            if song:
-
-                if not song.has_liker(author):
-                    log.debug("[REMOVE_FROM_AUTOPLAYLIST] Hey! You can't remove a song that's not even yours!")
-                    return False
-
+            # we can only remove songs that have been added to the dict
+            if song and song.likers and (author in song.likers):
+                # remove author from list of likers in song obj
                 if len(song.likers) > 1:
-                    log.debug("[REMOVE_FROM_AUTOPLAYLIST] MULTIPLE LIKERS, REMOVING: " + null_check_string(song, 'title'))
-                    if await self._remove_from_autoplaylist(url, title, author):
-                        if song.remove_liker(author):
-                            self.store()
-                            return True
+                    log.debug("[_REMOVE_FROM_SONG_DICTIONARY] MULTIPLE LIKERS, REMOVING: " + str(song))
+                    if song.remove_liker(author):
+                        return True
                     else:
-                        return False
-                
-                elif len(song.likers) == 1:
-                    log.debug("[REMOVE_FROM_AUTOPLAYLIST] ONE LIKER, REMOVING: " + null_check_string(song, 'title'))
+                        log.error("[_REMOVE_FROM_SONG_DICTIONARY] Failed to remove liker {} from song {} in dictionary: ".format(author, str(song)))
 
+                # last liker left; deleting song object
+                elif len(song.likers) == 1:
+                    log.debug("[_REMOVE_FROM_SONG_DICTIONARY] ONE LIKER, REMOVING: " + str(song))
+
+                    #TODO add metadata file to this file
                     #removing the song from the metadata dict (tags)
-                    try:
-                        if song.url in list(self.metaData.values()):
-                            for each_key in list(self.metaData.keys()):
-                                if song.url in self.metaData[each_key]:
-                                    self.metaData[each_key].remove(song.url)
-                    except:
-                        pass
+                    #try:
+                    #    if song.url in list(self.metaData.values()):
+                    #        for each_key in list(self.metaData.keys()):
+                    #            if song.url in self.metaData[each_key]:
+                    #                self.metaData[each_key].remove(song.url)
+                    #except Exception as e:
+                    #    self.email_util.send_exception(author, song, "[_REMOVE_FROM_SONG_DICTIONARY] Failed to remove song from meta data file. " + str(e))
 
                     #removing the song from the APL for GOOD
                     try:
-                        if await self._remove_from_autoplaylist(url, title, author):
-                            self._url_to_song_.pop(url)
-                            self.store()
-                            return True
-                        else:
-                            return False
-                    except:
-                        log.error("[REMOVE_FROM_AUTOPLAYLIST] Tried to remove something that wasn't a url: " + str(url))
-                        return False
-                else:
-                    log.warning("[REMOVE_FROM_AUTOPLAYLIST] NO LIKERS, NOT REMOVING: " + null_check_string(song, 'title'))
-                    return False
-
-
-            else:
-                log.warning("[REMOVE_FROM_AUTOPLAYLIST] Can't remove a song that's not in the auto playlist")
-                return False
-        else:
-            log.warning("REMOVE_FROM_AUTOPLAYLIST] No author")
-
-    # removes from user's list of songs
-    async def _remove_from_autoplaylist(self, url, title=None, author=None):
-
-        user = self.get_user(author)[1]
-
-        if user:
-            url = self.check_url(url)
-
-            if user.has_song(url):
-                if user.remove_song(url):
-                    log.debug("[_REMOVE_FROM_AUTOPLAYLIST] REMOVE SUCCESS!")
-                    try:
-                        await self.__remove_from_autoplaylist(url, title, author)
-                        self.store()
+                        self._url_to_song_.pop(url)
                         return True
                     except Exception as e:
-                        self.email_util.send_exception(user_id, title, "[_REMOVE_FROM_AUTOPLAYLIST] Failed to execute __remove_from_autoplaylist " + str(e))
+                        log.error("[_REMOVE_FROM_SONG_DICTIONARY] Tried to remove something that wasn't a url: " + str(url))
+
+                # no likers for this song object.. let's tell ourselves to clean up this mess
                 else:
-                    log.debug("[_REMOVE_FROM_AUTOPLAYLIST] REMOVE FAILED!")
+                    log.warning("[_REMOVE_FROM_SONG_DICTIONARY] NO LIKERS, NOT REMOVING: " + str(song))
+                    self.email_util.send_exception(author, song, "[_REMOVE_FROM_SONG_DICTIONARY] Song had no likers. Remove it manually. " + str(e))
+
+                return False
             else:
-                log.warning("[_REMOVE_FROM_AUTOPLAYLIST] The song isn't in the user's personal list")
+                log.warning("[_REMOVE_FROM_SONG_DICTIONARY] Can't remove a song that's not in the auto playlist")
+                return False
+
+    # removes from user's list of songs
+    async def _remove_from_users_list(self, url, title=None, author=None):
+
+        user = self.get_user(author)
+
+        try:
+            if user.remove_song(url):
+                return True
+        except Exception as e:
+            log.warning("[_REMOVE_FROM_USERS_LIST] Failed to remove song {} from user's {} playlist".format(str(url), str(user)))
 
         return False
 
+    # adds url to serialized dictionary to remove from users' YT playlists
+    async def _add_to_yti_remove_file(self, url, title=None, author=None):
+
+        try:
+            temp_pickle = load_pickle('../MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')))
+            yti_remove_pickle = temp_pickle
+            yti_remove_pickle.user_dict[author].append(url)
+            store_pickle('../MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_remove_pickle)
+        except Exception as e:
+            yti_remove_pickle = {}
+            yti_remove_pickle[author] = [url]
+            store_pickle('../MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_remove_pickle)
+
+    # deprecated :( this will be handled by a cron job
     # removes from user's YTI playlist
-    async def __remove_from_autoplaylist(self, url, title=None, author=None):
+    async def _remove_from_yti_playlist(self, url, title=None, author=None):
 
-        if type(url) == Music:
-            url = url.get_url()
-            log.error("[__REMOVE_FROM_AUTOPLAYLIST] URL {} passed is a Music obj, extracting URL".format(url))
+        user = self.get_user(author)
 
-        if author:
-            musicbot_user = self.get_user(author)[1]
-            if musicbot_user:
-                if url:
-                    url = self.check_url(url)
+        # should be preprocessed but im a scaredy cat
+        if "youtube" not in url and "youtu.be" not in url:
+            log.debug("[_REMOVE_FROM_YTI_PLAYLIST] Not a youtube URL: {}".format(url))
+            return True
 
-                    if musicbot_user.user_id:
-                        playlist_id = self.yti.lookup_playlist(musicbot_user.user_id)
-                        if playlist_id:
-                            if "youtube" in url or "youtu.be" in url:
-                                video_id = self.yti.extract_youtube_video_id(url)
-                                if video_id:
-                                    if self.yti.lookup_video(video_id, playlist_id):
-                                        try:
-                                            self.yti.remove_video(musicbot_user.user_id, video_id)
-                                            return True
-                                        except Exception as e:
-                                            log.error("[__REMOVE_FROM_AUTOPLAYLIST] Failed to remove video {} for User: {}".format(title if title else url, musicbot_user.user_id))
-                                            self.email_util.send_exception(musicbot_user.user_id, None, "[__REMOVE_FROM_AUTOPLAYLIST] " + str(e))
-                                    else:
-                                        log.error("[__REMOVE_FROM_AUTOPLAYLIST] Video {} is not in playlist {}".format(title, musicbot_user.user_name))
-                                else:
-                                    log.error("[__REMOVE_FROM_AUTOPLAYLIST] video_id is None for url {}".format(title))
-                            else:
-                                log.debug("[__REMOVE_FROM_AUTOPLAYLIST] Not a youtube URL: {}".format(url))
-                        else:
-                            log.warning("[__REMOVE_FROM_AUTOPLAYLIST] Playlist doesn't exist, can't delete from it. ID: {}".format(musicbot_user.user_id))
-                    else:
-                        log.error("[__REMOVE_FROM_AUTOPLAYLIST] user_id was null. Author: {}".format(musicbot_user.user_name))
-                else:
-                    log.error("[__REMOVE_FROM_AUTOPLAYLIST] url was null. Author: {}".format(musicbot_user.user_name))
-            else:
-                log.error("[__REMOVE_FROM_AUTOPLAYLIST] musicbot_user was null")
-        else:
-            log.error("[__REMOVE_FROM_AUTOPLAYLIST] author was null")
+        try:
+            playlist_id = self.yti.lookup_playlist(user.user_id)
+            video_id = self.yti.extract_youtube_video_id(url)
+            self.yti.remove_video(user.user_id, video_id)
+            return True
+
+        except Exception as e:
+            log.error("[_REMOVE_FROM_YTI_PLAYLIST] Failed to remove video {} for User: {}".format(title if title else url, user.user_id))
+            self.email_util.send_exception(user.user_id, None, "[_REMOVE_FROM_YTI_PLAYLIST] " + str(e))
+
         return False
 
     # finds the first instance a song URL is found or if a string is found in a title and returns the object
@@ -330,22 +306,20 @@ class AutoPlaylist:
 
         return found_song
 
-    def store(self):
+    def store(self, _url_to_song_, users_list):
 
         log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file")
-        store_pickle(self.config.auto_playlist_pickle, self._url_to_song_)
+        store_pickle(self.config.auto_playlist_pickle, _url_to_song_)
         self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
 
         log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file")
-        store_pickle(self.config.users_list_pickle, self.users_list)
+        store_pickle(self.config.users_list_pickle, users_list)
         self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
 
     def reload(self):
 
         log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest APL pickle file")
         self._url_to_song_ = load_pickle(self.config.auto_playlist_pickle)
-        self.songs = list(self._url_to_song_.values())
-        self.urls = list(self._url_to_song_.keys())
         self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
 
         log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest users pickle file")
@@ -356,7 +330,7 @@ class AutoPlaylist:
 
     def needs_reloaded(self):
 
-        return get_latest_pickle_mtime(self.config.users_list_pickle) > self.last_modified_ts_users \
+        return get_latest_pickle_mtime(self.config.auto_playlist_pickle) > self.last_modified_ts_users \
             or get_latest_pickle_mtime(self.config.users_list_pickle) > self.last_modified_ts_users
 
     def get_user(self, discord_user):
@@ -369,11 +343,11 @@ class AutoPlaylist:
         else:
             discord_id = discord_user
 
-        for i, each_user in enumerate(self.users_list):
+        for each_user in self.users_list:
             if each_user.user_id == discord_id:
-                return i, each_user
+                return each_user
 
-        return 0, None
+        return None
         
     def check_url(self, url):
 
