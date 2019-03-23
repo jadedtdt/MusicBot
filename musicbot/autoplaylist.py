@@ -120,14 +120,14 @@ class AutoPlaylist:
     async def _add_to_yti_add_file(self, url, title=None, author=None):
 
         try:
-            temp_pickle = load_pickle('../MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')))
+            temp_pickle = load_pickle('../../prod/MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')))
             yti_add_pickle = temp_pickle
             yti_add_pickle.user_dict[author].append(url)
-            store_pickle('../MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_add_pickle)
+            store_pickle('../../prod/MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_add_pickle)
         except Exception as e:
             yti_add_pickle = {}
             yti_add_pickle[author] = [url]
-            store_pickle('../MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_add_pickle)
+            store_pickle('../../prod/MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_add_pickle)
 
     # deprecated :( this will be handled by a cron job
     # adds to the user's YTI playlist
@@ -268,14 +268,14 @@ class AutoPlaylist:
     async def _add_to_yti_remove_file(self, url, title=None, author=None):
 
         try:
-            temp_pickle = load_pickle('../MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')))
+            temp_pickle = load_pickle('../../prod/MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')))
             yti_remove_pickle = temp_pickle
             yti_remove_pickle.user_dict[author].append(url)
-            store_pickle('../MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_remove_pickle)
+            store_pickle('../../prod/MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_remove_pickle)
         except Exception as e:
             yti_remove_pickle = {}
             yti_remove_pickle[author] = [url]
-            store_pickle('../MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_remove_pickle)
+            store_pickle('../../prod/MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_remove_pickle)
 
     # deprecated :( this will be handled by a cron job
     # removes from user's YTI playlist
