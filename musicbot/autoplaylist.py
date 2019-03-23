@@ -1,11 +1,14 @@
 import asyncio
+import configparser
 import logging
+import MySQLdb
 
 from datetime import datetime
 
 from .config import Config, ConfigDefaults
 from .email import Email
 from .song import Music
+from .sqlfactory import SqlFactory
 from .user import User
 from .utils import load_file, write_file, get_latest_pickle_mtime, load_pickle, store_pickle, null_check_string
 from .yti import YouTubeIntegration
@@ -33,6 +36,11 @@ class AutoPlaylist:
 
         self.songs = list(self._url_to_song_.values())
         self.urls = list(self._url_to_song_.keys())
+
+    async def create_song(self, url, title=None, play_count=0, volume=0.15, updt_dt_tm='CURRENT_TIMESTAMP()', cret_dt_tm='CURRENT_TIMESTAMP()'):
+
+        await self.sqlfactory.create_song(table, query, [url, title, play_count, volume, updt_dt_tm, cret_dt_tm])
+        log.info('INSERTED A NEW SONG, WOW!')
 
     async def add_to_autoplaylist(self, url, title=None, author=None):
 

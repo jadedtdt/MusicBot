@@ -101,7 +101,7 @@ class YouTubeIntegration:
                 return full_url.split("watch?v=")[1]
             else:
                 log.debug("[EXTRACT_YOUTUBE_VIDEO_ID] Probably a playlist URL or something {}".format(full_url))
-        elif "youtu.be/" in full_url:            
+        elif "youtu.be/" in full_url:
             if "youtu.be/" in full_url:
                 return full_url.split("youtu.be/")[1]
         return None

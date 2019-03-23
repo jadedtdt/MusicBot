@@ -341,7 +341,7 @@ def main():
         m = None
         try:
             from musicbot import MusicBot
-            m = MusicBot('../jMusicBot/config/options.ini', '../jMusicBot/config/permissions.ini')
+            m = MusicBot('../MusicBot-DEV/config/options.ini', '../MusicBot-DEV/config/permissions.ini')
 
             sh.terminator = ''
             log.info("Connecting")

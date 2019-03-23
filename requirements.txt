@@ -5,3 +5,5 @@ colorlog
 cffi --only-binary all; sys_platform == 'win32'
 google-api-python-client
 oauth2client
+mysqlclient
+watchtower
