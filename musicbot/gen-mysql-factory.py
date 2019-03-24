@@ -127,7 +127,7 @@ def main():
     '\n' \
     'from .config import Config, ConfigDefaults\n' \
     'from .email import Email\n' \
-    'from .song import Music\n' \
+    'from .song import Song\n' \
     'from .user import User\n' \
     'log = logging.getLogger(__name__)\n' \
     '\n' \
@@ -166,7 +166,8 @@ def main():
 
     # Begin Body
     body = ''
-    blacklist_tables = ['MOOD', 'MOOD_SONG', 'SONG', 'USER']
+    #blacklist_tables = ['MOOD', 'MOOD_SONG', 'SONG', 'USER', 'USER_SONG']
+    blacklist_tables = []
     tables = get_tables()
     #tables = [ each_table for each_table in tables if each_table not in blacklist_tables ]
     tables = filter(lambda x : x not in blacklist_tables, tables)

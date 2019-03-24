@@ -7,10 +7,10 @@ from datetime import datetime
 
 from .config import Config, ConfigDefaults
 from .email import Email
-from .song import Music
+from .song import Song
 from .sqlfactory import SqlFactory
 from .user import User
-from .utils import load_file, write_file, get_latest_pickle_mtime, load_pickle, store_pickle, null_check_string
+from .utils import load_file, write_file, null_check_string
 from .yti import YouTubeIntegration
 log = logging.getLogger(__name__)
 
@@ -24,110 +24,213 @@ class AutoPlaylist:
 
         self.yti = YouTubeIntegration()
         self.email_util = Email()
+        self._sqlfactory = SqlFactory()
 
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
-        self._url_to_song_ = load_pickle(self.config.auto_playlist_pickle)
-        self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
 
-        self.users_list = load_pickle(self.config.users_list_pickle)
-        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
+        self._songs = self._fetch_songs()
+        self._users = self._fetch_users()
 
-        self.songs = list(self._url_to_song_.values())
-        self.urls = list(self._url_to_song_.keys())
+        self._NUM_COLS_USER = 6
+        self._NUM_COLS_SONG = 6
 
-    async def create_song(self, url, title=None, play_count=0, volume=0.15, updt_dt_tm='CURRENT_TIMESTAMP()', cret_dt_tm='CURRENT_TIMESTAMP()'):
 
-        await self.sqlfactory.create_song(table, query, [url, title, play_count, volume, updt_dt_tm, cret_dt_tm])
-        log.info('INSERTED A NEW SONG, WOW!')
+    @property
+    def songs(self):
+        return self._songs
 
-    async def add_to_autoplaylist(self, url, title=None, author=None):
+    @songs.setter
+    def songs(self, new_songs):
+        if new_songs:
+            if type(new_songs) != list:
+                new_songs = list(new_songs)
+        else:
+            raise ValueError("AutoPlaylist tried to use songs setter but argument was None")
+        self._songs = new_songs
 
+    @property
+    def users(self):
+        return self._users
+
+    @users.setter
+    def users(self, new_users):
+        if new_users:
+            if type(new_users) != list:
+                new_users = list(new_users)
+        else:
+            raise ValueError("AutoPlaylist tried to use users setter but argument was None")
+        self._users = new_users
+
+    @property
+    def sqlfactory(self):
+        return self._sqlfactory
+
+    async def user_like_song(self, user_id, url, title=None, play_count=0, volume=0.15, updt_dt_tm=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), cret_dt_tm=datetime.now().strftime('%Y-%m-%d %H:%M:%S')):
+
+        # passed in User instead of id
+        if type(user_id) == User:
+            user_id = user_id.user_id
+        # passed in int
+        if type(user_id) == int:
+            user_id = str(user_id)
+        # passed in null URL
         if not url:
-            log.error("[ADD_TO_AUTOPLAYLIST] No URL. Don't know what song to add.")
+            log.warning("Null URL passed into user_like_song. Aborting")
             return False
 
-        if not author:
-            log.error("[ADD_TO_AUTOPLAYLIST] No author. Don't know who to add to.")
-            return False
+        success_song, success_user_song = [False, False]
 
-        if not author.isnumeric():
-            author = author.id
-
-        url = self.check_url(url)
-
-        # attempt the 3 process flow
-        if self.needs_reloaded():
-            self._url_to_song_, self.users_list = self.reload()
-
-        dict_success = await self._add_to_song_dictionary(url, title, author)
-        users_list_success = await self._add_to_users_list(url, title, author)
-
-        if dict_success and users_list_success:
-
-            # only do 3rd process for youtube links
-            if "youtube" in url or "youtu.be" in url:
-                await self._add_to_yti_add_file(url, title, author)
-
-            self.store(self._url_to_song_, self.users_list)
-            return True
-        elif (not dict_success and users_list_success) or (dict_success and not users_list_success):
-            self.email_util.send_exception(author, url, "[ADD_TO_AUTOPLAYLIST] CORRUPTION DETECTED! dict_success: {}, users_list: {}".format(dict_success, users_list))
-
-        # rollback
-        self._url_to_song_, self.users_list = self.reload()
-        return False
-
-    # adds to the master dictionary
-    async def _add_to_song_dictionary(self, url, title=None, author=None):
-
-        song = self.find_song_by_url(url)
-
-        # if not on anyone's list, let's add it to someone's
-        if not song:
-            log.debug("[_ADD_TO_SONG_DICTIONARY] Creating new song object " + str(song))
-            song = Music(url, title, author)
-            try:
-                self._url_to_song_[url] = song
-                return True
-            except:
-                log.error("[_ADD_TO_SONG_DICTIONARY] Tried to add something that wasn't a url: " + str(url))
-        # otherwise we just want to add this liker to the list
-        else:
-            if song.has_liker(author):
-                log.debug("[_ADD_TO_SONG_DICTIONARY] Song already added " + url)
+        if not await self._sqlfactory.song_read(url):
+            success_song = await self._sqlfactory.song_create(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
+            if not success_song:
+                log.error("Failed to create song {} {}".format(url, title if title else "No Title"))
+                return False
             else:
-                log.debug("[_ADD_TO_SONG_DICTIONARY] Adding liker to song " + url)
-                song.add_liker(author)
-                return True
+                log.debug("Successfully created song {} {}".format(url, title if title else "No Title"))
 
-        return False
+        if not await self._sqlfactory.user_song_read(user_id, url):
+            success_user_song = await self._sqlfactory.user_song_create(user_id, url, play_count, cret_dt_tm)            
+            if not success_user_song:
+                log.error("Check corruption! {} {}".format(url, title if title else "No Title"))
+                self.email_util.send_exception(user_id, None, "[user_like_song] Check for corruption " + url)
+                log.error("Failed to create user_song {} {}".format(url, title if title else "No Title"))
+                return False
+            else:
+                log.debug("Successfully created user_song {} {}".format(url, title if title else "No Title"))
 
-    # adds to the user's list
-    async def _add_to_users_list(self, url, title=None, author=None):
+        return success_song==True and success_user_song==True
 
-        user = self.get_user(author)
+    async def user_dislike_song(self, user_id, url, title=None):
 
-        if user.add_song(url):
+        # passed in User instead of id
+        if type(user_id) == User:
+            user_id = user_id.user_id
+        # passed in int
+        if type(user_id) == int:
+            user_id = str(user_id)
+        # passed in null URL
+        if not url:
+            log.warning("Null URL passed into user_like_song. Aborting")
+            return False
+
+        success_song, success_user_song = [False, False]
+
+        if await self._sqlfactory.user_song_read(user_id, url):
+            success_user_song = await self._sqlfactory.user_song_delete(user_id, url)
+            if not success_user_song:
+                log.error("Failed to delete user_song {} {}".format(url, title if title else "No Title"))
+                return False
+            else:
+                log.debug("Successfully deleted user_song {} {}".format(url, title if title else "No Title"))
+
+            success_count, result_set = await self._sqlfactory.execute('SELECT COUNT(*) FROM USER_SONG WHERE URL = %s', [url])
+            count = result_set[0]
+            if success_count and str(count) == '0' and success_user_song:
+                success_song = await self._sqlfactory.song_delete(url)            
+                if not success_song:
+                    log.error("Check corruption! {} {}".format(url, title if title else "No Title"))
+                    self.email_util.send_exception(user_id, None, "[user_dislike_song] Check for corruption " + url)
+                    log.error("Failed to delete song {} {}".format(url, title if title else "No Title"))
+                    return False
+                else:
+                    log.debug("Successfully deleted song {} {}".format(url, title if title else "No Title"))
+
             return True
         else:
-            log.error("[_ADD_TO_USERS_LIST] Failed to add URL {} to user's {} list ".format(url, str(user)))
+            log.warning('Song {}-{} doesnt exist in this users list {}'.format(url, title if title else 'No Title', user_id))
 
         return False
 
-    # adds url to serialized dictionary to add to users' YT playlists
-    async def _add_to_yti_add_file(self, url, title=None, author=None):
+    async def are_songs_available(self):
+        success_count, result_set = await self._sqlfactory.execute("SELECT COUNT(*) FROM SONG WHERE '1' = %s", ['1'])
+        return str(result_set[0]) > '0'
 
-        try:
-            temp_pickle = load_pickle('../../prod/MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')))
-            yti_add_pickle = temp_pickle
-            yti_add_pickle.user_dict[author].append(url)
-            store_pickle('../../prod/MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_add_pickle)
-        except Exception as e:
-            yti_add_pickle = {}
-            yti_add_pickle[author] = [url]
-            store_pickle('../../prod/MusicBot/data/yti-add_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_add_pickle)
+    async def get_user(self, user_id):
+
+        discord_id = -1
+
+        # forces us to have id
+        if not str(user_id).isnumeric():
+            discord_id = user_id.id
+        else:
+            discord_id = user_id
+
+        user_result = await self._sqlfactory.user_read(str(discord_id))
+        if user_result and str(user_result[0]) == str(discord_id):
+            return User(user_result[0], user_result[1], user_result[2], user_result[3])
+
+        return None
+
+    async def find_song_by_url(self, url):
+        return self._find_song_by_url(url)
+
+    def _find_song_by_url(self, url):
+        song = None
+        result_set = self._sqlfactory._song_read(url)
+        if result_set:
+            each_row = result_set[0]
+            #log.debug('each_row ! ' + str(each_row))
+            url, title, play_count, volume, updt_dt_tm, cret_dt_tm = each_row
+            volume = str(volume)
+            song = Song(url, title, play_count, volume)
+        return song
+
+    async def fetch_likers(self, url):
+        return self._fetch_likers(url)
+
+    def _fetch_likers(self, url):
+        likers = []
+        success_select, result_set = self._sqlfactory._execute('SELECT USER.ID, USER.NAME, USER.TAG, USER.YTI_URL FROM USER INNER JOIN USER_SONG ON USER.ID = USER_SONG.ID WHERE USER_SONG.URL = %s', [url])
+        for each_row in result_set:
+            #log.debug('each_row ! ' + str(each_row))
+            user_id, user_name, mood, yti_url = each_row
+            new_user = User(user_id, user_name, mood, yti_url)
+            likers.append(new_user)
+        return likers
+
+
+    async def fetch_songs(self):
+        return self._fetch_songs()
+
+    def _fetch_songs(self):
+        songs = []
+        success_select, result_set = self._sqlfactory._execute('SELECT URL, TITLE, PLAY_COUNT, VOLUME FROM SONG WHERE 1 = %s', ['1'])
+        for each_row in result_set:
+            #log.debug('each_row ! ' + str(each_row))
+            url, title, play_count, volume = each_row
+            volume = str(volume)
+            new_song = Song(url, title, play_count, volume)
+            songs.append(new_song)
+        return songs
+
+    async def fetch_users(self):
+        return self._fetch_users()
+
+    def _fetch_users(self):
+        users = []
+        success_select, result_set = self._sqlfactory._execute('SELECT ID, NAME, TAG, YTI_URL FROM USER WHERE 1 = %s', ['1'])
+        for each_row in result_set:
+            #log.debug('each_row ! ' + str(each_row))
+            user_id, user_name, mood, yti_url = each_row
+            new_user = User(user_id, user_name, mood, yti_url)
+            users.append(new_user)
+        return users
+
+    async def fetch_user_songs(self, user_id):
+        return self._fetch_user_songs(user_id)
+
+    def _fetch_user_songs(self, user_id):
+        user_songs = []
+        success_select, result_set = self._sqlfactory._execute('SELECT SONG.URL, SONG.TITLE, SONG.PLAY_COUNT, SONG.VOLUME FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s', [user_id])
+        for each_row in result_set:
+            #log.debug('each_row ! ' + str(each_row))
+            url, title, play_count, volume = each_row
+            volume = str(volume)
+            new_song = Song(url, title, play_count, volume)
+            user_songs.append(new_song)
+        return user_songs
 
     # deprecated :( this will be handled by a cron job
     # adds to the user's YTI playlist
@@ -136,7 +239,7 @@ class AutoPlaylist:
         user = self.get_user(author)
 
         # temp reference for debugging
-        song = Music(url, title, author)
+        song = Song(url, title, author)
 
         # should be preprocessed but im a scaredy cat
         if "youtube" not in url and "youtu.be" not in url:
@@ -167,116 +270,6 @@ class AutoPlaylist:
 
         return False
 
-    # removes the master dictionary
-    async def remove_from_autoplaylist(self, url, title=None, author=None):
-
-        if not url:
-            log.error("[REMOVE_FROM_AUTOPLAYLIST] No URL. Don't know what song to add.")
-            return False
-
-        if not author:
-            log.error("[REMOVE_FROM_AUTOPLAYLIST] No author. Don't know who to add to.")
-            return False
-
-        if not author.isnumeric():
-            author = author.id
-
-        url = self.check_url(url)
-
-        # attempt the 3 process flow
-        if self.needs_reloaded():
-            self._url_to_song_, self.users_list = self.reload()
-
-        dict_success = await self._remove_from_song_dictionary(url, title, author)
-        users_list_success = await self._remove_from_users_list(url, title, author)
-
-        if dict_success and users_list_success:
-
-            # only do 3rd process for youtube links
-            if "youtube" in url or "youtu.be" in url:
-                await self._add_to_yti_remove_file(url, title, author)
-
-            self.store(self._url_to_song_, self.users_list)
-            return True
-        elif (not dict_success and users_list_success) or (dict_success and not users_list_success):
-            self.email_util.send_exception(author, url, "[REMOVE_FROM_AUTOPLAYLIST] CORRUPTION DETECTED! dict_success: {}, users_list: {}".format(dict_success, users_list_success))
-
-        # rollback
-        self._url_to_song_, self.users_list = self.reload()
-        return False
-
-    # removes the master dictionary
-    async def _remove_from_song_dictionary(self, url, title=None, author=None):
-
-            song = self.find_song_by_url(url)
-
-            # we can only remove songs that have been added to the dict
-            if song and song.likers and (author in song.likers):
-                # remove author from list of likers in song obj
-                if len(song.likers) > 1:
-                    log.debug("[_REMOVE_FROM_SONG_DICTIONARY] MULTIPLE LIKERS, REMOVING: " + str(song))
-                    if song.remove_liker(author):
-                        return True
-                    else:
-                        log.error("[_REMOVE_FROM_SONG_DICTIONARY] Failed to remove liker {} from song {} in dictionary: ".format(author, str(song)))
-
-                # last liker left; deleting song object
-                elif len(song.likers) == 1:
-                    log.debug("[_REMOVE_FROM_SONG_DICTIONARY] ONE LIKER, REMOVING: " + str(song))
-
-                    #TODO add metadata file to this file
-                    #removing the song from the metadata dict (tags)
-                    #try:
-                    #    if song.url in list(self.metaData.values()):
-                    #        for each_key in list(self.metaData.keys()):
-                    #            if song.url in self.metaData[each_key]:
-                    #                self.metaData[each_key].remove(song.url)
-                    #except Exception as e:
-                    #    self.email_util.send_exception(author, song, "[_REMOVE_FROM_SONG_DICTIONARY] Failed to remove song from meta data file. " + str(e))
-
-                    #removing the song from the APL for GOOD
-                    try:
-                        self._url_to_song_.pop(url)
-                        return True
-                    except Exception as e:
-                        log.error("[_REMOVE_FROM_SONG_DICTIONARY] Tried to remove something that wasn't a url: " + str(url))
-
-                # no likers for this song object.. let's tell ourselves to clean up this mess
-                else:
-                    log.warning("[_REMOVE_FROM_SONG_DICTIONARY] NO LIKERS, NOT REMOVING: " + str(song))
-                    self.email_util.send_exception(author, song, "[_REMOVE_FROM_SONG_DICTIONARY] Song had no likers. Remove it manually. " + str(e))
-
-                return False
-            else:
-                log.warning("[_REMOVE_FROM_SONG_DICTIONARY] Can't remove a song that's not in the auto playlist")
-                return False
-
-    # removes from user's list of songs
-    async def _remove_from_users_list(self, url, title=None, author=None):
-
-        user = self.get_user(author)
-
-        try:
-            if user.remove_song(url):
-                return True
-        except Exception as e:
-            log.warning("[_REMOVE_FROM_USERS_LIST] Failed to remove song {} from user's {} playlist".format(str(url), str(user)))
-
-        return False
-
-    # adds url to serialized dictionary to remove from users' YT playlists
-    async def _add_to_yti_remove_file(self, url, title=None, author=None):
-
-        try:
-            temp_pickle = load_pickle('../../prod/MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')))
-            yti_remove_pickle = temp_pickle
-            yti_remove_pickle.user_dict[author].append(url)
-            store_pickle('../../prod/MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_remove_pickle)
-        except Exception as e:
-            yti_remove_pickle = {}
-            yti_remove_pickle[author] = [url]
-            store_pickle('../../prod/MusicBot/data/yti-remove_{}.pickle'.format(datetime.today().strftime('%Y-%m-%d')), yti_remove_pickle)
-
     # deprecated :( this will be handled by a cron job
     # removes from user's YTI playlist
     async def _remove_from_yti_playlist(self, url, title=None, author=None):
@@ -299,63 +292,6 @@ class AutoPlaylist:
             self.email_util.send_exception(user.user_id, None, "[_REMOVE_FROM_YTI_PLAYLIST] " + str(e))
 
         return False
-
-    # finds the first instance a song URL is found or if a string is found in a title and returns the object
-    def find_song_by_url(self, url):
-
-        url = self.check_url(url)
-
-        found_song = None
-
-        try:
-            found_song = self._url_to_song_[url]
-        except:
-            found_song = None
-
-        return found_song
-
-    def store(self, _url_to_song_, users_list):
-
-        log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest APL pickle file")
-        store_pickle(self.config.auto_playlist_pickle, _url_to_song_)
-        self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-
-        log.debug("[ON_PLAYER_FINISHED_PLAYING] Storing latest users pickle file")
-        store_pickle(self.config.users_list_pickle, users_list)
-        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
-
-    def reload(self):
-
-        log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest APL pickle file")
-        self._url_to_song_ = load_pickle(self.config.auto_playlist_pickle)
-        self.last_modified_ts_apl = get_latest_pickle_mtime(self.config.auto_playlist_pickle)
-
-        log.debug("[ON_PLAYER_FINISHED_PLAYING] Loading latest users pickle file")
-        self.users_list = load_pickle(self.config.users_list_pickle)
-        self.last_modified_ts_users = get_latest_pickle_mtime(self.config.users_list_pickle)
-
-        return self._url_to_song_, self.users_list
-
-    def needs_reloaded(self):
-
-        return get_latest_pickle_mtime(self.config.auto_playlist_pickle) > self.last_modified_ts_users \
-            or get_latest_pickle_mtime(self.config.users_list_pickle) > self.last_modified_ts_users
-
-    def get_user(self, discord_user):
-
-        discord_id = -1
-
-        # forces us to have id
-        if not str(discord_user).isnumeric():
-            discord_id = discord_user.id
-        else:
-            discord_id = discord_user
-
-        for each_user in self.users_list:
-            if each_user.user_id == discord_id:
-                return each_user
-
-        return None
         
     def check_url(self, url):
 

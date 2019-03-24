@@ -5253,7 +5253,7 @@ INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?
 INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?v=v0f4RetWmeQ', 8, NOW());
 INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?v=v6vwADf_qzQ', 20, NOW());
 INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?v=v7n66H5cxRY', 24, NOW());
-INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?v=vDNzyytIw24', 24, NOW());
+INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?v=vDNzyytIw24', 24, NOW())
 INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?v=vKloV9XZJco', 29, NOW());
 INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?v=vL44kXJm-Jk', 31, NOW());
 INSERT INTO USER_SONG VALUES (85618365707587584, 'https://www.youtube.com/watch?v=vYV-XJdzupY', 18, NOW());

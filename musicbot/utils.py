@@ -39,58 +39,6 @@ def null_check_string(obj, attribute):
         return 'no ' + str(attribute)
     return return_string
 
-########################
-# is_latest_pickle
-# 
-# Checks if our pickle has changed since we last used it
-#
-# On change - return true
-# No change - return false! we already have the latest version :)
-#
-# Precondition: pickle file exists
-# Postcondition: n/a
-#
-# Returns: 'Return the time of last modification of path. The return value is a number giving the number of seconds since the epoch (see the time module)'
-#           From https://docs.python.org/2/library/os.path.html
-########################
-def get_latest_pickle_mtime(file_name):
-    if (os.path.exists(file_name) and os.access(file_name, os.W_OK)):
-        return float(os.path.getmtime(file_name))
-    raise FileNotFoundError('APL Pickle could not be found')
-
-########################
-# store_pickle
-# 
-# Writes over our old pickle file, and returns the new apl and modified timestamp
-#
-# Precondition: have a local cache of a pickle file and the shared pickle exists
-# Postcondition: local cache copied to shared pickle
-#
-########################
-def store_pickle(file_name, contents):
-    try:
-        pickle.dump(contents, open(file=file_name, mode="wb", buffering=0), 4)
-    except Exception as e:
-        log.error("Failed to store pickle {}".format())
-
-########################
-# load_pickle
-# 
-# Loads the latest version of our pickle file
-# Note: You should check that you match the last mod time
-#       or you will overwrite any changes you have in your local APL!
-#
-# Precondition: have a local cache of a pickle file and the shared pickle exists
-# Postcondition: shared pickle copied to local cache
-########################
-def load_pickle(file_name):
-    if (os.path.exists(file_name) and os.access(file_name, os.W_OK)):
-        loadData = open(file=file_name, mode="rb", buffering=0)
-        contents = pickle.load(loadData)
-        loadData.close()
-        return contents
-    raise FileNotFoundError('APL Pickle could not be found')
-
 def sane_round_int(x):
     return int(decimal.Decimal(x).quantize(1, rounding=decimal.ROUND_HALF_UP))
 
