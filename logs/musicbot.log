@@ -1,150 +1,87 @@
-[14.250040054] 2019-03-24 17:49:57,081 - INFO - launcher: Starting sanity checks
-[14.510154724] 2019-03-24 17:49:57,081 - INFO - launcher: Checking for python 3.5+
-[14.679193497] 2019-03-24 17:49:57,082 - INFO - launcher: Checking console encoding
-[14.837026596] 2019-03-24 17:49:57,082 - INFO - launcher: Ensuring we're in the right folder
-[15.239238739] 2019-03-24 17:49:57,082 - INFO - launcher: Checks passed.
-[15.403985977] 2019-03-24 17:49:57,082 - INFO - launcher: Moving old musicbot log
+[15.479087830] 2019-03-25 01:32:41,033 - INFO - launcher: Starting sanity checks
+[15.747308731] 2019-03-25 01:32:41,033 - INFO - launcher: Checking for python 3.5+
+[15.915155411] 2019-03-25 01:32:41,033 - INFO - launcher: Checking console encoding
+[16.070842743] 2019-03-25 01:32:41,033 - INFO - launcher: Ensuring we're in the right folder
+[16.472101212] 2019-03-25 01:32:41,034 - INFO - launcher: Checks passed.
+[16.648530960] 2019-03-25 01:32:41,034 - INFO - launcher: Moving old musicbot log
 
 ######################### PRE-RUN SANITY CHECKS PASSED #########################
 
-[0.6429579257965088] 2019-03-24 17:49:57,710 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1498 in _setup_logging: Set logging level to DEBUG
-[0.7489807605743408] 2019-03-24 17:49:57,816 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 60 in _execute: Using adhoc execute, logging for auditing purposes
-[0.7871756553649902] 2019-03-24 17:49:57,854 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 61 in _execute: Query: SELECT URL, TITLE, PLAY_COUNT, VOLUME FROM SONG WHERE 1 = %s, Params: ['1']
-[0.8323152065277100] 2019-03-24 17:49:57,899 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 67 in _execute: [SQL] [EXECUTE] SELECT URL, TITLE, PLAY_COUNT, VOLUME FROM SONG WHERE 1 = %s
-[0.8327479362487793] 2019-03-24 17:49:57,900 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 68 in _execute: [VALUES] [EXECUTE] ['1']
-[5.7439692020416260] 2019-03-24 17:50:02,811 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 60 in _execute: Using adhoc execute, logging for auditing purposes
-[5.7444248199462891] 2019-03-24 17:50:02,811 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 61 in _execute: Query: SELECT ID, NAME, TAG, YTI_URL FROM USER WHERE 1 = %s, Params: ['1']
-[5.7632482051849365] 2019-03-24 17:50:02,830 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 67 in _execute: [SQL] [EXECUTE] SELECT ID, NAME, TAG, YTI_URL FROM USER WHERE 1 = %s
-[5.7636084556579590] 2019-03-24 17:50:02,831 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 68 in _execute: [VALUES] [EXECUTE] ['1']
-[5.7661688327789307] 2019-03-24 17:50:02,833 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 107 in __init__: [__INIT__] Loaded autoplaylist with 4262 entries
-[5.801942587] launcher-INFO: Connecting
-[8.0032932758331299] 2019-03-24 17:50:05,070 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2452 in on_ready: Connection established, ready to go.
-[8.0036625862121582] 2019-03-24 17:50:05,071 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1629 in _cache_app_info: Caching app info
-[8.0741264820098877] 2019-03-24 17:50:05,141 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2275 in _scheck_ensure_env: Ensuring data folders exist
-[8.0748767852783203] 2019-03-24 17:50:05,142 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2285 in _scheck_ensure_env: Deleted old audio cache
-[8.0751507282257080] 2019-03-24 17:50:05,142 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2291 in _scheck_server_permissions: Checking server permissions
-[8.0754616260528564] 2019-03-24 17:50:05,142 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2295 in _scheck_autoplaylist: Auditing autoplaylist
-[8.0757429599761963] 2019-03-24 17:50:05,143 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2299 in _scheck_configs: Validating config
-[8.0760252475738525] 2019-03-24 17:50:05,143 - DEBUG - musicbot.config | In config.py::MainThread(140146660841280), line 176 in async_validate: Validating options...
-[8.1130483150482178] 2019-03-24 17:50:05,180 - DEBUG - musicbot.config | In config.py::MainThread(140146660841280), line 190 in async_validate: Aquired owner id via API
-[8.1134400367736816] 2019-03-24 17:50:05,180 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2302 in _scheck_configs: Validating permissions config
-[8.1137204170227051] 2019-03-24 17:50:05,181 - DEBUG - musicbot.permissions | In permissions.py::MainThread(140146660841280), line 58 in async_validate: Validating permissions...
-[8.1511731147766113] 2019-03-24 17:50:05,218 - DEBUG - musicbot.permissions | In permissions.py::MainThread(140146660841280), line 62 in async_validate: Fixing automatic owner group
-[8.1515967845916748] 2019-03-24 17:50:05,219 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2463 in on_ready: Connected! Musicbot v1.9.6-review
+[0.6594636440277100] 2019-03-25 01:32:41,677 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 558 in _setup_logging: Set logging level to DEBUG
+[0.7700128555297852] 2019-03-25 01:32:41,787 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[0.8010365962982178] 2019-03-25 01:32:41,818 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 61 in _execute: Query: SELECT * FROM SONG WHERE 1 = %s, Params: ['1']
+[0.8407571315765381] 2019-03-25 01:32:41,858 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM SONG WHERE 1 = %s
+[0.8411989212036133] 2019-03-25 01:32:41,858 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[6.5294508934020996] 2019-03-25 01:32:47,547 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[6.5298950672149658] 2019-03-25 01:32:47,547 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 61 in _execute: Query: SELECT * FROM USER WHERE 1 = %s, Params: ['1']
+[6.5746347904205322] 2019-03-25 01:32:47,592 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM USER WHERE 1 = %s
+[6.5750386714935303] 2019-03-25 01:32:47,592 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[6.5776271820068359] 2019-03-25 01:32:47,595 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 102 in __init__: [__INIT__] Loaded autoplaylist with 4262 entries
+[6.613595724] launcher-INFO: Connecting
+[8.9686634540557861] 2019-03-25 01:32:49,986 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1504 in on_ready: Connection established, ready to go.
+[8.9690022468566895] 2019-03-25 01:32:49,986 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 689 in _cache_app_info: Caching app info
+[9.2177634239196777] 2019-03-25 01:32:50,235 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1327 in _scheck_ensure_env: Ensuring data folders exist
+[9.2184407711029053] 2019-03-25 01:32:50,236 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1343 in _scheck_server_permissions: Checking server permissions
+[9.2187173366546631] 2019-03-25 01:32:50,236 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1347 in _scheck_autoplaylist: Auditing autoplaylist
+[9.2190592288970947] 2019-03-25 01:32:50,236 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1351 in _scheck_configs: Validating config
+[9.2193515300750732] 2019-03-25 01:32:50,236 - DEBUG - musicbot.config | In config.py::MainThread(139666417604416), line 176 in async_validate: Validating options...
+[9.2532293796539307] 2019-03-25 01:32:50,270 - DEBUG - musicbot.config | In config.py::MainThread(139666417604416), line 190 in async_validate: Aquired owner id via API
+[9.2535967826843262] 2019-03-25 01:32:50,271 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1354 in _scheck_configs: Validating permissions config
+[9.2538592815399170] 2019-03-25 01:32:50,271 - DEBUG - musicbot.permissions | In permissions.py::MainThread(139666417604416), line 58 in async_validate: Validating permissions...
+[9.2819237709045410] 2019-03-25 01:32:50,299 - DEBUG - musicbot.permissions | In permissions.py::MainThread(139666417604416), line 62 in async_validate: Fixing automatic owner group
+[9.2823543548583984] 2019-03-25 01:32:50,299 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1515 in on_ready: Connected! Musicbot v1.9.6-review
 
-[8.1519365310668945] 2019-03-24 17:50:05,219 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2473 in on_ready: Bot:   254089547447533569/Elegiggle#3010 [BOT]
-[8.1522493362426758] 2019-03-24 17:50:05,219 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2481 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
+[9.2826907634735107] 2019-03-25 01:32:50,300 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1525 in on_ready: Bot:   398230945704050700/JadeMusicBot#5329 [BOT]
+[9.2830138206481934] 2019-03-25 01:32:50,300 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1533 in on_ready: Owner: 181268300301336576/Jadedtdt#1164
 
-[8.1526930332183838] 2019-03-24 17:50:05,220 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2513 in on_ready: Bound to text channels:
-[8.1529457569122314] 2019-03-24 17:50:05,220 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2514 in <listcomp>:  - Catch The Rainbow!/bot_commands
-[8.1533172130584717] 2019-03-24 17:50:05,220 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2552 in on_ready: Not autojoining any voice channels
-[8.1536457538604736] 2019-03-24 17:50:05,221 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2556 in on_ready: Options:
-[8.1539237499237061] 2019-03-24 17:50:05,221 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2558 in on_ready:   Command prefix: ~
-[8.1541895866394043] 2019-03-24 17:50:05,221 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2559 in on_ready:   Default volume: 15%
-[8.1544327735900879] 2019-03-24 17:50:05,221 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2561 in on_ready:   Skip threshold: 4 votes or 50%
-[8.1546714305877686] 2019-03-24 17:50:05,222 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2562 in on_ready:   Now Playing @mentions: Disabled
-[8.1549031734466553] 2019-03-24 17:50:05,222 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2563 in on_ready:   Auto-Summon: Enabled
-[8.1551313400268555] 2019-03-24 17:50:05,222 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2564 in on_ready:   Auto-Playlist: Enabled
-[8.1553578376770020] 2019-03-24 17:50:05,222 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2565 in on_ready:   Auto-Pause: Enabled
-[8.1555843353271484] 2019-03-24 17:50:05,223 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2566 in on_ready:   Delete Messages: Enabled
-[8.1558430194854736] 2019-03-24 17:50:05,223 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2568 in on_ready:   Delete Invoking: Disabled
-[8.1560802459716797] 2019-03-24 17:50:05,223 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2569 in on_ready:   Debug Mode: Enabled
-[8.1563060283660889] 2019-03-24 17:50:05,223 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2570 in on_ready:   Downloaded songs will be deleted
-[8.1566250324249268] 2019-03-24 17:50:05,224 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 1544 in _join_startup_channels: Found owner in "Casuals"
-[8.1568357944488525] 2019-03-24 17:50:05,224 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 1560 in _join_startup_channels: Attempting to join Catch The Rainbow!/Casuals
-[8.1571617126464844] 2019-03-24 17:50:05,224 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1716 in get_voice_client: Connection attempt 1 to Casuals
-[8.1574225425720215] 2019-03-24 17:50:05,224 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1656 in join_voice_channel: (join_voice_channel) creating futures
-[8.1575808525085449] 2019-03-24 17:50:05,225 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1662 in join_voice_channel: (join_voice_channel) setting voice state
-[8.1579270362854004] 2019-03-24 17:50:05,225 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1665 in join_voice_channel: (join_voice_channel) waiting for session id
-[8.1777062416076660] 2019-03-24 17:50:05,245 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 5261 in on_voice_state_update: Voice state update for 254089547447533569/Elegiggle#3010 on Catch The Rainbow!/Casuals -> [JOIN, CONNECT]
-[8.1779022216796875] 2019-03-24 17:50:05,245 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 5272 in on_voice_state_update: 254089547447533569/Elegiggle#3010 has joined Catch The Rainbow!/Casuals
-[8.1783967018127441] 2019-03-24 17:50:05,245 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1669 in join_voice_channel: (join_voice_channel) waiting for voice data
-[8.1915729045867920] 2019-03-24 17:50:05,259 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1683 in join_voice_channel: (join_voice_channel) connecting...
-[8.2166745662689209] 2019-03-24 17:50:05,284 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1695 in join_voice_channel: (join_voice_channel) connection successful
-[8.2168121337890625] 2019-03-24 17:50:05,284 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1742 in get_voice_client: Connected in 0.1s
-[8.2171695232391357] 2019-03-24 17:50:05,284 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 1743 in get_voice_client: Connected to Catch The Rainbow!/Casuals
-[8.2175908088684082] 2019-03-24 17:50:05,285 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 1576 in _join_startup_channels: Joined Catch The Rainbow!/Casuals
-[8.2179524898529053] 2019-03-24 17:50:05,285 - WARNING - musicbot.bot | In bot.py::MainThread(140146660841280), line 1953 in on_player_finished_playing: TIMEOUT: 0
-[8.2183122634887695] 2019-03-24 17:50:05,285 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1989 in on_player_finished_playing: 138532752038297600
-[8.2470891475677490] 2019-03-24 17:50:05,314 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 436 in user_read: [SQL] [USER] SELECT * FROM USER WHERE ID = %s
-[8.2475242614746094] 2019-03-24 17:50:05,315 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 438 in user_read: [VALUES] [USER] ('138532752038297600',)
-[8.2488839626312256] 2019-03-24 17:50:05,316 - WARNING - musicbot.bot | In bot.py::MainThread(140146660841280), line 1994 in on_player_finished_playing: User: Dynamic Menace
-[8.2492048740386963] 2019-03-24 17:50:05,316 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 60 in _execute: Using adhoc execute, logging for auditing purposes
-[8.2495257854461670] 2019-03-24 17:50:05,317 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 61 in _execute: Query: SELECT SONG.URL, SONG.TITLE, SONG.PLAY_COUNT, SONG.VOLUME FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s, Params: [138532752038297600]
-[8.2672278881072998] 2019-03-24 17:50:05,334 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 67 in _execute: [SQL] [EXECUTE] SELECT SONG.URL, SONG.TITLE, SONG.PLAY_COUNT, SONG.VOLUME FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s
-[8.2676043510437012] 2019-03-24 17:50:05,335 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 68 in _execute: [VALUES] [EXECUTE] [138532752038297600]
-[9.4198265075683594] 2019-03-24 17:50:06,487 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2007 in on_player_finished_playing: Dynamic Menace#7801
-[9.4205679893493652] 2019-03-24 17:50:06,488 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2038 in on_player_finished_playing: Eminem - "ASS LIKE THAT" LYRIC VIDEO (Explicit)
-[9.4209108352661133] 2019-03-24 17:50:06,488 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2039 in on_player_finished_playing: {'_config': <musicbot.config.Config object at 0x7f76644fc550>, '_url': 'https://www.youtube.com/watch?v=WQ2cA2k4lYs', '_title': 'Eminem - "ASS LIKE THAT" LYRIC VIDEO (Explicit)', '_play_count': 7, '_volume': '0.20'}
-[9.4266886711120605] 2019-03-24 17:50:06,494 - VOICEDEBUG - musicbot.player | In player.py::MainThread(140146660841280), line 336 in websocket_check: Starting websocket check loop for Catch The Rainbow!
-[10.6066732406616211] 2019-03-24 17:50:07,674 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2120 in on_player_finished_playing: Stored song volume: 0.20
-[11.4925806522369385] 2019-03-24 17:50:08,560 - INFO - musicbot.entry | In entry.py::MainThread(140146660841280), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=WQ2cA2k4lYs
-[12.5410501956939697] 2019-03-24 17:50:09,608 - INFO - musicbot.entry | In entry.py::MainThread(140146660841280), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=WQ2cA2k4lYs
-[13.4939427375793457] 2019-03-24 17:50:10,561 - FFMPEG - musicbot.player | In player.py::MainThread(140146660841280), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/dev/MusicBot/../../prod/MusicBot/audio_cache/youtube-WQ2cA2k4lYs-Eminem_-_ASS_LIKE_THAT_LYRIC_VIDEO_Explicit.webm
-[13.5032238960266113] 2019-03-24 17:50:10,570 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2228 in serialize_queue: Serializing queue for 138532599181213696
-[13.5045855045318604] 2019-03-24 17:50:10,572 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 60 in _execute: Using adhoc execute, logging for auditing purposes
-[13.5048882961273193] 2019-03-24 17:50:10,572 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 61 in _execute: Query: SELECT USER.ID, USER.NAME, USER.TAG, USER.YTI_URL FROM USER INNER JOIN USER_SONG ON USER.ID = USER_SONG.ID WHERE USER_SONG.URL = %s, Params: ['https://www.youtube.com/watch?v=WQ2cA2k4lYs']
-[13.5405833721160889] 2019-03-24 17:50:10,608 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 67 in _execute: [SQL] [EXECUTE] SELECT USER.ID, USER.NAME, USER.TAG, USER.YTI_URL FROM USER INNER JOIN USER_SONG ON USER.ID = USER_SONG.ID WHERE USER_SONG.URL = %s
-[13.5410509109497070] 2019-03-24 17:50:10,608 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 68 in _execute: [VALUES] [EXECUTE] ['https://www.youtube.com/watch?v=WQ2cA2k4lYs']
-[13.5602071285247803] 2019-03-24 17:50:10,627 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 356 in _song_read: [SQL] [SONG] SELECT * FROM SONG WHERE URL = %s
-[13.5606119632720947] 2019-03-24 17:50:10,628 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 358 in _song_read: [VALUES] [SONG] ('https://www.youtube.com/watch?v=WQ2cA2k4lYs',)
-[13.5724849700927734] 2019-03-24 17:50:10,639 - DEBUG - musicbot.player | In player.py::MainThread(140146660841280), line 221 in _playback_finished: Deleting file: ../../prod/MusicBot/audio_cache/youtube-WQ2cA2k4lYs-Eminem_-_ASS_LIKE_THAT_LYRIC_VIDEO_Explicit.webm
-[13.5731320381164551] 2019-03-24 17:50:10,640 - WARNING - musicbot.bot | In bot.py::MainThread(140146660841280), line 1953 in on_player_finished_playing: TIMEOUT: 0
-[13.5735366344451904] 2019-03-24 17:50:10,641 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1989 in on_player_finished_playing: 138532752038297600
-[13.5920088291168213] 2019-03-24 17:50:10,659 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 436 in user_read: [SQL] [USER] SELECT * FROM USER WHERE ID = %s
-[13.5924611091613770] 2019-03-24 17:50:10,659 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 438 in user_read: [VALUES] [USER] ('138532752038297600',)
-[13.5938260555267334] 2019-03-24 17:50:10,661 - WARNING - musicbot.bot | In bot.py::MainThread(140146660841280), line 1994 in on_player_finished_playing: User: Dynamic Menace
-[13.5941522121429443] 2019-03-24 17:50:10,661 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 60 in _execute: Using adhoc execute, logging for auditing purposes
-[13.5944905281066895] 2019-03-24 17:50:10,661 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 61 in _execute: Query: SELECT SONG.URL, SONG.TITLE, SONG.PLAY_COUNT, SONG.VOLUME FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s, Params: [138532752038297600]
-[13.6124098300933838] 2019-03-24 17:50:10,679 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 67 in _execute: [SQL] [EXECUTE] SELECT SONG.URL, SONG.TITLE, SONG.PLAY_COUNT, SONG.VOLUME FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s
-[13.6128435134887695] 2019-03-24 17:50:10,680 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 68 in _execute: [VALUES] [EXECUTE] [138532752038297600]
-[14.7979216575622559] 2019-03-24 17:50:11,865 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2007 in on_player_finished_playing: Dynamic Menace#7801
-[14.7983980178833008] 2019-03-24 17:50:11,865 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2038 in on_player_finished_playing: Foo Fighters - Stacked Actors
-[14.7987418174743652] 2019-03-24 17:50:11,866 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2039 in on_player_finished_playing: {'_config': <musicbot.config.Config object at 0x7f76646eeb38>, '_url': 'https://www.youtube.com/watch?v=Dwyit8Xz5Dc', '_title': 'Foo Fighters - Stacked Actors', '_play_count': 9, '_volume': '0.15'}
-[15.5385849475860596] 2019-03-24 17:50:12,606 - INFO - musicbot.bot | In bot.py::MainThread(140146660841280), line 2120 in on_player_finished_playing: Stored song volume: 0.15
-[16.2387957572937012] 2019-03-24 17:50:13,306 - INFO - musicbot.entry | In entry.py::MainThread(140146660841280), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=Dwyit8Xz5Dc
-[17.4978892803192139] 2019-03-24 17:50:14,565 - INFO - musicbot.entry | In entry.py::MainThread(140146660841280), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=Dwyit8Xz5Dc
-[18.2388255596160889] 2019-03-24 17:50:15,306 - FFMPEG - musicbot.player | In player.py::MainThread(140146660841280), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/dev/MusicBot/../../prod/MusicBot/audio_cache/youtube-Dwyit8Xz5Dc-Foo_Fighters_-_Stacked_Actors.webm
-[18.2511343955993652] 2019-03-24 17:50:15,318 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2228 in serialize_queue: Serializing queue for 138532599181213696
-[18.2520332336425781] 2019-03-24 17:50:15,319 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 60 in _execute: Using adhoc execute, logging for auditing purposes
-[18.2523548603057861] 2019-03-24 17:50:15,319 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 61 in _execute: Query: SELECT USER.ID, USER.NAME, USER.TAG, USER.YTI_URL FROM USER INNER JOIN USER_SONG ON USER.ID = USER_SONG.ID WHERE USER_SONG.URL = %s, Params: ['https://www.youtube.com/watch?v=Dwyit8Xz5Dc']
-[18.2716867923736572] 2019-03-24 17:50:15,339 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 67 in _execute: [SQL] [EXECUTE] SELECT USER.ID, USER.NAME, USER.TAG, USER.YTI_URL FROM USER INNER JOIN USER_SONG ON USER.ID = USER_SONG.ID WHERE USER_SONG.URL = %s
-[18.2720851898193359] 2019-03-24 17:50:15,339 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 68 in _execute: [VALUES] [EXECUTE] ['https://www.youtube.com/watch?v=Dwyit8Xz5Dc']
-[18.2928509712219238] 2019-03-24 17:50:15,360 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 356 in _song_read: [SQL] [SONG] SELECT * FROM SONG WHERE URL = %s
-[18.2932462692260742] 2019-03-24 17:50:15,360 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 358 in _song_read: [VALUES] [SONG] ('https://www.youtube.com/watch?v=Dwyit8Xz5Dc',)
-[18.3177442550659180] 2019-03-24 17:50:15,385 - DEBUG - musicbot.player | In player.py::MainThread(140146660841280), line 221 in _playback_finished: Deleting file: ../../prod/MusicBot/audio_cache/youtube-Dwyit8Xz5Dc-Foo_Fighters_-_Stacked_Actors.webm
-[18.3184065818786621] 2019-03-24 17:50:15,385 - WARNING - musicbot.bot | In bot.py::MainThread(140146660841280), line 1953 in on_player_finished_playing: TIMEOUT: 0
-[18.3188164234161377] 2019-03-24 17:50:15,386 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 1989 in on_player_finished_playing: 85618365707587584
-[18.3374862670898438] 2019-03-24 17:50:15,404 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 436 in user_read: [SQL] [USER] SELECT * FROM USER WHERE ID = %s
-[18.3378140926361084] 2019-03-24 17:50:15,405 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 438 in user_read: [VALUES] [USER] ('85618365707587584',)
-[18.3391690254211426] 2019-03-24 17:50:15,406 - WARNING - musicbot.bot | In bot.py::MainThread(140146660841280), line 1994 in on_player_finished_playing: User: EPICish
-[18.3394885063171387] 2019-03-24 17:50:15,406 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 60 in _execute: Using adhoc execute, logging for auditing purposes
-[18.3398275375366211] 2019-03-24 17:50:15,407 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 61 in _execute: Query: SELECT SONG.URL, SONG.TITLE, SONG.PLAY_COUNT, SONG.VOLUME FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s, Params: [85618365707587584]
-[18.3579397201538086] 2019-03-24 17:50:15,425 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 67 in _execute: [SQL] [EXECUTE] SELECT SONG.URL, SONG.TITLE, SONG.PLAY_COUNT, SONG.VOLUME FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s
-[18.3582611083984375] 2019-03-24 17:50:15,425 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(140146660841280), line 68 in _execute: [VALUES] [EXECUTE] [85618365707587584]
-[19.0124399662017822] 2019-03-24 17:50:16,079 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2007 in on_player_finished_playing: EPICish#3906
-[19.0128989219665527] 2019-03-24 17:50:16,080 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2038 in on_player_finished_playing: Gatchaman Crowds Insight OST - GATCHAMAN Make my day
-[19.0132308006286621] 2019-03-24 17:50:16,080 - DEBUG - musicbot.bot | In bot.py::MainThread(140146660841280), line 2039 in on_player_finished_playing: {'_config': <musicbot.config.Config object at 0x7f7664629be0>, '_url': 'https://www.youtube.com/watch?v=EQMmDqXx0Ns', '_title': 'Gatchaman Crowds Insight OST - GATCHAMAN Make my day', '_play_count': 24, '_volume': '0.15'}
-[19.5234487056732178] 2019-03-24 17:50:16,590 - ERROR - musicbot.bot | In bot.py::MainThread(140146660841280), line 2093 in on_player_finished_playing: Error processing "https://www.youtube.com/watch?v=EQMmDqXx0Ns": 
-[19.5239202976226807] 2019-03-24 17:50:16,591 - ERROR - musicbot.bot | In bot.py::MainThread(140146660841280), line 2094 in on_player_finished_playing: 
-Traceback (most recent call last):
-  File "/home/ubuntu/dev/MusicBot/musicbot/bot.py", line 2401, in run
-    self.loop.run_until_complete(self.start(*self.config.auth))
-  File "/usr/lib/python3.6/asyncio/base_events.py", line 460, in run_until_complete
-    self.run_forever()
-  File "/usr/lib/python3.6/asyncio/base_events.py", line 427, in run_forever
-    self._run_once()
-  File "/usr/lib/python3.6/asyncio/base_events.py", line 1404, in _run_once
-    event_list = self._selector.select(timeout)
-  File "/usr/lib/python3.6/selectors.py", line 445, in select
-    fd_event_list = self._epoll.poll(timeout, max_ev)
-KeyboardInterrupt
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/ubuntu/dev/MusicBot/musicbot/bot.py", line 2072, in on_player_finished_playing
-    info = await self.downloader.extract_info(player.playlist.loop, song.url, download=False, process=False)
-  File "/home/ubuntu/dev/MusicBot/musicbot/downloader.py", line 87, in extract_info
-    return await loop.run_in_executor(self.thread_pool, functools.partial(self.unsafe_ytdl.extract_info, *args, **kwargs))
-concurrent.futures._base.CancelledError
+[9.2834792137145996] 2019-03-25 01:32:50,301 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1565 in on_ready: Bound to text channels:
+[9.2837595939636230] 2019-03-25 01:32:50,301 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1566 in <listcomp>:  - Jadedtdt's Server/bot_commands
+[9.2841594219207764] 2019-03-25 01:32:50,301 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1604 in on_ready: Not autojoining any voice channels
+[9.2844786643981934] 2019-03-25 01:32:50,302 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1608 in on_ready: Options:
+[9.2847006320953369] 2019-03-25 01:32:50,302 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1610 in on_ready:   Command prefix: ~
+[9.2849500179290771] 2019-03-25 01:32:50,302 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1611 in on_ready:   Default volume: 15%
+[9.2852072715759277] 2019-03-25 01:32:50,302 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1613 in on_ready:   Skip threshold: 4 votes or 50%
+[9.2854638099670410] 2019-03-25 01:32:50,303 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1614 in on_ready:   Now Playing @mentions: Disabled
+[9.2857048511505127] 2019-03-25 01:32:50,303 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1615 in on_ready:   Auto-Summon: Enabled
+[9.2859404087066650] 2019-03-25 01:32:50,303 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1616 in on_ready:   Auto-Playlist: Enabled
+[9.2861728668212891] 2019-03-25 01:32:50,303 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1617 in on_ready:   Auto-Pause: Enabled
+[9.2864053249359131] 2019-03-25 01:32:50,303 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1618 in on_ready:   Delete Messages: Enabled
+[9.2866697311401367] 2019-03-25 01:32:50,304 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1620 in on_ready:   Delete Invoking: Disabled
+[9.2869246006011963] 2019-03-25 01:32:50,304 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1621 in on_ready:   Debug Mode: Enabled
+[9.2871973514556885] 2019-03-25 01:32:50,304 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1622 in on_ready:   Downloaded songs will be saved
+[9.2875289916992188] 2019-03-25 01:32:50,305 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 604 in _join_startup_channels: Found owner in "General"
+[9.2877688407897949] 2019-03-25 01:32:50,305 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 620 in _join_startup_channels: Attempting to join Jadedtdt's Server/General
+[9.2895348072052002] 2019-03-25 01:32:50,307 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 776 in get_voice_client: Connection attempt 1 to General
+[9.2898533344268799] 2019-03-25 01:32:50,307 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 716 in join_voice_channel: (join_voice_channel) creating futures
+[9.2900178432464600] 2019-03-25 01:32:50,307 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 722 in join_voice_channel: (join_voice_channel) setting voice state
+[9.2903597354888916] 2019-03-25 01:32:50,307 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 725 in join_voice_channel: (join_voice_channel) waiting for session id
+[9.3114647865295410] 2019-03-25 01:32:50,329 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 4309 in on_voice_state_update: Voice state update for 398230945704050700/JadeMusicBot#5329 on Jadedtdt's Server/General -> [JOIN, CONNECT]
+[9.3116128444671631] 2019-03-25 01:32:50,329 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 4320 in on_voice_state_update: 398230945704050700/JadeMusicBot#5329 has joined Jadedtdt's Server/General
+[9.3120625019073486] 2019-03-25 01:32:50,329 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 729 in join_voice_channel: (join_voice_channel) waiting for voice data
+[9.3259475231170654] 2019-03-25 01:32:50,343 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 743 in join_voice_channel: (join_voice_channel) connecting...
+[9.3396203517913818] 2019-03-25 01:32:50,357 - VOICEDEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 755 in join_voice_channel: (join_voice_channel) connection successful
+[9.3397634029388428] 2019-03-25 01:32:50,357 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 802 in get_voice_client: Connected in 0.0s
+[9.3401217460632324] 2019-03-25 01:32:50,357 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 803 in get_voice_client: Connected to Jadedtdt's Server/General
+[9.3405451774597168] 2019-03-25 01:32:50,358 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 636 in _join_startup_channels: Joined Jadedtdt's Server/General
+[9.3408887386322021] 2019-03-25 01:32:50,358 - WARNING - musicbot.bot | In bot.py::MainThread(139666417604416), line 1000 in on_player_finished_playing: TIMEOUT: 0
+[9.3412475585937500] 2019-03-25 01:32:50,358 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1036 in on_player_finished_playing: 181268300301336576
+[9.3607470989227295] 2019-03-25 01:32:50,378 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 436 in user_read: [SQL] [USER] SELECT * FROM USER WHERE ID = %s
+[9.3611061573028564] 2019-03-25 01:32:50,378 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 438 in user_read: [VALUES] [USER] ('181268300301336576',)
+[9.3624589443206787] 2019-03-25 01:32:50,380 - WARNING - musicbot.bot | In bot.py::MainThread(139666417604416), line 1042 in on_player_finished_playing: User: Jadedtdt
+[9.3627662658691406] 2019-03-25 01:32:50,380 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[9.3630993366241455] 2019-03-25 01:32:50,380 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 61 in _execute: Query: SELECT SONG.* FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s, Params: ['181268300301336576']
+[9.3811802864074707] 2019-03-25 01:32:50,398 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 67 in _execute: [SQL] [EXECUTE] SELECT SONG.* FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s
+[9.3815333843231201] 2019-03-25 01:32:50,399 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 68 in _execute: [VALUES] [EXECUTE] ['181268300301336576']
+[10.4947118759155273] 2019-03-25 01:32:51,512 - WARNING - musicbot.autoplaylist | In autoplaylist.py::MainThread(139666417604416), line 233 in _fetch_user_songs: Done?
+[10.5224938392639160] 2019-03-25 01:32:51,540 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1057 in on_player_finished_playing: Jadedtdt#1164
+[10.5232129096984863] 2019-03-25 01:32:51,540 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1088 in on_player_finished_playing: 2 Chainz - Birthday Song Explicit ft. Kanye West
+[10.5296525955200195] 2019-03-25 01:32:51,547 - VOICEDEBUG - musicbot.player | In player.py::MainThread(139666417604416), line 336 in websocket_check: Starting websocket check loop for Jadedtdt's Server
+[11.7595529556274414] 2019-03-25 01:32:52,777 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1161 in on_player_finished_playing: Nothing playing
+[11.7600326538085938] 2019-03-25 01:32:52,777 - INFO - musicbot.bot | In bot.py::MainThread(139666417604416), line 1169 in on_player_finished_playing: Stored song volume: 0.15
+[11.7603590488433838] 2019-03-25 01:32:52,777 - WARNING - musicbot.bot | In bot.py::MainThread(139666417604416), line 1172 in on_player_finished_playing: Adding entry for url: https://www.youtube.com/watch?v=Y34jC4I1m70
+[12.5382571220397949] 2019-03-25 01:32:53,555 - INFO - musicbot.entry | In entry.py::MainThread(139666417604416), line 220 in _really_download: Download started: https://www.youtube.com/watch?v=Y34jC4I1m70
+[13.6666452884674072] 2019-03-25 01:32:54,684 - INFO - musicbot.entry | In entry.py::MainThread(139666417604416), line 230 in _really_download: Download complete: https://www.youtube.com/watch?v=Y34jC4I1m70
+[14.5388994216918945] 2019-03-25 01:32:55,556 - FFMPEG - musicbot.player | In player.py::MainThread(139666417604416), line 293 in _play: Creating player with options: -nostdin -vn /home/ubuntu/dev/MusicBot/../MusicBot/audio_cache/youtube-Y34jC4I1m70-2_Chainz_-_Birthday_Song_Official_Music_Video_Explicit_Version_ft._Kanye_West.webm
+[14.5490150451660156] 2019-03-25 01:32:55,566 - DEBUG - musicbot.bot | In bot.py::MainThread(139666417604416), line 1280 in serialize_queue: Serializing queue for 302845065188081664
+[14.5951597690582275] 2019-03-25 01:32:55,612 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 356 in _song_read: [SQL] [SONG] SELECT * FROM SONG WHERE URL = %s
+[14.5955944061279297] 2019-03-25 01:32:55,613 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139666417604416), line 358 in _song_read: [VALUES] [SONG] ('https://www.youtube.com/watch?v=Y34jC4I1m70',)

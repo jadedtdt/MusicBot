@@ -13,14 +13,16 @@ class Song:
         Song keeps track of information about a song in our MusicBot.
     """
 
-    def __init__(self, url=None, title=None, play_count=0, volume=0.15):
+    def __init__(self, url, title=None, play_count=0, volume=0.15, updt_dt_tm=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), cret_dt_tm=datetime.now().strftime('%Y-%m-%d %H:%M:%S')):
         config_file = ConfigDefaults.options_file
         self._config = Config(config_file)
 
-        self._url = url
+        self._url = str(url)
         self._title = title
-        self._play_count = play_count
-        self._volume = volume
+        self._play_count = int(play_count)
+        self._volume = float(volume)
+        self._updt_dt_tm = str(updt_dt_tm)
+        self._cret_dt_tm = str(cret_dt_tm)
 
     ###########################################################################
 
@@ -30,8 +32,6 @@ class Song:
 
     @property
     def url(self):
-        if not hasattr(self, '_last_played'):
-            self._last_played = [datetime.now().strftime("%a, %B %d, %Y %I:%M %p"), datetime.now().strftime("%a, %B %d, %Y %I:%M %p")]
         return self._url
 
     @url.setter
@@ -52,6 +52,8 @@ class Song:
         if new_title:
             if type(new_title) != str:
                 new_title = str(new_title)
+        else:
+            log.warning("Song tried to use title setter but argument was None")
         self._title = new_title
 
     @property
@@ -79,6 +81,32 @@ class Song:
         else:
             raise ValueError("Song tried to use volume setter but argument was None")
         self._volume = new_volume
+
+    @property
+    def updt_dt_tm(self):
+        return self._url
+
+    @updt_dt_tm.setter
+    def updt_dt_tm(self, new_updt_dt_tm):
+        if new_updt_dt_tm:
+            if type(new_updt_dt_tm) != str:
+                new_updt_dt_tm = str(new_updt_dt_tm)
+        else:
+            raise ValueError("Song tried to use updt_dt_tm setter but argument was None")
+        self._new_updt_dt_tm = new_updt_dt_tm
+
+    @property
+    def cret_dt_tm(self):
+        return self._url
+
+    @cret_dt_tm.setter
+    def cret_dt_tm(self, new_cret_dt_tm):
+        if new_cret_dt_tm:
+            if type(new_cret_dt_tm) != str:
+                new_cret_dt_tm = str(new_cret_dt_tm)
+        else:
+            raise ValueError("Song tried to use cret_dt_tm setter but argument was None")
+        self._new_updt_dt_tm = new_cret_dt_tm
 
     ###########################################################################
 

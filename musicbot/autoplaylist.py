@@ -174,7 +174,7 @@ class AutoPlaylist:
             #log.debug('each_row ! ' + str(each_row))
             url, title, play_count, volume, updt_dt_tm, cret_dt_tm = each_row
             volume = str(volume)
-            song = Song(url, title, play_count, volume)
+            song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
         return song
 
     async def fetch_likers(self, url):
@@ -182,11 +182,11 @@ class AutoPlaylist:
 
     def _fetch_likers(self, url):
         likers = []
-        success_select, result_set = self._sqlfactory._execute('SELECT USER.ID, USER.NAME, USER.TAG, USER.YTI_URL FROM USER INNER JOIN USER_SONG ON USER.ID = USER_SONG.ID WHERE USER_SONG.URL = %s', [url])
+        success_select, result_set = self._sqlfactory._execute('SELECT USER.* FROM USER INNER JOIN USER_SONG ON USER.ID = USER_SONG.ID WHERE USER_SONG.URL = %s', [url])
         for each_row in result_set:
             #log.debug('each_row ! ' + str(each_row))
-            user_id, user_name, mood, yti_url = each_row
-            new_user = User(user_id, user_name, mood, yti_url)
+            user_id, user_name, mood, yti_url, updt_dt_tm, cret_dt_tm = each_row
+            new_user = User(user_id, user_name, mood, yti_url, updt_dt_tm, cret_dt_tm)
             likers.append(new_user)
         return likers
 
@@ -196,12 +196,12 @@ class AutoPlaylist:
 
     def _fetch_songs(self):
         songs = []
-        success_select, result_set = self._sqlfactory._execute('SELECT URL, TITLE, PLAY_COUNT, VOLUME FROM SONG WHERE 1 = %s', ['1'])
+        success_select, result_set = self._sqlfactory._execute('SELECT * FROM SONG WHERE 1 = %s', ['1'])
         for each_row in result_set:
             #log.debug('each_row ! ' + str(each_row))
-            url, title, play_count, volume = each_row
+            url, title, play_count, volume, updt_dt_tm, cret_dt_tm = each_row
             volume = str(volume)
-            new_song = Song(url, title, play_count, volume)
+            new_song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
             songs.append(new_song)
         return songs
 
@@ -210,10 +210,10 @@ class AutoPlaylist:
 
     def _fetch_users(self):
         users = []
-        success_select, result_set = self._sqlfactory._execute('SELECT ID, NAME, TAG, YTI_URL FROM USER WHERE 1 = %s', ['1'])
+        success_select, result_set = self._sqlfactory._execute('SELECT * FROM USER WHERE 1 = %s', ['1'])
         for each_row in result_set:
             #log.debug('each_row ! ' + str(each_row))
-            user_id, user_name, mood, yti_url = each_row
+            user_id, user_name, mood, yti_url, updt_dt_tm, cret_dt_tm = each_row
             new_user = User(user_id, user_name, mood, yti_url)
             users.append(new_user)
         return users
@@ -223,12 +223,12 @@ class AutoPlaylist:
 
     def _fetch_user_songs(self, user_id):
         user_songs = []
-        success_select, result_set = self._sqlfactory._execute('SELECT SONG.URL, SONG.TITLE, SONG.PLAY_COUNT, SONG.VOLUME FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s', [user_id])
+        success_select, result_set = self._sqlfactory._execute('SELECT SONG.* FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s', [user_id])
         for each_row in result_set:
             #log.debug('each_row ! ' + str(each_row))
-            url, title, play_count, volume = each_row
+            url, title, play_count, volume, updt_dt_tm, cret_dt_tm = each_row
             volume = str(volume)
-            new_song = Song(url, title, play_count, volume)
+            new_song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
             user_songs.append(new_song)
         return user_songs
 
