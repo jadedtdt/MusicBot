@@ -250,7 +250,7 @@ class AutoPlaylist:
 
         if not playlist_id:
             log.debug("[_ADD_TO_YTI_PLAYLIST] Creating playlist for user: {}".format(str(user)))
-            self.yti.create_playlist(author.user_name.replace(' ', '-'), user.user_id)
+            self.yti.create_playlist(user.user_name.replace(' ', '-'), user.user_id)
             # let's wait for our api request to take effect
 
         playlist_id = self.yti.lookup_playlist(author)

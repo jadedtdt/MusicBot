@@ -58,7 +58,6 @@ class MusicBot(discord.Client):
 
     def __init__(self, config_file=None, perms_file=None):
 
-        print('try now')
         if config_file is None:
             config_file = ConfigDefaults.options_file
 
@@ -2761,10 +2760,11 @@ class MusicBot(discord.Client):
         user = str(author)
 
         if title is None:
-            if player.current_entry.url == url:
-                title = player.current_entry.title
-            else:
-                title = url
+            if player.current_entry.url:
+                if player.current_entry.url == url:
+                    title = player.current_entry.title
+                else:
+                    title = url
 
         reply_text %= (user, title)
 
