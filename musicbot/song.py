@@ -84,7 +84,7 @@ class Song:
 
     @property
     def updt_dt_tm(self):
-        return self._url
+        return self._updt_dt_tm
 
     @updt_dt_tm.setter
     def updt_dt_tm(self, new_updt_dt_tm):
@@ -93,11 +93,11 @@ class Song:
                 new_updt_dt_tm = str(new_updt_dt_tm)
         else:
             raise ValueError("Song tried to use updt_dt_tm setter but argument was None")
-        self._new_updt_dt_tm = new_updt_dt_tm
+        self._updt_dt_tm = new_updt_dt_tm
 
     @property
     def cret_dt_tm(self):
-        return self._url
+        return self._cret_dt_tm
 
     @cret_dt_tm.setter
     def cret_dt_tm(self, new_cret_dt_tm):
@@ -106,7 +106,7 @@ class Song:
                 new_cret_dt_tm = str(new_cret_dt_tm)
         else:
             raise ValueError("Song tried to use cret_dt_tm setter but argument was None")
-        self._new_updt_dt_tm = new_cret_dt_tm
+        self._cret_dt_tm = new_cret_dt_tm
 
     ###########################################################################
 

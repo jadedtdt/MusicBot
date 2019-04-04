@@ -29,7 +29,6 @@ class AutoPlaylist:
         config_file = ConfigDefaults.options_file
         self.config = Config(config_file)
 
-
         self._songs = self._fetch_songs()
         self._users = self._fetch_users()
 
@@ -224,12 +223,13 @@ class AutoPlaylist:
     def _fetch_user_songs(self, user_id):
         user_songs = []
         success_select, result_set = self._sqlfactory._execute('SELECT SONG.* FROM SONG INNER JOIN USER_SONG ON USER_SONG.URL = SONG.URL WHERE USER_SONG.ID = %s', [user_id])
-        for each_row in result_set:
-            #log.debug('each_row ! ' + str(each_row))
-            url, title, play_count, volume, updt_dt_tm, cret_dt_tm = each_row
-            volume = str(volume)
-            new_song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
-            user_songs.append(new_song)
+        if result_set:
+            for each_row in result_set:
+                #log.debug('each_row ! ' + str(each_row))
+                url, title, play_count, volume, updt_dt_tm, cret_dt_tm = each_row
+                volume = str(volume)
+                new_song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
+                user_songs.append(new_song)
         return user_songs
 
     # deprecated :( this will be handled by a cron job
@@ -250,9 +250,8 @@ class AutoPlaylist:
 
         if not playlist_id:
             log.debug("[_ADD_TO_YTI_PLAYLIST] Creating playlist for user: {}".format(str(user)))
-            self.yti.create_playlist(self.null_check_string(user, 'user_name').replace(' ', '-'), user.user_id)
+            self.yti.create_playlist(author.user_name.replace(' ', '-'), user.user_id)
             # let's wait for our api request to take effect
-            time.sleep(2)
 
         playlist_id = self.yti.lookup_playlist(author)
 
@@ -282,7 +281,7 @@ class AutoPlaylist:
             return True
 
         try:
-            playlist_id = self.yti.lookup_playlist(user.user_id)
+            #playlist_id = self.yti.lookup_playlist(user.user_id)
             video_id = self.yti.extract_youtube_video_id(url)
             self.yti.remove_video(user.user_id, video_id)
             return True

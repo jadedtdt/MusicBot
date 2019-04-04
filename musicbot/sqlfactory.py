@@ -29,7 +29,7 @@ class SqlFactory:
 
         output_str = str(input_list).replace('[', '', 1).replace(']', '', 1)
         if '[' in output_str or ']' in output_str:
-            raise ValueException('Cannot have list within list if you want to convert to string')
+            log.error('Cannot have list within list if you want to convert to string')
             return None
         return output_str.replace('\'', '')
 
