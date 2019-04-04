@@ -323,8 +323,11 @@ class SqlFactory:
         finally:
             con.close()
             return status
-
+            
     async def song_create(self, URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM):
+        return self._song_create(URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM)
+
+    async def _song_create(self, URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM):
         status = False
         con = self.get_con()
         cur = con.cursor()

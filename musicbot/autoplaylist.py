@@ -176,6 +176,24 @@ class AutoPlaylist:
             song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
         return song
 
+    async def find_songs_by_title(self, title):
+        return self._find_songs_by_title(title)
+
+    def _find_songs_by_title(self, title):
+        if not title:
+            return None
+        songs = []
+        success_select, result_set = self._sqlfactory._execute('SELECT SONG.* FROM SONG WHERE SONG.TITLE LIKE %s', ['%{}%'.format(title)])
+        
+        if result_set:
+            for each_row in result_set:
+                log.debug('each_row ! ' + str(each_row))
+                url, title, play_count, volume, updt_dt_tm, cret_dt_tm = each_row
+                volume = str(volume)
+                song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
+                songs.append(song)
+        return songs
+
     async def fetch_likers(self, url):
         return self._fetch_likers(url)
 

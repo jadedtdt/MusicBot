@@ -185,7 +185,7 @@ class MusicBot(discord.Client):
 
     async def dump_song(self, kwargs):
         log.debug("#######DEBUG SONG START########")
-        my_songs = await self.find_song_by_title(kwargs, self.autoplaylist.songs)
+        my_songs = await self.find_songs_by_title(kwargs)
         for each_song in my_songs:
             log.debug(null_check_string(each_song, 'title'))
             log.debug(null_check_string(each_song, 'url'))
@@ -387,7 +387,7 @@ class MusicBot(discord.Client):
 
         if likers:
             #likers = list(filter(lambda liker: self._get_user(liker.user_id) != None, likers))
-            likers = [ self._get_user(liker) for liker in likers if self._get_user(liker) != None ] 
+            likers = list(filter(None, [ self._get_user(liker.user_id) for liker in likers ]))
             log.warning(str(likers))
             for each_liker in likers:
                 likers_str += each_liker.mention + " "
@@ -1181,9 +1181,6 @@ class MusicBot(discord.Client):
                 self.config.auto_playlist = False
 
         else: # Don't serialize for autoplaylist events
-            if song:
-                #song.updt_dt_tm = datetime.now().strftime("%a, %B %d, %Y %I:%M %p")
-                pass
             log.debug("serializing queue")
             await self.serialize_queue(player.voice_client.channel.server)
 
@@ -2373,15 +2370,18 @@ class MusicBot(discord.Client):
             if len(title) > 256:
                 title = 'Autoplay Lists'
 
-            ContainsList = await self.find_song_by_title(list(filter(None, " ".join(leftover_args).split("\""))), self.autoplaylist.songs)
+            ContainsList = []                        
+            ContainsList = list(filter(lambda each_song: each_song, self.autoplaylist._find_songs_by_title(" ".join(leftover_args))))
+
             #sorting into a list for each person who liked the songs
             peopleListSongs = {}
             for songObj in ContainsList:
+                print(str(songObj))
                 for person in await self.autoplaylist.fetch_likers(songObj.url):
-                    if person not in peopleListSongs:
-                        peopleListSongs[person] = [songObj]
+                    if person.user_id not in peopleListSongs.keys():
+                        peopleListSongs[person.user_id] = [songObj]
                     else:
-                        peopleListSongs[person].append(songObj)
+                        peopleListSongs[person.user_id].append(songObj)
 
             if len(peopleListSongs) == 0:
                 await self.safe_delete_message(thinkingMsg)
@@ -2434,7 +2434,7 @@ class MusicBot(discord.Client):
         for songObj in songList:
             lnprnt = ":point_right:[" + null_check_string(songObj, 'title') + "](" + self.check_url(songObj.url) + ")\n"
             if (char_cnt + len(prntStr)) > (EM_CHAR_LIMIT - 15) or len(em.fields) == FIELDS_LIMIT:
-                em.set_footer(text=userName + " | Partial List")
+                em.set_footer(text=userName.name + " | Partial List")
                 # em.set_field_at(-1, name=em.fields[-1].name + " | Partial List", value=em.fields[-1].value, inline=True)
                 break
 
@@ -2470,7 +2470,7 @@ class MusicBot(discord.Client):
             t0 = time.clock()
             #IMOPRTANT: .strip().lower()
             #finds all songs with the containing words
-            ContainsList = await self.find_song_by_title(leftover_args, self.autoplaylist.songs)
+            ContainsList = await self.find_songs_by_title(leftover_args)
             songsInList = len(ContainsList)
             peopleListSongs = {}
             #sorting into a list for each person who liked the songs
@@ -2538,32 +2538,6 @@ class MusicBot(discord.Client):
             if len(prntStr) != 0:
                 return Response(prntStr, delete_after=50)
             return
-
-    async def find_song_by_title(self, search_words, search_list=None):
-        """
-            Finds the object songs with the title matching all the words
-
-            search_words - array of words looking for
-            search_list - list being looked in for each word
-        """
-        found_songs = []
-
-        if type(search_words) is str:
-            # search_words = search_words.split(" ")
-            pass
-
-        log.debug("[FIND_SONG_BY_TITLE] Looking for " + str(search_words))
-
-        for each_song in search_list:
-            isFound = True
-            if each_song.title:
-                for each_search_word in search_words:
-                    if each_search_word.lower().strip() not in each_song.title.lower():
-                        isFound = False
-                        break
-                if isFound == True:
-                    found_songs.append(each_song)
-        return found_songs
 
     async def cmd_mylist(self, player, channel, author, permissions, leftover_args):
         """
