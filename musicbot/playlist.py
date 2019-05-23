@@ -147,10 +147,7 @@ class Playlist(EventEmitter, Serializable):
         except Exception as e:        
             raise exceptions.CommandError(e, expire_in=30)        
         """       
-      
-        # Makes a copy so we don't modify original queue ?        
-        entries_copy = self.entries       
-      
+            
         # Create an empty deque that we'll use to re-fill the copied queue        
         #entries_to_readd = deque()
 

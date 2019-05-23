@@ -9,3 +9,4 @@ config/email_auth.ini
 logs
 secrets
 data
+.vscode/**

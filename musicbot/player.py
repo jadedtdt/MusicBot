@@ -205,6 +205,7 @@ class MusicPlayer(EventEmitter, Serializable):
             self._kill_current_player()
 
         self._current_entry = None
+        self._currently_playing = None
 
         if self._stderr_future.done() and self._stderr_future.exception():
             # I'm not sure that this would ever not be done if it gets to this point
