@@ -106,7 +106,7 @@ class URLPlaylistEntry(BasePlaylistEntry):
                     'type': obj.__class__.__name__,
                     'id': obj.id,
                     'name': obj.name
-                } for name, obj in self.meta.items() if obj
+                } for name, obj in self.meta.items() if obj and type(obj) is not str
             }
         })
 

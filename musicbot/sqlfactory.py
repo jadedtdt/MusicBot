@@ -29,7 +29,7 @@ class SqlFactory:
 
         output_str = str(input_list).replace('[', '', 1).replace(']', '', 1)
         if '[' in output_str or ']' in output_str:
-            raise ValueException('Cannot have list within list if you want to convert to string')
+            log.error('Cannot have list within list if you want to convert to string')
             return None
         return output_str.replace('\'', '')
 
@@ -49,7 +49,7 @@ class SqlFactory:
     def _execute(self, query, list_values=[]):
         if query.count('%s') != len(list_values):
             log.error('Malformed sql passed in. Must have same number of params as values')
-            log.error('Param count: {}, Arg count: {}'.format(query.count('%s', query), len(list_values)))
+            log.error('Param count: {}, Arg count: {}'.format(query.count('%s'), len(list_values)))
             return False, None
 
         if query.count('%s') == len(list_values) == 0:
@@ -71,7 +71,7 @@ class SqlFactory:
             if rows_affected > 0 and rows:
                 if ',)' in str(rows[0]):
                     #log.warning('BEFORE: ' + str(rows[0]))
-                    rows = [ (str(each_row).split(',)')[0] + ')').replace('(','[').replace(')',']') for each_row in rows ]
+                    rows = [ (str(each_row).split(',)')[0] + ')').replace('(','').replace(')','').split(',') for each_row in rows ]
                     #log.warning('AFTER: ' + str(rows[0]))
                 else:
                     result = rows
@@ -323,8 +323,11 @@ class SqlFactory:
         finally:
             con.close()
             return status
-
+            
     async def song_create(self, URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM):
+        return self._song_create(URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM)
+
+    def _song_create(self, URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM):
         status = False
         con = self.get_con()
         cur = con.cursor()
@@ -334,9 +337,12 @@ class SqlFactory:
             values = (URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM,)
             log.debug('[VALUES] [SONG] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
+                log.info("BRO WE BOUTTA COMMIT")
                 con.commit()
+                log.info("BRO WE STRAIGHT COMMITTED THIS MAN")
         except Exception as e:
             log.error('Error with SQL: {query}, Values: {values}'.format(query=query, values=values))
             log.error(e)
@@ -357,6 +363,7 @@ class SqlFactory:
             values = (URL,)
             log.debug('[VALUES] [SONG] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             rows = cur.fetchall()
             if rows_affected == 1 and rows:
                 result = [ each_row for each_row in rows ]
@@ -377,6 +384,7 @@ class SqlFactory:
             values = (URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM, OLD_URL,)
             log.debug('[VALUES] [SONG] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()
@@ -397,6 +405,7 @@ class SqlFactory:
             values = (URL,)
             log.debug('[VALUES] [SONG] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()
@@ -417,6 +426,7 @@ class SqlFactory:
             values = (ID, NAME, TAG, YTI_URL, UPDT_DT_TM, CRET_DT_TM,)
             log.debug('[VALUES] [USER] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()
@@ -497,6 +507,7 @@ class SqlFactory:
             values = (ID, URL, PLAY_COUNT, LAST_PLAYED_DT_TM,)
             log.debug('[VALUES] [USER_SONG] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()
@@ -517,6 +528,7 @@ class SqlFactory:
             values = (ID, URL,)
             log.debug('[VALUES] [USER_SONG] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             rows = cur.fetchall()
             if rows_affected == 1 and rows:
                 result = [ each_row for each_row in rows[0] ]

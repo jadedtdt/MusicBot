@@ -74,7 +74,7 @@ class User:
         
     @property
     def updt_dt_tm(self):
-        return self._url
+        return self._updt_dt_tm
 
     @updt_dt_tm.setter
     def updt_dt_tm(self, new_updt_dt_tm):
@@ -87,7 +87,7 @@ class User:
 
     @property
     def cret_dt_tm(self):
-        return self._url
+        return self._cret_dt_tm
 
     @cret_dt_tm.setter
     def cret_dt_tm(self, new_cret_dt_tm):

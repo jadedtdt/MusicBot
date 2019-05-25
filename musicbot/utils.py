@@ -6,6 +6,7 @@ import aiohttp
 import os.path
 import pickle
 
+from datetime import datetime
 from hashlib import md5
 from .constants import DISCORD_MSG_CHAR_LIMIT
 log = logging.getLogger(__name__)
@@ -32,12 +33,6 @@ def write_file(filename, contents):
         for item in contents:
             f.write(str(item))
             f.write('\n')
-
-def null_check_string(obj, attribute):
-    return_string = getattr(obj, str(attribute), 'no ' + str(attribute))
-    if not return_string:
-        return 'no ' + str(attribute)
-    return return_string
 
 def sane_round_int(x):
     return int(decimal.Decimal(x).quantize(1, rounding=decimal.ROUND_HALF_UP))
@@ -68,7 +63,6 @@ def paginate(content, *, length=DISCORD_MSG_CHAR_LIMIT, reserve=0):
 
     return chunks
 
-
 async def get_header(session, url, headerfield=None, *, timeout=5):
     with aiohttp.Timeout(timeout):
         async with session.head(url) as response:
@@ -77,7 +71,6 @@ async def get_header(session, url, headerfield=None, *, timeout=5):
             else:
                 return response.headers
 
-
 def md5sum(filename, limit=0):
     fhash = md5()
     with open(filename, "rb") as f:
@@ -85,15 +78,12 @@ def md5sum(filename, limit=0):
             fhash.update(chunk)
     return fhash.hexdigest()[-limit:]
 
-
 def fixg(x, dp=2):
     return ('{:.%sf}' % dp).format(x).rstrip('0').rstrip('.')
-
 
 def ftimedelta(td):
     p1, p2 = str(td).rsplit(':', 1)
     return ':'.join([p1, str(int(float(p2)))])
-
 
 def safe_print(content, *, end='\n', flush=True):
     sys.stdout.buffer.write((content + end).encode('utf-8', 'replace'))
@@ -102,7 +92,6 @@ def safe_print(content, *, end='\n', flush=True):
 
 def avg(i):
     return sum(i) / len(i)
-
 
 def objdiff(obj1, obj2, *, access_attr=None, depth=0):
     changes = {}
@@ -151,54 +140,19 @@ def objdiff(obj1, obj2, *, access_attr=None, depth=0):
                 # log.everything("{obj1}.{item} is {obj2}.{item} ({val1} and {val2})".format(obj1=obj1, obj2=obj2, item=item, val1=iobj1, val2=iobj2))
 
         except Exception as e:
-            # log.everything("Error checking {o1}/{o2}.{item}".format(o1=obj1, o2=obj2, item=item), exc_info=e)
+            log.everything("Error checking {o1}/{o2}.{item}".format(o1=obj1, o2=obj2, item=item), exc_info=e)
             continue
 
     return changes
 
 def color_supported():
     return hasattr(sys.stderr, "isatty") and sys.stderr.isatty()
+    
+def get_cur_dt_tm():
+    return str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-########################
-# sanitize_string
-# 
-# Cleans up a string by removing characters that might interefere when we split the string
-#
-# Precondition: string containing any possible characters
-# Postcondition: string without characters possible included from using str(variable) like from lists or tuples
-########################
-def sanitize_string(string):
-    clean = ""
-    try:
-        clean = str(string).replace("(", "").replace(")", "").replace("'", "").replace("[", "").replace("]", "").replace("\"", "")
-    except:
-        print("COPYRIGHT ISSUE")
-
-    return clean
-
-########################
-# parse_string_delimeter
-# 
-# Replaces commas with semicolons so we can split on semicolons for the 'likers'
-# We do this because a semicolon is a better delimeter when working with URLs
-# Reference: http://www.sitepoint.com/forums/showthread.php?128801-Recommended-delimiter-for-list-of-URLs
-#
-# Precondition: string splitting IDs with commas. i.e. "1234, 3412, 2344"
-# Postcondition: string splitting IDs with semicolons. i.e. "1234; 3412; 2344"
-########################
-def parse_string_delimeter(string):
-    return str(string).replace(",", ";")
-
-########################
-# joinStr
-# 
-# When we have duplicate entries from merging autoplaylists, I believe the safest option is merge the two lists
-# This function, written by Toaxt, does exactly that
-#
-# Precondition: two strings representing the likers for a url i.e. "1234; 2345; 3456", "1234; 4567"
-# Postcondition: a single string representing the 'join' i.e. "1234; 2345; 3456; 4567"
-########################
-def join_str(a, b):
-    lista = a.split(LIKERS_DELIMETER)
-    listb = b.split(LIKERS_DELIMETER)
-    return LIKERS_DELIMETER.join(sorted(list(set(lista) | set(listb))))
+def null_check_string(obj, attribute):
+    return_string = getattr(obj, str(attribute), 'no ' + str(attribute))
+    if not return_string:
+        return 'no ' + str(attribute)
+    return return_string
