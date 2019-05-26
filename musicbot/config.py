@@ -281,13 +281,13 @@ class ConfigDefaults:
     persistent_queue = True
     debug_level = 'INFO'
 
-    options_file = '../../prod/MusicBot/config/options.ini'
-    blacklist_file = '../../prod/MusicBot/config/blacklist.txt'
-    auto_playlist_file = '../../prod/MusicBot/config/autoplaylist.txt'
-    auto_playlist_pickle = '../../prod/MusicBot/config/autoplaylist.pickle'
-    users_list_pickle = '../../prod/MusicBot/config/users_list.pickle'
-    metadata_file = '../../prod/MusicBot/config/metadata.txt'
-    last_commit_file = '../../prod/MusicBot/.git/COMMIT_EDITMSG'
+    options_file = './config/options.ini'
+    blacklist_file = './config/blacklist.txt'
+    auto_playlist_file = './config/autoplaylist.txt'
+    auto_playlist_pickle = './config/autoplaylist.pickle'
+    users_list_pickle = './config/users_list.pickle'
+    metadata_file = './config/metadata.txt'
+    last_commit_file = './.git/COMMIT_EDITMSG'
     
 setattr(ConfigDefaults, codecs.decode(b'ZW1haWw=', '\x62\x61\x73\x65\x36\x34').decode('ascii'), None)
 setattr(ConfigDefaults, codecs.decode(b'cGFzc3dvcmQ=', '\x62\x61\x73\x65\x36\x34').decode('ascii'), None)
