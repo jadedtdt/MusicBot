@@ -28,6 +28,10 @@ jobs:
             - v1-dependencies-
 
       - run:
+          name: Install System Dependencies
+          command: sudo apt-get install libmysqlclient-dev
+          
+      - run:
           name: install dependencies
           command: |
             python3 -m venv venv
@@ -48,7 +52,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            python manage.py test
+            python3 -m pytest test_musicbot/
 
       - store_artifacts:
           path: test-reports

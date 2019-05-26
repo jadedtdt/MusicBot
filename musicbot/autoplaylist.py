@@ -11,7 +11,7 @@ from .song import Song
 from .sqlfactory import SqlFactory
 from .user import User
 from .utils import load_file, write_file, null_check_string
-from .yti import YouTubeIntegration
+#from .yti import YouTubeIntegration
 log = logging.getLogger(__name__)
 
 # note the scheme:
@@ -22,7 +22,7 @@ class AutoPlaylist:
 
     def __init__(self):
 
-        self.yti = YouTubeIntegration()
+        #self.yti = YouTubeIntegration()
         self.email_util = Email()
         self._sqlfactory = SqlFactory()
 
