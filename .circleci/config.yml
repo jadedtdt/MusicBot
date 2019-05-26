@@ -28,6 +28,10 @@ jobs:
             - v1-dependencies-
 
       - run:
+          name: Install System Dependencies
+          command: sudo apt-get install libmysqlclient-dev
+          
+      - run:
           name: install dependencies
           command: |
             python3 -m venv venv
