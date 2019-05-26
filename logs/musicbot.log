@@ -131,3 +131,35 @@
 [13.9016063213348389] 2019-05-26 15:34:31,242 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139804614588224), line 364 in _song_read: [VALUES] [SONG] ('https://www.youtube.com/watch?v=4Q46xYqUwZQ',)
 [13.9029958248138428] 2019-05-26 15:34:31,243 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139804614588224), line 366 in _song_read: [ROWS_AFFECTED] 1
 [27.6403324604034424] 2019-05-26 15:34:44,980 - DEBUG - musicbot.player | In player.py::MainThread(139804614588224), line 222 in _playback_finished: Deleting file: audio_cache/youtube-4Q46xYqUwZQ-Legends_Never_Die_ft._Against_The_Current_OFFICIAL_AUDIO_Worlds_2017_-_League_of_Legends.webm
+[0.3962464332580566] 2019-05-26 15:37:45,710 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[0.3964071273803711] 2019-05-26 15:37:45,710 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 61 in _execute: Query: SELECT * FROM SONG WHERE 1 = %s, Params: ['1']
+[0.4578120708465576] 2019-05-26 15:37:45,771 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM SONG WHERE 1 = %s
+[0.4579789638519287] 2019-05-26 15:37:45,771 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[5.1371243000030518] 2019-05-26 15:37:50,451 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[5.1372756958007812] 2019-05-26 15:37:50,451 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 61 in _execute: Query: SELECT * FROM USER WHERE 1 = %s, Params: ['1']
+[5.1556675434112549] 2019-05-26 15:37:50,469 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM USER WHERE 1 = %s
+[5.1558401584625244] 2019-05-26 15:37:50,469 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[5.1607112884521484] 2019-05-26 15:37:50,474 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[5.1608090400695801] 2019-05-26 15:37:50,474 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 61 in _execute: Query: SELECT * FROM SONG WHERE 1 = %s, Params: ['1']
+[5.1781225204467773] 2019-05-26 15:37:50,492 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM SONG WHERE 1 = %s
+[5.1782174110412598] 2019-05-26 15:37:50,492 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[9.9454119205474854] 2019-05-26 15:37:55,259 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[9.9455633163452148] 2019-05-26 15:37:55,259 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 61 in _execute: Query: SELECT * FROM SONG WHERE 1 = %s, Params: ['1']
+[9.9739468097686768] 2019-05-26 15:37:55,287 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM SONG WHERE 1 = %s
+[9.9740931987762451] 2019-05-26 15:37:55,288 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[14.5844419002532959] 2019-05-26 15:37:59,898 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[14.5846021175384521] 2019-05-26 15:37:59,898 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 61 in _execute: Query: SELECT * FROM USER WHERE 1 = %s, Params: ['1']
+[14.6052417755126953] 2019-05-26 15:37:59,919 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM USER WHERE 1 = %s
+[14.6053359508514404] 2019-05-26 15:37:59,919 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[14.6077218055725098] 2019-05-26 15:37:59,921 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[14.6078116893768311] 2019-05-26 15:37:59,921 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 61 in _execute: Query: SELECT * FROM USER WHERE 1 = %s, Params: ['1']
+[14.6255035400390625] 2019-05-26 15:37:59,939 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM USER WHERE 1 = %s
+[14.6256062984466553] 2019-05-26 15:37:59,939 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[14.6363263130187988] 2019-05-26 15:37:59,950 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[14.6364445686340332] 2019-05-26 15:37:59,950 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 61 in _execute: Query: SELECT * FROM SONG WHERE 1 = %s, Params: ['1']
+[14.6540362834930420] 2019-05-26 15:37:59,968 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM SONG WHERE 1 = %s
+[14.6541409492492676] 2019-05-26 15:37:59,968 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 68 in _execute: [VALUES] [EXECUTE] ['1']
+[19.3187625408172607] 2019-05-26 15:38:04,632 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 60 in _execute: Using adhoc execute, logging for auditing purposes
+[19.3189096450805664] 2019-05-26 15:38:04,632 - INFO - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 61 in _execute: Query: SELECT * FROM USER WHERE 1 = %s, Params: ['1']
+[19.3678340911865234] 2019-05-26 15:38:04,681 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 67 in _execute: [SQL] [EXECUTE] SELECT * FROM USER WHERE 1 = %s
+[19.3679945468902588] 2019-05-26 15:38:04,681 - DEBUG - musicbot.sqlfactory | In sqlfactory.py::MainThread(139875527939904), line 68 in _execute: [VALUES] [EXECUTE] ['1']

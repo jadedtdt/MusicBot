@@ -4,10 +4,12 @@ audio_cache
 config/options.ini
 config/options.bak.ini
 config/permissions.ini
-config/autoplaylist.txt
 config/database_auth.ini
 config/email_auth.ini
 logs
 secrets
 data
 .vscode/**
+ctr.sh
+j.sh
+
