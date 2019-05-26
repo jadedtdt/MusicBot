@@ -214,8 +214,8 @@ class Config:
                     self.config_file + '.ini', self.config_file
                 ))
 
-            elif os.path.isfile('../../prod/MusicBot/config/example_options.ini'):
-                shutil.copy('../../prod/MusicBot/config/example_options.ini', self.config_file)
+            elif os.path.isfile('.config/example_options.ini'):
+                shutil.copy('./MusicBot/config/example_options.ini', self.config_file)
                 log.warning('Options file not found, copying example_options.ini')
 
             else:

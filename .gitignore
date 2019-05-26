@@ -1,8 +1,6 @@
 *.pyc
 *.json
 audio_cache
-config/options.ini
-config/options.bak.ini
 config/permissions.ini
 config/database_auth.ini
 config/email_auth.ini
