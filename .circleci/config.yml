@@ -28,7 +28,7 @@ jobs:
             - v1-dependencies-
 
       - run:
-          name: Install System Dependencies
+          name: install system dependencies
           command: sudo apt-get install libmysqlclient-dev
           
       - run:
@@ -49,8 +49,8 @@ jobs:
       # https://pytest.org
       # https://nose.readthedocs.io
       - run:
-          context: elegiggle
           name: run tests
+          context: elegiggle
           command: |
             . venv/bin/activate
             python3 -m pytest test_musicbot/
