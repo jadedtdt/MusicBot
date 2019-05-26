@@ -1,5 +1,6 @@
 import configparser
 import logging
+import os
 import smtplib
 import string
 
@@ -65,7 +66,6 @@ class Email:
         self.FROM = config.get('email', 'FROM')
         self.TEXT = config.get('email', 'TEXT')
 
-        config.read('config/email_auth.ini', encoding='utf-8')
-
-        self.username = config.get('email_auth', 'USERNAME')
-        self.password = config.get('email_auth', 'PASSWORD')
+        self.username = os.environ['EMAIL_USERNAME']
+        self.password = os.environ['EMAIL_PASSWORD']
+        

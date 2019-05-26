@@ -1,11 +1,11 @@
-import os
-import sys
 import codecs
-import shutil
-import logging
 import configparser
+import logging
+import os
+import shutil
+import sys
 
-from .exceptions import HelpfulError
+from musicbot.exceptions import HelpfulError
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +34,8 @@ class Config:
 
         self._email = config.get('Credentials', 'Email', fallback=ConfigDefaults.email)
         self._password = config.get('Credentials', 'Password', fallback=ConfigDefaults.password)
-        self._login_token = config.get('Credentials', 'Token', fallback=ConfigDefaults.token)
+        #self._login_token = config.get('Credentials', 'Token', fallback=ConfigDefaults.token)
+        self._login_token = os.environ['TOKEN']
 
         self.auth = ()
 

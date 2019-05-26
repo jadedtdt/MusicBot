@@ -2,22 +2,19 @@ import asyncio
 import configparser
 import logging
 import MySQLdb
+import os
 
 from datetime import datetime
 
-from .config import Config, ConfigDefaults
-from .email import Email
-from .song import Song
-from .user import User
+from musicbot.config import Config, ConfigDefaults
+from musicbot.email import Email
+from musicbot.song import Song
+from musicbot.user import User
 log = logging.getLogger(__name__)
 
 class SqlFactory:
 
     def __init__(self):
-
-        config_file = ConfigDefaults.options_file
-        self.config = Config(config_file)
-
         self.load_config()
 
     def get_con(self):
@@ -34,14 +31,10 @@ class SqlFactory:
         return output_str.replace('\'', '')
 
     def load_config(self):
-
-        config = configparser.ConfigParser(interpolation=None)
-        config.read('config/database_auth.ini', encoding='utf-8')
-
-        self.host = config.get('database_auth', 'host')
-        self.user = config.get('database_auth', 'user')
-        self.passwd = config.get('database_auth', 'passwd')
-        self.db = config.get('database_auth', 'db')
+        self.db = os.environ['DATABASE_DB']
+        self.host = os.environ['DATABASE_HOST']
+        self.passwd = os.environ['DATABASE_PASSWD']
+        self.user = os.environ['DATABASE_USER']
 
     async def execute(self, query, list_values=[]):
         return self._execute(query, list_values)
