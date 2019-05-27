@@ -45,157 +45,157 @@ async def test_Precondition_User(vanilla_apl, test_user):
     if results:
         assert await vanilla_apl.sqlfactory.user_delete(test_user.user_id)
 
-# @pytest.mark.asyncio
-# async def test_UserLikeSong_NoPreviousSong(vanilla_apl, test_user, test_song):
-#     await test_Precondition_User(vanilla_apl, test_user)
-#     assert await vanilla_apl.sqlfactory.user_create(test_user.user_id, test_user.user_name, test_user.mood, test_user.yti_url, test_user.updt_dt_tm, test_user.cret_dt_tm)
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+@pytest.mark.asyncio
+async def test_UserLikeSong_NoPreviousSong(vanilla_apl, test_user, test_song):
+    await test_Precondition_User(vanilla_apl, test_user)
+    assert await vanilla_apl.sqlfactory.user_create(test_user.user_id, test_user.user_name, test_user.mood, test_user.yti_url, test_user.updt_dt_tm, test_user.cret_dt_tm)
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
 
-#     assert await vanilla_apl.user_like_song(test_user.user_id, test_song.url, test_song.title)
+    assert await vanilla_apl.user_like_song(test_user.user_id, test_song.url, test_song.title)
 
-# @pytest.mark.asyncio
-# async def test_UserLikeSong_LikedByUser(vanilla_apl, test_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_UserLikeSong_LikedByUser(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
 
-#     assert not await vanilla_apl.user_like_song(test_user.user_id, test_song.url, test_song.title)
+    assert not await vanilla_apl.user_like_song(test_user.user_id, test_song.url, test_song.title)
 
-# @pytest.mark.asyncio
-# async def test_UserLikeSong_LikedByOther(vanilla_apl, test_user, test_other_user, test_song ):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_other_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_UserLikeSong_LikedByOther(vanilla_apl, test_user, test_other_user, test_song ):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_other_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
     
-#     assert await vanilla_apl.user_like_song(test_user.user_id, test_song.url, test_song.title)
+    assert await vanilla_apl.user_like_song(test_user.user_id, test_song.url, test_song.title)
 
-# @pytest.mark.asyncio
-# async def test_UserLikeSong_LikedByUserAndOther(vanilla_apl, test_user, test_other_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_other_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_UserLikeSong_LikedByUserAndOther(vanilla_apl, test_user, test_other_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_other_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
     
-#     assert not await vanilla_apl.user_like_song(test_user.user_id, test_song.url, test_song.title)
+    assert not await vanilla_apl.user_like_song(test_user.user_id, test_song.url, test_song.title)
 
-# @pytest.mark.asyncio
-# async def test_UserDislikeSong_NoPreviousSong(vanilla_apl, test_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+@pytest.mark.asyncio
+async def test_UserDislikeSong_NoPreviousSong(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
     
-#     assert not await vanilla_apl.user_dislike_song(test_user.user_id, test_song.url, test_song.title)
+    assert not await vanilla_apl.user_dislike_song(test_user.user_id, test_song.url, test_song.title)
 
-# @pytest.mark.asyncio
-# async def test_UserDislikeSong_LikedByUser(vanilla_apl, test_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_UserDislikeSong_LikedByUser(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
     
-#     assert await vanilla_apl.user_dislike_song(test_user.user_id, test_song.url, test_song.title)
+    assert await vanilla_apl.user_dislike_song(test_user.user_id, test_song.url, test_song.title)
 
-# @pytest.mark.asyncio
-# async def test_UserDislikeSong_LikedByOther(vanilla_apl, test_user, test_other_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_other_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_UserDislikeSong_LikedByOther(vanilla_apl, test_user, test_other_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_other_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
     
-#     assert not await vanilla_apl.user_dislike_song(test_user.user_id, test_song.url, test_song.title)
+    assert not await vanilla_apl.user_dislike_song(test_user.user_id, test_song.url, test_song.title)
 
-# @pytest.mark.asyncio
-# async def test_UserDislikeSong_LikedByUserAndOther(vanilla_apl, test_user, test_other_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_other_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_UserDislikeSong_LikedByUserAndOther(vanilla_apl, test_user, test_other_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_other_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
     
-#     assert await vanilla_apl.user_dislike_song(test_user.user_id, test_song.url, test_song.title)
+    assert await vanilla_apl.user_dislike_song(test_user.user_id, test_song.url, test_song.title)
 
-# @pytest.mark.asyncio
-# async def test_AreSongsAvailable_SongsAvailable(vanilla_apl, test_user, test_other_user, test_song):
-#     assert await vanilla_apl.are_songs_available()
+@pytest.mark.asyncio
+async def test_AreSongsAvailable_SongsAvailable(vanilla_apl, test_user, test_other_user, test_song):
+    assert await vanilla_apl.are_songs_available()
 
-# @pytest.mark.asyncio
-# async def test_GetUser_UserExists(vanilla_apl, test_user):
-#     await test_Precondition_User(vanilla_apl, test_user)
-#     assert await vanilla_apl.sqlfactory.user_create(test_user.user_id, test_user.user_name, test_user.mood, test_user.yti_url, test_user.updt_dt_tm, test_user.cret_dt_tm)
+@pytest.mark.asyncio
+async def test_GetUser_UserExists(vanilla_apl, test_user):
+    await test_Precondition_User(vanilla_apl, test_user)
+    assert await vanilla_apl.sqlfactory.user_create(test_user.user_id, test_user.user_name, test_user.mood, test_user.yti_url, test_user.updt_dt_tm, test_user.cret_dt_tm)
 
-#     found_user = await vanilla_apl.get_user(test_user.user_id)
-#     assert found_user is not None
-#     assert found_user.user_id == test_user.user_id and found_user.user_name == test_user.user_name
+    found_user = await vanilla_apl.get_user(test_user.user_id)
+    assert found_user is not None
+    assert found_user.user_id == test_user.user_id and found_user.user_name == test_user.user_name
 
-# @pytest.mark.asyncio
-# async def test_GetUser_UserNotExists(vanilla_apl, test_user):
-#     await test_Precondition_User(vanilla_apl, test_user)
+@pytest.mark.asyncio
+async def test_GetUser_UserNotExists(vanilla_apl, test_user):
+    await test_Precondition_User(vanilla_apl, test_user)
 
-#     found_user = await vanilla_apl.get_user(test_user.user_id)
-#     assert found_user is None
+    found_user = await vanilla_apl.get_user(test_user.user_id)
+    assert found_user is None
 
-# @pytest.mark.asyncio
-# async def test_FindSongByUrl_SongNotExistsAndUserSongNotExists(vanilla_apl, test_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+@pytest.mark.asyncio
+async def test_FindSongByUrl_SongNotExistsAndUserSongNotExists(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
 
-#     found_song = await vanilla_apl.find_song_by_url(test_song.url)
-#     assert found_song is None
+    found_song = await vanilla_apl.find_song_by_url(test_song.url)
+    assert found_song is None
 
-# @pytest.mark.asyncio
-# async def test_FindSongByUrl_SongExistsAndUserSongNotExists(vanilla_apl, test_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+@pytest.mark.asyncio
+async def test_FindSongByUrl_SongExistsAndUserSongNotExists(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
 
-#     found_song = await vanilla_apl.find_song_by_url(test_song.url)
-#     assert found_song is not None
-#     assert found_song.url == test_song.url and found_song.title == test_song.title
+    found_song = await vanilla_apl.find_song_by_url(test_song.url)
+    assert found_song is not None
+    assert found_song.url == test_song.url and found_song.title == test_song.title
 
-# @pytest.mark.asyncio
-# async def test_FindSongByUrl_SongNotExistsAndUserSongExists(vanilla_apl, test_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_FindSongByUrl_SongNotExistsAndUserSongExists(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
 
-#     found_song = await vanilla_apl.find_song_by_url(test_song.url)
-#     assert found_song is None
+    found_song = await vanilla_apl.find_song_by_url(test_song.url)
+    assert found_song is None
 
-# @pytest.mark.asyncio
-# async def test_FindSongByUrl_SongExistsAndUserSongExists(vanilla_apl, test_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_FindSongByUrl_SongExistsAndUserSongExists(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
 
-#     found_song = await vanilla_apl.find_song_by_url(test_song.url)
-#     assert found_song is not None
-#     assert found_song.url == test_song.url and found_song.title == test_song.title
+    found_song = await vanilla_apl.find_song_by_url(test_song.url)
+    assert found_song is not None
+    assert found_song.url == test_song.url and found_song.title == test_song.title
 
-# @pytest.mark.asyncio
-# async def test_FindSongsByTitle_PercentInTitle(vanilla_apl, test_user, test_song):
-#     new_title = 'Song With % In It'
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, new_title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_FindSongsByTitle_PercentInTitle(vanilla_apl, test_user, test_song):
+    new_title = 'Song With % In It'
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, new_title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
 
-#     found_songs = await vanilla_apl.find_songs_by_title(new_title)
-#     assert found_songs is not None and len(found_songs) == 0
+    found_songs = await vanilla_apl.find_songs_by_title(new_title)
+    assert found_songs is not None and len(found_songs) == 0
 
-# @pytest.mark.asyncio
-# async def test_FindSongsByTitle_NoMatch(vanilla_apl, test_user, test_song):
-#     new_title = 'Song Title That Shouldnt Be Found'
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.url, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_FindSongsByTitle_NoMatch(vanilla_apl, test_user, test_song):
+    new_title = 'Song Title That Shouldnt Be Found'
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.url, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
 
-#     found_songs = await vanilla_apl.find_songs_by_title(new_title)
-#     assert found_songs is not None and len(found_songs) == 0
+    found_songs = await vanilla_apl.find_songs_by_title(new_title)
+    assert found_songs is not None and len(found_songs) == 0
 
-# @pytest.mark.asyncio
-# async def test_FindSongsByTitle_Match(vanilla_apl, test_user, test_song):
-#     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
-#     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.url, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
-#     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+@pytest.mark.asyncio
+async def test_FindSongsByTitle_Match(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.url, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
 
-#     found_songs = await vanilla_apl.find_songs_by_title(test_song.url)
-#     assert found_songs is not None and len(found_songs) > 0
-#     found = False
-#     for each_song in found_songs:
-#         if each_song.title == test_song.url:
-#             found = True
-#     assert found == True
+    found_songs = await vanilla_apl.find_songs_by_title(test_song.url)
+    assert found_songs is not None and len(found_songs) > 0
+    found = False
+    for each_song in found_songs:
+        if each_song.title == test_song.url:
+            found = True
+    assert found == True
 
 @pytest.mark.asyncio
 async def test_GetLikers_NoLikers(vanilla_apl, test_user, test_song):
@@ -225,3 +225,5 @@ async def test_GetLikers_HasLikers(vanilla_apl, test_user, test_other_user, test
         print('each_liker info: user_id[{}], user_name[{}]'.format(each_liker.user_id, each_liker.user_name))
         print('test_user info: user_id[{}], user_name[{}]'.format(test_user.user_id, test_user.user_name))
     assert found == True
+
+
