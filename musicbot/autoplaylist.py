@@ -258,66 +258,6 @@ class AutoPlaylist:
                 new_song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
                 user_songs.append(new_song)
         return user_songs
-
-    # deprecated :( this will be handled by a cron job
-    # adds to the user's YTI playlist
-    async def _add_to_yti_playlist(self, url, title=None, author=None):
-
-        user = self.get_user(author)
-
-        # temp reference for debugging
-        song = Song(url, title, author)
-
-        # should be preprocessed but im a scaredy cat
-        if "youtube" not in url and "youtu.be" not in url:
-            log.debug("[_ADD_TO_YTI_PLAYLIST] Not a youtube URL: {}".format(url))
-            return True
-
-        playlist_id = self.yti.lookup_playlist(author)
-
-        if not playlist_id:
-            log.debug("[_ADD_TO_YTI_PLAYLIST] Creating playlist for user: {}".format(str(user)))
-            self.yti.create_playlist(user.user_name.replace(' ', '-'), user.user_id)
-            # let's wait for our api request to take effect
-
-        playlist_id = self.yti.lookup_playlist(author)
-
-        try:
-            video_id = self.yti.extract_youtube_video_id(url)
-            video_playlist_id = self.yti.lookup_video(video_id, playlist_id)
-            if not video_playlist_id:
-                self.yti.add_video(user.user_id, video_id)
-                return True
-            else:
-                log.debug("[_ADD_TO_YTI_PLAYLIST] Song {} was already added to YTI Playlist {}".format(str(song), str(user)))
-        except Exception as e:
-            log.error("[_ADD_TO_YTI_PLAYLIST] Failed to add video {} for user {}".format(str(song), user.user_id))
-            self.email_util.send_exception(user.user_id, song, "[_ADD_TO_YTI_PLAYLIST] " + str(e))
-
-        return False
-
-    # deprecated :( this will be handled by a cron job
-    # removes from user's YTI playlist
-    async def _remove_from_yti_playlist(self, url, title=None, author=None):
-
-        user = self.get_user(author)
-
-        # should be preprocessed but im a scaredy cat
-        if "youtube" not in url and "youtu.be" not in url:
-            log.debug("[_REMOVE_FROM_YTI_PLAYLIST] Not a youtube URL: {}".format(url))
-            return True
-
-        try:
-            #playlist_id = self.yti.lookup_playlist(user.user_id)
-            video_id = self.yti.extract_youtube_video_id(url)
-            self.yti.remove_video(user.user_id, video_id)
-            return True
-
-        except Exception as e:
-            log.error("[_REMOVE_FROM_YTI_PLAYLIST] Failed to remove video {} for User: {}".format(title if title else url, user.user_id))
-            self.email_util.send_exception(user.user_id, None, "[_REMOVE_FROM_YTI_PLAYLIST] " + str(e))
-
-        return False
         
     def check_url(self, url):
 
