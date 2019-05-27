@@ -9,5 +9,7 @@ secrets
 data
 .vscode/**
 ctr.sh
+testCTR.sh
 j.sh
+testJ.sh
 

@@ -1,11 +1,9 @@
 import asyncio
-import configparser
 import logging
 import MySQLdb
 
 from datetime import datetime
 
-from .config import Config, ConfigDefaults
 from .email import Email
 from .song import Song
 from .sqlfactory import SqlFactory
@@ -14,23 +12,16 @@ from .utils import load_file, write_file, null_check_string
 #from .yti import YouTubeIntegration
 log = logging.getLogger(__name__)
 
-# note the scheme:
-# add_* and remove_* refers to our dictionary of all users with Key: user_id, Value: list of Music objects
-# _add_* and _remove_* refers to our list of python Users
-# __add_* and __remove_* refers to our YTI (YouTubeIntegration)
 class AutoPlaylist:
 
-    def __init__(self):
+    def __init__(self, sqlfactory=None, songs=None, users=None):
 
         #self.yti = YouTubeIntegration()
         self.email_util = Email()
-        self._sqlfactory = SqlFactory()
+        self._sqlfactory = sqlfactory or SqlFactory()
 
-        config_file = ConfigDefaults.options_file
-        self.config = Config(config_file)
-
-        self._songs = self._get_songs()
-        self._users = self._get_users()
+        self._songs = songs or self._get_songs()
+        self._users = users or self._get_users()
 
         self._NUM_COLS_USER = 6
         self._NUM_COLS_SONG = 6
