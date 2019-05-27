@@ -20,7 +20,7 @@ def test_user():
     return User(user_id, user_name)
 
 @pytest.fixture
-def vanilla_apl(test_sqlcon, test_song, test_user):
+def vanilla_apl(test_song, test_user):
     return AutoPlaylist(None, [], [])
 
 @pytest.mark.asyncio
