@@ -147,6 +147,7 @@ class SqlFactory:
             values = (ID,)
             log.debug('[VALUES] [EMAIL] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()
@@ -227,6 +228,7 @@ class SqlFactory:
             values = (TAG,)
             log.debug('[VALUES] [MOOD] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()
@@ -307,6 +309,7 @@ class SqlFactory:
             values = (TAG, URL,)
             log.debug('[VALUES] [MOOD_SONG] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()
@@ -478,6 +481,7 @@ class SqlFactory:
             values = (ID,)
             log.debug('[VALUES] [USER] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()
@@ -560,6 +564,7 @@ class SqlFactory:
             values = (ID, URL,)
             log.debug('[VALUES] [USER_SONG] {values}'.format(values=values))
             rows_affected = cur.execute(query, values)
+            log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
                 con.commit()

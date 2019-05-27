@@ -149,8 +149,8 @@ class AutoPlaylist:
     async def are_songs_available(self):
         success_count, result_set = await self._sqlfactory.execute("SELECT COUNT(*) FROM SONG WHERE '1' = %s", ['1'])
         if success_count and result_set:
-            return int(result_set[0]) > 0
-        return str(result_set[0]) > '0'
+            return int(result_set[0][0]) > 0
+        return False
 
     async def get_user(self, user_id):
 
