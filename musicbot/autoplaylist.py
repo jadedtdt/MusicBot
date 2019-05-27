@@ -186,8 +186,9 @@ class AutoPlaylist:
         return self._find_songs_by_title(title)
 
     def _find_songs_by_title(self, title):
-        if not title:
-            return None
+        if not title or '%' in title:
+            log.error('Bad user input title[{}]'.format(title or 'None'))
+            return []
         songs = []
         success_select, result_set = self._sqlfactory._execute('SELECT SONG.* FROM SONG WHERE SONG.TITLE LIKE %s', ['%{}%'.format(title)] )
         

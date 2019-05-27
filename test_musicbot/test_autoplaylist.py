@@ -163,3 +163,36 @@ async def test_FindSongByUrl_SongExistsAndUserSongExists(vanilla_apl, test_user,
     assert found_song is not None
     assert found_song.url == test_song.url and found_song.title == test_song.title
 
+@pytest.mark.asyncio
+async def test_FindSongsByTitle_PercentInTitle(vanilla_apl, test_user, test_song):
+    new_title = 'Song With % In It'
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, new_title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+
+    found_songs = await vanilla_apl.find_songs_by_title(new_title)
+    assert found_songs is not None and len(found_songs) == 0
+
+@pytest.mark.asyncio
+async def test_FindSongsByTitle_NoMatch(vanilla_apl, test_user, test_song):
+    new_title = 'Song Title That Shouldnt Be Found'
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.url, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+
+    found_songs = await vanilla_apl.find_songs_by_title(new_title)
+    assert found_songs is not None and len(found_songs) == 0
+
+@pytest.mark.asyncio
+async def test_FindSongsByTitle_Match(vanilla_apl, test_user, test_song):
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_song)
+    assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.url, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
+    assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
+
+    found_songs = await vanilla_apl.find_songs_by_title(test_song.url)
+    assert found_songs is not None and len(found_songs) > 0
+    found = False
+    for song in found_songs:
+        if song.title == test_song.url:
+            found = True
+    assert found == True
