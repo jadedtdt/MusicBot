@@ -82,7 +82,7 @@ class AutoPlaylist:
             else:
                 log.debug("Successfully created song {} {}".format(url, title if title else "No Title"))
         else:
-            log.error("song is there??")
+            success_song = True
 
         if not await self._sqlfactory.user_song_read(user_id, url):
             success_user_song = await self._sqlfactory.user_song_create(user_id, url, play_count, cret_dt_tm)            
@@ -93,6 +93,8 @@ class AutoPlaylist:
                 return False
             else:
                 log.debug("Successfully created user_song {} {}".format(url, title if title else "No Title"))
+        else:
+            return False
 
         return success_song==True and success_user_song==True
 

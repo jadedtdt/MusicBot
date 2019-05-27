@@ -333,9 +333,7 @@ class SqlFactory:
             log.debug('[ROWS_AFFECTED] {rows_affected}'.format(rows_affected=rows_affected))
             status = (rows_affected == 1)
             if status:
-                log.info("BRO WE BOUTTA COMMIT")
                 con.commit()
-                log.info("BRO WE STRAIGHT COMMITTED THIS MAN")
         except Exception as e:
             log.error('Error with SQL: {query}, Values: {values}'.format(query=query, values=values))
             log.error(e)
