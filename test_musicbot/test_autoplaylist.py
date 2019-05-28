@@ -193,7 +193,7 @@ async def test_FindSongsByTitle_Match(vanilla_apl, test_user, test_other_user, t
     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
 
-    found_songs = await vanilla_apl.find_songs_by_title(test_song.url)
+    found_songs = await vanilla_apl.find_songs_by_title(test_song.title)
     assert found_songs is not None and len(found_songs) > 0
     found = False
     for each_song in found_songs:
@@ -244,7 +244,7 @@ async def test_GetSongs_HasSongsAndNotNewSong(vanilla_apl, test_user, test_other
 
 @pytest.mark.asyncio
 async def test_GetSongs_HasSongsAndNewSong(vanilla_apl, test_user, test_other_user, test_song):
-    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_other_user, test_song)    
+    await test_Precondition_LikeDislike(vanilla_apl, test_user, test_other_user, test_song)
     assert await vanilla_apl.sqlfactory.song_create(test_song.url, test_song.title, test_song.play_count, test_song.volume, test_song.updt_dt_tm, test_song.cret_dt_tm)
     assert await vanilla_apl.sqlfactory.user_song_create(test_user.user_id, test_song.url, test_song.play_count, test_song.updt_dt_tm)
 
@@ -255,7 +255,32 @@ async def test_GetSongs_HasSongsAndNewSong(vanilla_apl, test_user, test_other_us
         if each_song.url == test_song.url and each_song.title == test_song.title:
             found = True
     assert found == True
-    
+
+@pytest.mark.asyncio
+async def test_GetUsers_HasUserAndNotNewUser(vanilla_apl, test_user, test_other_user, test_song):
+    await test_Precondition_User(vanilla_apl, test_user)
+
+    found_users = await vanilla_apl.get_users()
+    assert found_users is not None and len(found_users) > 0
+    found = False
+    for each_user in found_users:
+        if each_user.user_id == test_user.user_id and each_user.user_name == test_user.user_name:
+            found = True
+    assert found == False
+
+@pytest.mark.asyncio
+async def test_GetUsers_HasUserAndNewUser(vanilla_apl, test_user, test_other_user, test_song):
+    await test_Precondition_User(vanilla_apl, test_user)
+    assert await vanilla_apl.sqlfactory.user_create(test_user.user_id, test_user.user_name, test_user.mood, test_user.yti_url, test_user.updt_dt_tm, test_user.cret_dt_tm)
+
+    found_users = await vanilla_apl.get_users()
+    assert found_users is not None and len(found_users) > 0
+    found = False
+    for each_user in found_users:
+        if each_user.user_id == test_user.user_id and each_user.user_name == test_user.user_name:
+            found = True
+    assert found == True
+
 @pytest.mark.asyncio
 async def test_Postcondition_LikeDislike(vanilla_apl, test_user, test_other_user, test_song):
     await test_Precondition_LikeDislike(vanilla_apl, test_user, test_other_user, test_song)
