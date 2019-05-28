@@ -8,4 +8,5 @@ oauth2client
 mysqlclient
 pytest
 pytest-asyncio
+pytest-test-groups
 watchtower
