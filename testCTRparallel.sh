@@ -1,5 +1,5 @@
 #!/bin/bash
-export CIRCLE_NODE_TOTAL=4
+export CIRCLE_NODE_TOTAL=1
 
 for (( i = 0; i < $CIRCLE_NODE_TOTAL; i++))
 do
