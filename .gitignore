@@ -1,15 +1,5 @@
 *.pyc
-*.json
 audio_cache
-config/permissions.ini
-config/database_auth.ini
-config/email_auth.ini
 logs
 secrets
-data
-.vscode/**
-ctr.sh
-testCTR.sh
-j.sh
-testJ.sh
-
+.vscode
