@@ -11,7 +11,7 @@ MusicBot is a Discord music bot written in [Python](https://www.python.org "Pyth
 
 Addendum:
 - Create a script like the below and follow in the information
-#!/bin/bash
+`#!/bin/bash
 export DATABASE_DB=
 export DATABASE_HOST=
 export DATABASE_PASSWD=
@@ -22,7 +22,7 @@ export TOKEN_CTR=
 export TOKEN_J=
 export TOKEN=$TOKEN_CTR
 cd ./MusicBot
-python3 runCTR.py
+python3 runCTR.py`
 
 ### Commands
 
