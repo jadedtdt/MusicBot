@@ -9,6 +9,21 @@ MusicBot is a Discord music bot written in [Python](https://www.python.org "Pyth
 - [Docker Tutorial](https://github.com/SexualRhinoceros/MusicBot/wiki/Installation-guide-for-Docker)
 - [OSX Tutorial](https://github.com/SexualRhinoceros/MusicBot/wiki/Installation-guide-for-OSX)
 
+Addendum:
+- Create a script like the below and follow in the information
+#!/bin/bash
+export DATABASE_DB=
+export DATABASE_HOST=
+export DATABASE_PASSWD=
+export DATABASE_USER=
+export EMAIL_PASSWORD=
+export EMAIL_USERNAME=
+export TOKEN_CTR=
+export TOKEN_J=
+export TOKEN=$TOKEN_CTR
+cd ./MusicBot
+python3 runCTR.py
+
 ### Commands
 
 Commands are listed [here](https://github.com/SexualRhinoceros/MusicBot/wiki/Commands-list "Commands list").
