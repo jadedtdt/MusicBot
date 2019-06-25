@@ -11,6 +11,7 @@ MusicBot is a Discord music bot written in [Python](https://www.python.org "Pyth
 
 Addendum:
 - Create a script like the below and follow in the information
+
 #!/bin/bash
 
 export DATABASE_DB=
