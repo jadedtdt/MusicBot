@@ -259,14 +259,3 @@ class AutoPlaylist:
                 new_song = Song(url, title, play_count, volume, updt_dt_tm, cret_dt_tm)
                 user_songs.append(new_song)
         return user_songs
-        
-    def check_url(self, url):
-
-        if url:
-            if 'www.' in url and 'https://' not in url:
-                url = 'https://' + url
-            if '?t=' in url:
-                url = url.split('?t=')[0]
-            if '&t' in url or '&index' in url or '&list' in url:
-                url = url.split('&')[0]
-        return url

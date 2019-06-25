@@ -1116,6 +1116,7 @@ class MusicBot(discord.Client):
                             user = self.autoplaylist.get_user(liker)                            
                             success = await self.autoplaylist.sqlfactory.song_delete(song.url)
                             if not success:
+                                log.error("YT DL ERROR [DEBUG] - song[{}], user[{}], liker[{}], song.url[{}]".format(str(song), str(user), str(liker), str(song.url)))
                                 log.error("YT DL ERROR - FAILURE to remove song {} from user's {} list".format(str(song), str(user)))
                                 self.email_util.send_exception(str(user), str(song), "GENERIC ERROR - Failed to remove song {} from user's {} list".format(str(song), str(user)))
                             else:
@@ -1136,6 +1137,7 @@ class MusicBot(discord.Client):
                             user = self.autoplaylist.get_user(liker)
                             success = await self.autoplaylist.sqlfactory.song_delete(song.url)
                             if not success:
+                                log.error("GENERIC ERROR [DEBUG] - song[{}], user[{}], liker[{}], song.url[{}]".format(str(song), str(user), str(liker), str(song.url)))
                                 log.error("GENERIC ERROR - FAILURE to remove song {} from user's {} list".format(str(song), str(user)))
                                 self.email_util.send_exception(str(user), str(song), "GENERIC ERROR - Failed to remove song {} from user's {} list".format(str(song), str(user)))
                             else:
@@ -1504,7 +1506,7 @@ class MusicBot(discord.Client):
 
         if self.init_ok:
             log.debug("Received additional READY event, may have failed to resume")
-            return
+            #return
 
         await self._on_ready_sanity_checks()
         print()
@@ -2603,7 +2605,7 @@ class MusicBot(discord.Client):
             if len(song_list) == 0:
                 data.append("Your auto playlist is empty.")
             else:
-                song_list = list(map(lambda key: self._url_to_song_[key], song_list))
+                # song_list = list(map(lambda key: self._url_to_song_[key], song_list))
 
                 sorted_songs = sorted(song_list, key=lambda song: song.title.lower() if song.title else "")
                 for song in sorted_songs:
