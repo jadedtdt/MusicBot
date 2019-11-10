@@ -41,20 +41,17 @@ class Playlist(EventEmitter, Serializable):
     def clear(self):
         self.entries.clear()
 
-    async def get_entry(self, position, **meta):
-        if len(self.entries) == 0:
-            return None
-
-        entries_copy = self.entries
-
-        rotDist = -1 * (position - 1)
-        entries_copy.rotate(rotDist)
-        entry = entries_copy.popleft()
-        self.emit('entry-removed', playlist=self, entry=entry)
-        entries_copy.rotate(-1 * rotDist)
-
+    def get_entry_at_index(self, index):
+        self.entries.rotate(-index)
+        entry = self.entries[0]
+        self.entries.rotate(index)
         return entry
 
+    def delete_entry_at_index(self, index):
+        self.entries.rotate(-index)
+        entry = self.entries.popleft()
+        self.entries.rotate(index)
+        return entry
 
     async def add_entry(self, song_url, **meta):
         """
@@ -83,6 +80,7 @@ class Playlist(EventEmitter, Serializable):
 
         # TODO: Extract this to its own function
         if info['extractor'] in ['generic', 'Dropbox']:
+            log.debug('Detected a generic extractor, or Dropbox')
             try:
                 headers = await get_header(self.bot.aiosession, info['url'])
                 content_type = headers.get('CONTENT-TYPE')
@@ -98,9 +96,9 @@ class Playlist(EventEmitter, Serializable):
                         # How does a server say `application/ogg` what the actual fuck
                         raise ExtractionError("Invalid content type \"%s\" for url %s" % (content_type, song_url))
 
-                elif content_type.startswith('text/html'):
-                    log.warning("Got text/html for content-type, this might be a stream")
-                    pass # TODO: Check for shoutcast/icecast
+                elif content_type.startswith('text/html') and info['extractor'] == 'generic':
+                    log.warning("Got text/html for content-type, this might be a stream.")
+                    return await self.add_stream_entry(song_url, info=info, **meta) # TODO: Check for shoutcast/icecast
 
                 elif not content_type.startswith(('audio/', 'video/')):
                     log.warning("Questionable content-type \"{}\" for url {}".format(content_type, song_url))
@@ -115,78 +113,6 @@ class Playlist(EventEmitter, Serializable):
         )
         self._add_entry(entry)
         return entry, len(self.entries)
-
-    async def remove_entry(self, position, **meta):
-        """
-            Validates and removes a song from the queue.
-        
-            Returns the position it was in the queue.     
-        
-            :param position: A string of either "last" or "end" or the position number in the queue       
-        """
-       
-        # Check for popping from empty queue
-        if len(self.entries) == 0:
-            return None
-      
-        # Basically pop
-        if position == -1:
-            entry = self.entries.pop()
-            return entry
-      
-        # Validating
-        if position < 1 or position >= len(self.entries):
-            reply_text = "[Error] Invalid ID. Available positions are between 1 and %s."
-            reply_text %= len(self.entries)
-      
-      
-        # naive delete, no position returned      
-        """       
-        try:      
-            self.entries.remove(search_string)        
-        except Exception as e:        
-            raise exceptions.CommandError(e, expire_in=30)        
-        """       
-            
-        # Create an empty deque that we'll use to re-fill the copied queue        
-        #entries_to_readd = deque()
-
-        """
-        for i in len(entries_copy): 
-            entry_to_remove = entries_copy.pop()      
-            if search_text in entry_to_remove.title:      
-                # yay we found it     
-                return        
-            else:     
-                # :( time to save it away so we can re add later...       
-                entries_to_readd.append(entry_to_remove)      
-        """
-
-        # My old remove, makes a copy and pops from end until position
-        """
-        # Pops until we reach position in queue
-        # Chooses to do len - pos because should be cheaper on average
-
-        for i in range(len(self.entries) - position):
-            entry_to_readd = entries_copy.pop()
-            entries_to_readd.append(entry_to_readd)
-
-        # This is the one we actually want to get rid of
-        entry = entries_copy.pop()
-
-        # Adds back the ones that we popped getting to our position
-        for i in range(len(entries_to_readd)):
-            entries_copy.append(entries_to_readd.pop())
-
-        self.entries = entries_copy
-        """
-        rotDist = -1 * (position - 1)
-        self.entries.rotate(rotDist)        
-        entry = self.entries.popleft()        
-        self.emit('entry-removed', playlist=self, entry=entry)        
-        self.entries.rotate(-1 * rotDist)
-
-        return entry
 
     def promote_position(self, position):
         rotDist = -1 * (position - 1)
@@ -240,6 +166,9 @@ class Playlist(EventEmitter, Serializable):
 
             except Exception as e:
                 log.error('Could not extract information from {} ({}), falling back to direct'.format(song_url, e), exc_info=True)
+
+        if info.get('is_live') is None and info.get('extractor', None) is not 'generic':  # wew hacky
+            raise ExtractionError("This is not a stream.")
 
         dest_url = song_url
         if info.get('extractor'):
@@ -408,6 +337,9 @@ class Playlist(EventEmitter, Serializable):
 
         if self.peek() is entry:
             entry.get_ready_future()
+
+    def remove_entry(self, index):
+        del self.entries[index]
 
     async def get_next_entry(self, predownload_next=True):
         """

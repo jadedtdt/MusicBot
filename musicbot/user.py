@@ -71,7 +71,7 @@ class User:
         else:
             log.warning("User tried to use yti_url setter but argument was None")
         self._yti_url = new_yti_url
-        
+
     @property
     def updt_dt_tm(self):
         return self._updt_dt_tm
@@ -100,4 +100,3 @@ class User:
 
     def __repr__(self):
         return self.user_name if self.user_name else str(self.user_id)
-        

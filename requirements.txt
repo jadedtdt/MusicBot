@@ -1,4 +1,4 @@
-discord.py[voice] ~= 0.15.0
+discord.py[voice]==1.2.4
 pip
 youtube_dl
 colorlog

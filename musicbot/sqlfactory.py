@@ -59,7 +59,7 @@ class SqlFactory:
         try:
             log.debug('[SQL] [EXECUTE] {query}'.format(query=query))
             log.debug('[VALUES] [EXECUTE] {values}'.format(values=str(list_values)))
-            rows_affected = cur.execute(query, list_values)            
+            rows_affected = cur.execute(query, list_values)
             rows = cur.fetchall()
             if rows_affected > 0 and rows:
                 if ',)' in str(rows[0]):
@@ -319,7 +319,7 @@ class SqlFactory:
         finally:
             con.close()
             return status
-            
+
     async def song_create(self, URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM):
         return self._song_create(URL, TITLE, PLAY_COUNT, VOLUME, UPDT_DT_TM, CRET_DT_TM)
 
@@ -574,5 +574,3 @@ class SqlFactory:
         finally:
             con.close()
             return status
-
-

@@ -2,13 +2,12 @@ import sys
 import decimal
 import logging
 import aiohttp
-
-import os.path
-import pickle
+import inspect
 
 from datetime import datetime
 from hashlib import md5
 from .constants import DISCORD_MSG_CHAR_LIMIT
+
 log = logging.getLogger(__name__)
 
 def load_file(filename, skip_commented_lines=True, comment_char='#'):
@@ -33,9 +32,6 @@ def write_file(filename, contents):
         for item in contents:
             f.write(str(item))
             f.write('\n')
-
-def sane_round_int(x):
-    return int(decimal.Decimal(x).quantize(1, rounding=decimal.ROUND_HALF_UP))
 
 def paginate(content, *, length=DISCORD_MSG_CHAR_LIMIT, reserve=0):
     """
@@ -64,12 +60,12 @@ def paginate(content, *, length=DISCORD_MSG_CHAR_LIMIT, reserve=0):
     return chunks
 
 async def get_header(session, url, headerfield=None, *, timeout=5):
-    with aiohttp.Timeout(timeout):
-        async with session.head(url) as response:
-            if headerfield:
-                return response.headers.get(headerfield)
-            else:
-                return response.headers
+    req_timeout = aiohttp.ClientTimeout(total = timeout)
+    async with session.head(url, timeout = req_timeout) as response:
+        if headerfield:
+            return response.headers.get(headerfield)
+        else:
+            return response.headers
 
 def md5sum(filename, limit=0):
     fhash = md5()
@@ -83,7 +79,7 @@ def fixg(x, dp=2):
 
 def ftimedelta(td):
     p1, p2 = str(td).rsplit(':', 1)
-    return ':'.join([p1, str(int(float(p2)))])
+    return ':'.join([p1, '{:02d}'.format(int(float(p2)))])
 
 def safe_print(content, *, end='\n', flush=True):
     sys.stdout.buffer.write((content + end).encode('utf-8', 'replace'))
@@ -140,14 +136,14 @@ def objdiff(obj1, obj2, *, access_attr=None, depth=0):
                 # log.everything("{obj1}.{item} is {obj2}.{item} ({val1} and {val2})".format(obj1=obj1, obj2=obj2, item=item, val1=iobj1, val2=iobj2))
 
         except Exception as e:
-            log.everything("Error checking {o1}/{o2}.{item}".format(o1=obj1, o2=obj2, item=item), exc_info=e)
+            # log.everything("Error checking {o1}/{o2}.{item}".format(o1=obj1, o2=obj2, item=item), exc_info=e)
             continue
 
     return changes
 
 def color_supported():
     return hasattr(sys.stderr, "isatty") and sys.stderr.isatty()
-    
+
 def get_cur_dt_tm():
     return str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
@@ -156,3 +152,21 @@ def null_check_string(obj, attribute):
     if not return_string:
         return 'no ' + str(attribute)
     return return_string
+
+def _func_():
+    # emulate __func__ from C++
+    return inspect.currentframe().f_back.f_code.co_name
+
+def _get_variable(name):
+    stack = inspect.stack()
+    try:
+        for frames in stack:
+            try:
+                frame = frames[0]
+                current_locals = frame.f_locals
+                if name in current_locals:
+                    return current_locals[name]
+            finally:
+                del frame
+    finally:
+        del stack

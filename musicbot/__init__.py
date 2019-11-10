@@ -3,8 +3,8 @@ import inspect
 import logging
 
 from textwrap import dedent
-from discord.ext.commands.bot import _get_variable
 
+from .utils import _get_variable
 from .exceptions import HelpfulError
 
 class Yikes:
@@ -71,10 +71,10 @@ class Yikes:
 
 sys.meta_path.insert(0, Yikes())
 
-#from .bot import MusicBot
+from .bot import MusicBot
 from .constructs import BetterLogRecord
 
-#__all__ = ['MusicBot']
+__all__ = ['MusicBot']
 
 logging.setLogRecordFactory(BetterLogRecord)
 

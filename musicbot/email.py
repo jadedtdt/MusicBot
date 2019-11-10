@@ -28,7 +28,7 @@ class Email:
             h = Header(header_value, 'utf-8')
             message[header_name] = h
         else:
-            message[header_name] = header_value    
+            message[header_name] = header_value
         return message
 
     def send_exception(self, user_name, song_obj, exception):
@@ -68,4 +68,3 @@ class Email:
 
         self.username = os.environ['EMAIL_USERNAME']
         self.password = os.environ['EMAIL_PASSWORD']
-        

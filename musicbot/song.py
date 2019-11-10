@@ -1,8 +1,7 @@
 import logging
-from datetime import datetime 
+from datetime import datetime
 
 from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
-from .config import Config, ConfigDefaults
 from discord import User
 
 log = logging.getLogger(__name__)
@@ -14,8 +13,6 @@ class Song:
     """
 
     def __init__(self, url, title=None, play_count=0, volume=0.15, updt_dt_tm=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), cret_dt_tm=datetime.now().strftime('%Y-%m-%d %H:%M:%S')):
-        config_file = ConfigDefaults.options_file
-        self._config = Config(config_file)
 
         self._url = str(url)
         self._title = title

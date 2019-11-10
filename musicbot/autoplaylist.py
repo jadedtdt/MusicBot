@@ -85,7 +85,7 @@ class AutoPlaylist:
             success_song = True
 
         if not await self._sqlfactory.user_song_read(user_id, url):
-            success_user_song = await self._sqlfactory.user_song_create(user_id, url, play_count, cret_dt_tm)            
+            success_user_song = await self._sqlfactory.user_song_create(user_id, url, play_count, cret_dt_tm)
             if not success_user_song:
                 log.error("Check corruption! {} {}".format(url, title if title else "No Title"))
                 self.email_util.send_exception(user_id, None, "[user_like_song] [user_song] Check for corruption " + url)
@@ -191,7 +191,7 @@ class AutoPlaylist:
             return []
         songs = []
         success_select, result_set = self._sqlfactory._execute('SELECT SONG.* FROM SONG WHERE SONG.TITLE LIKE %s', ['%{}%'.format(title)] )
-        
+
         if success_select and result_set:
             for each_row in result_set:
                 #log.debug('each_row ! ' + str(each_row))
