@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import boto3
 import os
 import sys
 import time
@@ -137,6 +138,35 @@ tfh.setFormatter(logging.Formatter(
 tfh.setLevel(logging.DEBUG)
 log.addHandler(tfh)
 
+# Export config as environment variables
+
+ssm_client = boto3.client('ssm',
+    aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
+    aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'],
+    region_name=os.environ['AWS_DEFAULT_REGION']
+)
+
+if 'DATABASE_DB' not in os.environ:
+    print(str(ssm_client.get_parameter(Name='database_db')))
+    os.environ['DATABASE_DB'] = ssm_client.get_parameter(Name='database_db')['Parameter']['Value']
+
+if 'DATABASE_HOST' not in os.environ:
+    os.environ['DATABASE_HOST'] = ssm_client.get_parameter(Name='database_host')['Parameter']['Value']
+
+if 'DATABASE_PASSWORD' not in os.environ:
+    os.environ['DATABASE_PASSWORD'] = ssm_client.get_parameter(Name='database_password')['Parameter']['Value']
+
+if 'DATABASE_USER' not in os.environ:
+    os.environ['DATABASE_USERNAME'] = ssm_client.get_parameter(Name='database_username')['Parameter']['Value']
+
+if 'EMAIL_PASSWORD' not in os.environ:
+    os.environ['EMAIL_PASSWORD'] = ssm_client.get_parameter(Name='email_password')['Parameter']['Value']
+
+if 'EMAIL_USER' not in os.environ:
+    os.environ['EMAIL_USERNAME'] = ssm_client.get_parameter(Name='email_username')['Parameter']['Value']
+
+if 'TOKEN' not in os.environ:
+    os.environ['TOKEN'] = ssm_client.get_parameter(Name='token_ctr')['Parameter']['Value']
 
 def finalize_logging():
     if os.path.isfile("logs/musicbot.log"):
@@ -298,6 +328,7 @@ def req_ensure_env():
         os.environ['PATH'] += ';' + os.path.abspath('bin/')
         sys.path.append(os.path.abspath('bin/')) # might as well
 
+
 def req_ensure_folders():
     pathlib.Path('logs').mkdir(exist_ok=True)
     pathlib.Path('data').mkdir(exist_ok=True)
@@ -306,6 +337,7 @@ def req_ensure_folders():
 def opt_check_disk_space(warnlimit_mb=200):
     if disk_usage('.').free < warnlimit_mb*1024*2:
         log.warning("Less than %sMB of free space remains on this device" % warnlimit_mb)
+
 
 #################################################
 
@@ -338,8 +370,8 @@ def main():
 
         m = None
         try:
-            from musicbot import MusicBot
-            m = MusicBot()
+            from musicbot.bot import MusicBot
+            m = MusicBot('config/options.ini', 'config/permissions.ini')
 
             sh.terminator = ''
             log.info("Connecting")

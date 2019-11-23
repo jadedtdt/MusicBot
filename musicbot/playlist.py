@@ -123,23 +123,23 @@ class Playlist(EventEmitter, Serializable):
         self.emit('entry-added', playlist=self, entry=entry)
         entry.get_ready_future()
         return entry
-          
+
     def promote_last(self):
         entry = self.entries.pop()
         self.entries.appendleft(entry)
         self.emit('entry-added', playlist=self, entry=entry)
         entry.get_ready_future()
         return entry
-          
+
     def remove_first(self):
         entry = self.entries.popleft()
         self.emit('entry-removed', playlist=self, entry=entry)
         entryNext = None
         entryNext = self.peek()
-              
+
         if entryNext:
             entryNext.get_ready_future()
-          
+
         return entry
 
     async def add_stream_entry(self, song_url, info=None, **meta):

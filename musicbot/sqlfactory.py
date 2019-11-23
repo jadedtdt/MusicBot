@@ -33,8 +33,8 @@ class SqlFactory:
     def load_config(self):
         self.db = os.environ['DATABASE_DB']
         self.host = os.environ['DATABASE_HOST']
-        self.passwd = os.environ['DATABASE_PASSWD']
-        self.user = os.environ['DATABASE_USER']
+        self.passwd = os.environ['DATABASE_PASSWORD']
+        self.user = os.environ['DATABASE_USERNAME']
 
     async def execute(self, query, list_values=[]):
         return self._execute(query, list_values)

@@ -1,12 +1,11 @@
-discord.py[voice]==1.2.4
-pip
-youtube_dl
-colorlog
 cffi --only-binary all; sys_platform == 'win32'
-google-api-python-client
-oauth2client
-mysqlclient
-pytest
-pytest-asyncio
-pytest-test-groups
-watchtower
+colorlog==4.0.2
+discord.py[voice]==1.2.4
+google-api-python-client==1.7.11
+mysqlclient==1.4.4
+oauth2client==4.1.3
+pytest==5.2.2
+pytest-asyncio==0.10.0
+pytest-test-groups==1.0.3
+youtube_dl
+watchtower==0.7.3

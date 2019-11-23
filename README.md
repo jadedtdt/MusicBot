@@ -11,31 +11,9 @@ MusicBot is a Discord music bot written in [Python](https://www.python.org "Pyth
 
 Addendum:
 - sudo apt-get install libmysqlclient20
-- Create a script like the below and fill in the information
+- bash install_prerequisites.sh
+- sudo bash build_docker_image.sh
 
-#!/bin/bash
-
-export DATABASE_DB=
-
-export DATABASE_HOST=
-
-export DATABASE_PASSWD=
-
-export DATABASE_USER=
-
-export EMAIL_PASSWORD=
-
-export EMAIL_USERNAME=
-
-export TOKEN_CTR=
-
-export TOKEN_J=
-
-export TOKEN=$TOKEN_CTR
-
-cd ./MusicBot
-
-python3 runCTR.py
 
 ### Commands
 

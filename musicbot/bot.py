@@ -467,37 +467,36 @@ class MusicBot(discord.Client):
 
         return wrapper
 
-    def _get_user(self, user_id, server=None, voice=False):
+    def _get_user(self, user_id, guild=None, voice=False):
         return discord.utils.find(
             lambda m: m.id == user_id and (m.voice if voice else True),
-            server.members if server else self.get_all_members()
+            guild.members if guild else self.get_all_members()
         )
 
-    def _get_channel(self, user_id, server=None, voice=False):
+    def _get_channel(self, user_id, guild=None, voice=False):
         if voice:
-            member = self._get_user(user_id, server, voice)
+            member = self._get_user(user_id, guild, voice)
             return member.voice.channel
         else:
             return discord.utils.find(lambda m: m.id == user_id, self.get_all_members())
 
-    def _get_owner(self, *, server=None, voice=False):
+    def _get_owner(self, *, guild=None, voice=False):
         return discord.utils.find(
             lambda m: m.id == self.config.owner_id and (m.voice if voice else True),
-            server.members if server else self.get_all_members()
+            guild.members if guild else self.get_all_members()
         )
 
     async def _get_restarter(self, voice=False):
-
-        for server in self.servers:
-            if server:
+        for each_guild in self.guilds:
+            if each_guild:
                 tchans = []
-                for chan in server.channels:
+                for chan in each_guild.channels:
                     if chan:
                         if chan.type == discord.ChannelType.text:
                             tchans.append(chan)
 
                 for channel in tchans:
-                    async for message in self.logs_from(channel, limit=50, before=datetime.utcnow(), reverse=False):
+                    async for message in channel.history(limit=50, before=datetime.utcnow()):
                         if message.content.startswith(self.config.command_prefix +'restart'):
                             return message.author
         return None
@@ -615,7 +614,7 @@ class MusicBot(discord.Client):
                 channel_map[guild] = guild.me.voice.channel
 
             if autosummon:
-                owner = self._get_owner(server=guild, voice=True)
+                owner = self._get_owner(guild=guild, voice=True)
                 if owner:
                     log.info("Found owner in \"{}\"".format(owner.voice.channel.name))
                     channel_map[guild] = owner.voice.channel
@@ -625,7 +624,8 @@ class MusicBot(discord.Client):
 
                     if restarter:
                         log.info("Found restarter {} in \"{}\"".format(restarter.name, self._get_channel(restarter.id)))
-                        channel_map[guild] = restarter.voice.channel
+                        if restarter.voice:
+                            channel_map[guild] = restarter.voice.channel
 
         for guild, channel in channel_map.items():
             if guild in joined_servers:
@@ -1219,7 +1219,7 @@ class MusicBot(discord.Client):
 
     async def serialize_queue(self, guild, *, dir=None):
         """
-        Serialize the current queue for a server's player to json.
+        Serialize the current queue for a guild's player to json.
         """
 
         player = self.get_player_in(guild)
@@ -1241,7 +1241,7 @@ class MusicBot(discord.Client):
 
     async def deserialize_queue(self, guild, voice_client, playlist=None, *, dir=None) -> MusicPlayer:
         """
-        Deserialize a saved queue for a server into a MusicPlayer.  If no queue is saved, returns None.
+        Deserialize a saved queue for a guild into a MusicPlayer.  If no queue is saved, returns None.
         """
 
         if playlist is None:
@@ -1757,9 +1757,9 @@ class MusicBot(discord.Client):
     async def cmd_mood(self, author, leftover_args=None):
         """
         Usage:
-        {command_prefix}mood
-        {command_prefix}mood TAG
-        {command_prefix}mood reset
+            {command_prefix}mood
+            {command_prefix}mood TAG
+            {command_prefix}mood reset
 
         mood
         displays your current mood if you have one
@@ -1790,11 +1790,11 @@ class MusicBot(discord.Client):
 
         return Response(longStr, delete_after=35)
 
-    async def cmd_heard(self, server, player, channel, author, leftover_args=None):
+    async def cmd_heard(self, author, leftover_args=None):
         """
         Usage:
-        {command_prefix}heard #
-        {command_prefix}heard max
+            {command_prefix}heard #
+            {command_prefix}heard max
 
         Adjusts the amount of songs that need to be played before a previous song can be played again
             # - some number between 0 and your list's size
@@ -1841,22 +1841,20 @@ class MusicBot(discord.Client):
         prntStr = [":ok_hand:", author.mention + "'s command was shot down! :gun:", ":skull_crossbones: Deleting List in 10 years. :skull_crossbones:", "Enqueued Doritos Ad to be played. Position in queue: Up Next!", "~smart " + author.mention]
         return Response(random.choice(prntStr), delete_after=20)
 
-    async def cmd_stat(self, server, player, channel, author, leftover_args):
+    async def cmd_stat(self, channel, author, leftover_args=None):
         """
         Usage:
-        {command_prefix}stat
-        {command_prefix}stat compat
+            {command_prefix}stat
 
         Prints the number of songs for the top 10 and the author who asked
-        Prints the amount of similar songs to the other people in the discord
 
         """
 
         TOP_COUNT = 10
 
-        if len(leftover_args) > 0:
-            if leftover_args[0].strip().lower() == "compat":
-                return await self._cmd_compat(server, player, channel, author)
+        #if len(leftover_args) > 0:
+        #    if leftover_args[0].strip().lower() == "compat":
+        #        return await self._cmd_compat(, player, channel, author)
         longStr = ""
         isTopTen = False
 
@@ -1867,7 +1865,7 @@ class MusicBot(discord.Client):
         if not success:
             log.error('Failed to get top {} users\' song count!'.format(TOP_COUNT))
 
-        longStr += "*--Number of Songs--*\n"
+        longStr += "*__Number of Songs__*\n"
         i = 1
         for user_name, count in results:
             if user_name:
@@ -1887,7 +1885,7 @@ class MusicBot(discord.Client):
         if not isTopTen:
             success, results = await self.autoplaylist.sqlfactory.execute('SELECT COUNT(URL) FROM USER_SONG WHERE USER_SONG.ID = %s', [author.id])
             if success:
-                longStr = "`" + str(author.display_name) + ": " + str(results[0]) + "`\n\n" + longStr
+                longStr = "`" + str(author.display_name) + ": " + str(results[0][0]) + "`\n\n" + longStr
             else:
                 log.error('No songs found for user {} but tried to use stat command'.format(str(author)))
                 longStr += "`" + str(author) + ": 0`\n\n"
@@ -1895,7 +1893,7 @@ class MusicBot(discord.Client):
         return Response(longStr, delete_after=35)
 
 
-    async def _cmd_compat(self, server, player, channel, author):
+    async def _cmd_compat_deprecated(self, player, channel, author):
         #Expended functions on stat
         #   - compat
 
@@ -1936,7 +1934,7 @@ class MusicBot(discord.Client):
         print("Time to process compat: " + str(time.clock() - t0) + " sec")
         return Response(prntStr, delete_after=35)
 
-    async def cmd_ghost(self, player, server, author, channel, permissions, leftover_args):
+    async def cmd_ghost(self, player, guild, author, channel, leftover_args):
         """
         Usage:
             {command_prefix}ghost user_name
@@ -1984,7 +1982,7 @@ class MusicBot(discord.Client):
             return Response(prntStr, delete_after=20)
         else:
             #Checking if user_name exists in channel
-            for personObj in server.members:
+            for personObj in guild.members:
                 if user_name.lower() == personObj.display_name.lower() or user_name.lower() == personObj.name.lower() or user_name == personObj.id:
                     #Check if person is in the channel
                     if str(personObj.id) in channel_id_list:
@@ -2082,7 +2080,7 @@ class MusicBot(discord.Client):
                 prntStr = "**[" + leftover_args[0] + "]** is not a recognized command"
                 return Response(prntStr, delete_after=20)
         else:
-            prntStr = "**" + str(len(leftover_args)) + "** arguments were given **2 or more** arguments expected"
+            prntStr = "**" + str(len(leftover_args)) + "** arguments were given **1 or more** arguments expected"
             return Response(prntStr, delete_after=20)
 
 
@@ -2443,10 +2441,10 @@ class MusicBot(discord.Client):
 
             t0 = time.perf_counter()
             #Printing: Yours
-            if author.id in peopleListSongs:
+            if str(author.id) in list(peopleListSongs):
                 #messages.append(await self._embed_listhas(channel, author, peopleListSongs[author.id], title, 0xffb900))
-                await self._embed_listhas(channel, author, peopleListSongs[author.id], title, 0xffb900)
-                del peopleListSongs[author.id]
+                await self._embed_listhas(channel, author, peopleListSongs[str(author.id)], title, 0xffb900)
+                del peopleListSongs[str(author.id)]
                 title = None
             print("2nd run: " + str(time.perf_counter() - t0))
 
@@ -2504,12 +2502,13 @@ class MusicBot(discord.Client):
             else:
                 prntStr += lnprnt
                 lnprnt = ""
-        # print(em.fields)
+        log.info(em.fields)
 
         if len(em.fields) < FIELDS_LIMIT and (char_cnt + len(prntStr)) < EM_CHAR_LIMIT and lnprnt == "":
             # log.debug(userName + " : " + prntStr)
             em.add_field(name='\u200b', value=prntStr, inline=True)
 
+        log.info('Embed value: ' + str(em))
         return await channel.send(embed=em)
 
     async def cmd_oldlisthas(self, player, author, channel, permissions, leftover_args):
@@ -2788,51 +2787,105 @@ class MusicBot(discord.Client):
 
         return Response(reply_text, delete_after=30)
 
-    async def cmd_remove(self, player, channel, author, permissions, position):
+    async def cmd_remove(self, user_mentions, message, author, permissions, channel, player, index=None):
         """
         Usage:
-            {command_prefix}remove position
-            {command_prefix}remove -1
-            {command_prefix}remove last
-            {command_prefix}remove end
-
-        Removes the song from the playlist. Removing by text is coming soon.
+            {command_prefix}remove [# in queue]
+        Removes queued songs. If a number is specified, removes that song in the queue, otherwise removes the most recently queued song.
         """
 
-        if position == "last" or position == "end":
-            position = -1
+        if not player.playlist.entries:
+            raise exceptions.CommandError(self.str.get('cmd-remove-none', "There's nothing to remove!"), expire_in=20)
 
-        # Check for popping from empty queue
-        if len(player.playlist.entries) == 0:
-            reply_text = "[Error] Queue is empty."
-            return Response(reply_text, delete_after=30)
+        if index and (index == "last" or index == "end"):
+            index = len(player.playlist.entries) if player.playlist.entries else -1
+
+        if user_mentions:
+            for user in user_mentions:
+                if permissions.remove or author == user:
+                    try:
+                        entry_indexes = [e for e in player.playlist.entries if e.meta.get('author', None) == user]
+                        for entry in entry_indexes:
+                            player.playlist.entries.remove(entry)
+                        entry_text = '%s ' % len(entry_indexes) + 'item'
+                        if len(entry_indexes) > 1:
+                            entry_text += 's'
+                        return Response(self.str.get('cmd-remove-reply', "Removed `{0}` added by `{1}`").format(entry_text, user.name).strip())
+
+                    except ValueError:
+                        raise exceptions.CommandError(self.str.get('cmd-remove-missing', "Nothing found in the queue from user `%s`") % user.name, expire_in=20)
+
+                raise exceptions.PermissionsError(
+                    self.str.get('cmd-remove-noperms', "You do not have the valid permissions to remove that entry from the queue, make sure you're the one who queued it or have instant skip permissions"), expire_in=20)
+
+        if not index:
+            index = len(player.playlist.entries)
 
         try:
-            position = int(position)
-        except ValueError:
-            reply_text = "[Error] Invalid position in queue. Enter a valid integer between 1 and %s."
-            reply_text %= len(player.playlist.entries)
-            return Response(reply_text, delete_after=30)
+            index = int(index)
+        except (TypeError, ValueError):
+            raise exceptions.CommandError(self.str.get('cmd-remove-invalid', "Invalid number. Use {}queue to find queue positions.").format(self.config.command_prefix), expire_in=20)
 
-        # Validating
-        if position == 1:
-            entry = player.playlist.remove_first()
-        elif (position < 1 or position > len(player.playlist.entries)) and position != -1:
-            reply_text = "[Error] Invalid ID. Available positions are between 1 and %s."
-            reply_text %= len(player.playlist.entries)
-            return Response(reply_text, delete_after=30)
+        if index > len(player.playlist.entries):
+            raise exceptions.CommandError(self.str.get('cmd-remove-invalid', "Invalid number. Use {}queue to find queue positions.").format(self.config.command_prefix), expire_in=20)
+
+        if permissions.remove or author == player.playlist.get_entry_at_index(index - 1).meta.get('author', None):
+            entry = player.playlist.delete_entry_at_index((index - 1))
+            await self._manual_delete_check(message)
+            if entry.meta.get('channel', False) and entry.meta.get('author', False):
+                return Response(self.str.get('cmd-remove-reply-author', "Removed entry `{0}` added by `{1}`").format(entry.title, entry.meta['author'].name).strip())
+            else:
+                return Response(self.str.get('cmd-remove-reply-noauthor', "Removed entry `{0}`").format(entry.title).strip())
         else:
-            entry = await player.playlist.remove_entry(position, server=channel, author=author)
+            raise exceptions.PermissionsError(
+                self.str.get('cmd-remove-noperms', "You do not have the valid permissions to remove that entry from the queue, make sure you're the one who queued it or have instant skip permissions"), expire_in=20
+            )
 
-        reply_text = "Removed **%s** from the queue. It was in position: %s"
-        btext = entry.title
+    # async def cmd_remove(self, player, channel, author, permissions, position):
+    #     """
+    #     Usage:
+    #         {command_prefix}remove position
+    #         {command_prefix}remove -1
+    #         {command_prefix}remove last
+    #         {command_prefix}remove end
 
-        if position == -1:
-            position = len(player.playlist.entries) + 1
+    #     Removes the song from the playlist. Removing by text is coming soon.
+    #     """
 
-        reply_text %= (btext, position)
+    #     if position == "last" or position == "end":
+    #         position = -1
 
-        return Response(reply_text, delete_after=30)
+    #     # Check for popping from empty queue
+    #     if len(player.playlist.entries) == 0:
+    #         reply_text = "[Error] Queue is empty."
+    #         return Response(reply_text, delete_after=30)
+
+    #     try:
+    #         position = int(position)
+    #     except ValueError:
+    #         reply_text = "[Error] Invalid position in queue. Enter a valid integer between 1 and %s."
+    #         reply_text %= len(player.playlist.entries)
+    #         return Response(reply_text, delete_after=30)
+
+    #     # Validating
+    #     if position == 1:
+    #         entry = player.playlist.remove_first()
+    #     elif (position < 1 or position > len(player.playlist.entries)) and position != -1:
+    #         reply_text = "[Error] Invalid ID. Available positions are between 1 and %s."
+    #         reply_text %= len(player.playlist.entries)
+    #         return Response(reply_text, delete_after=30)
+    #     else:
+    #         entry = await player.playlist.entries.remove(entry)
+
+    #     reply_text = "Removed **%s** from the queue. It was in position: %s"
+    #     btext = entry.title
+
+    #     if position == -1:
+    #         position = len(player.playlist.entries) + 1
+
+    #     reply_text %= (btext, position)
+
+    #     return Response(reply_text, delete_after=30)
 
     async def cmd_play(self, player, channel, author, permissions, leftover_args, song_url):
         """
@@ -3991,7 +4044,7 @@ class MusicBot(discord.Client):
         await t.leave()
         return Response('Left the guild: `{0.name}` (Owner: `{0.owner.name}`, ID: `{0.id}`)'.format(t))
 
-    async def cmd_execute(self, server, channel, author, message):
+    async def cmd_execute(self, message):
 
         lines = message.content
         print("COMMAND ===" + lines)
