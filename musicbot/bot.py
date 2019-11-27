@@ -908,7 +908,7 @@ class MusicBot(discord.Client):
         if len(player.playlist.entries) == 0 and not player.current_entry and self.config.auto_playlist:
 
             timeout = 0
-            while self.autoplaylist.songs and timeout < 100 and not player.is_paused:
+            while self.autoplaylist.songs and timeout < 15 and not player.is_paused:
 
                 # looking for people in the channel to choose who song gets played
                 people = [m for m in player.voice_client.channel.members if not (m.voice.deaf or m.voice.self_deaf or m.id == self.user.id)]
@@ -2410,50 +2410,47 @@ class MusicBot(discord.Client):
 
         """
 
-        prntStr = ""
-        if len(leftover_args) == 0:
-            prntStr += "```Usage:\n\t{command_prefix}listhas songTitle\n\nLooks if a song title in in your list```"
-            return Response(prntStr, delete_after=20)
-        else:
+        print_str = ""
+        if leftover_args:
             thinkingMsg = await self.safe_send_message(channel, "Processing:thought_balloon:")
             messages = []
             title = '**Autoplay lists containing: ' + ' '.join(leftover_args) +  '**'
             if len(title) > 256:
                 title = 'Autoplay Lists'
 
-            ContainsList = []
-            ContainsList = list(filter(lambda each_song: each_song, self.autoplaylist._find_songs_by_title(" ".join(leftover_args))))
+            songs_list = []
+            songs_list = list(filter(lambda each_song: each_song, self.autoplaylist._find_songs_by_title(" ".join(leftover_args))))
 
             #sorting into a list for each person who liked the songs
-            peopleListSongs = {}
-            for songObj in ContainsList:
-                print(str(songObj))
-                for person in await self.autoplaylist.get_likers(songObj.url):
-                    if person.user_id not in peopleListSongs.keys():
-                        peopleListSongs[person.user_id] = [songObj]
+            user_songs_dict = {}
+            for each_song in songs_list:
+                log.debug('[listhas] each_song: {}'.format(str(each_song)))
+                for person in await self.autoplaylist.get_likers(each_song.url):
+                    if person.user_id not in user_songs_dict.keys():
+                        user_songs_dict[person.user_id] = [each_song]
                     else:
-                        peopleListSongs[person.user_id].append(songObj)
+                        user_songs_dict[person.user_id].append(each_song)
 
-            if len(peopleListSongs) == 0:
+            if len(user_songs_dict) == 0:
                 await self.safe_delete_message(thinkingMsg)
                 prntStr = "No song has **__" + " ".join(leftover_args).strip() + "__** in the title"
                 return Response(prntStr, delete_after=20)
 
             t0 = time.perf_counter()
             #Printing: Yours
-            if str(author.id) in list(peopleListSongs):
+            if str(author.id) in user_songs_dict.keys():
                 #messages.append(await self._embed_listhas(channel, author, peopleListSongs[author.id], title, 0xffb900))
-                await self._embed_listhas(channel, author, peopleListSongs[str(author.id)], title, 0xffb900)
-                del peopleListSongs[str(author.id)]
+                await self._embed_listhas(channel, author, user_songs_dict[str(author.id)], title, 0xffb900)
+                del user_songs_dict[str(author.id)]
                 title = None
-            print("2nd run: " + str(time.perf_counter() - t0))
+            log.debug("2nd run: " + str(time.perf_counter() - t0))
 
             #Printing: Others
-            for author_id in peopleListSongs.keys():
+            for author_id in user_songs_dict.keys():
                 member = self._get_user(author_id)
                 if member != None: #Unknown User
                     #messages.append(await self._embed_listhas(channel, member, peopleListSongs[author_id], title))
-                    await self._embed_listhas(channel, member, peopleListSongs[author_id], title)
+                    await self._embed_listhas(channel, member, user_songs_dict[author_id], title)
                     title = None
 
             await self.safe_delete_message(thinkingMsg)

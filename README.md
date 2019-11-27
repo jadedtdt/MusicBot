@@ -10,8 +10,8 @@ MusicBot is a Discord music bot written in [Python](https://www.python.org "Pyth
 - [OSX Tutorial](https://github.com/SexualRhinoceros/MusicBot/wiki/Installation-guide-for-OSX)
 
 Addendum:
-- sudo apt-get install libmysqlclient20
 - bash install_prerequisites.sh
+- aws configure
 - sudo bash build_docker_image.sh
 
 
