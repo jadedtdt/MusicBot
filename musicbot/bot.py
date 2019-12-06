@@ -281,7 +281,7 @@ class MusicBot(discord.Client):
             error_msg = str(error_msg)
 
         for each_string in whitelist_strings:
-            if each_string in error_msg:
+            if each_string.lower() in error_msg.lower():
                 return True
 
         return False
@@ -908,7 +908,8 @@ class MusicBot(discord.Client):
         if len(player.playlist.entries) == 0 and not player.current_entry and self.config.auto_playlist:
 
             timeout = 0
-            while self.autoplaylist.songs and timeout < 15 and not player.is_paused:
+            MAX_TIMEOUT = 15
+            while self.autoplaylist.songs and timeout < MAX_TIMEOUT and not player.is_paused:
 
                 # looking for people in the channel to choose who song gets played
                 people = [m for m in player.voice_client.channel.members if not (m.voice.deaf or m.voice.self_deaf or m.id == self.user.id)]
@@ -994,10 +995,10 @@ class MusicBot(discord.Client):
                             log.debug(null_check_string(song, 'title'))
                             #log.debug(str(song.__dict__))
 
-                            if str(song.updt_dt_tm) > (datetime.now() - timedelta(days=10)).strftime('%Y-%m-%d %H:%M:%S'):
+                            if str(song.updt_dt_tm) > (datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S'):
                                 log.debug("Song played too recently")
                                 log.debug('Last Played: {}'.format(song.updt_dt_tm))
-                                log.debug('10 days ago: {}'.format((datetime.now() - timedelta(days=10)).strftime('%Y-%m-%d %H:%M:%S')))
+                                log.debug('10 days ago: {}'.format((datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S')))
                                 timeout = timeout + 1
                                 continue
                             timeout = 0
@@ -1058,10 +1059,17 @@ class MusicBot(discord.Client):
                                 self.email_util.send_exception(str(user), str(song), "GENERIC ERROR - Failed to remove song {} from user's {} list".format(str(song), str(user)))
                             else:
                                 log.warn("YT DL ERROR - SUCCESS to remove song {} from user's {} list".format(str(song), str(user)))
+                        timeout = timeout + 1
                         continue
+                    elif 'HTTP Error 429: Too Many Requests'.lower() in str(e).lower():
+                        log.error('YT DL ERROR - Blacklisted, cooling down...')
+                        self.email_util.send_exception(str(user), str(song), "YT DL ERROR - Received 429 Too Many Requests. Aborting.".format(str(song), str(e)))
+                        break
                     else:
                         log.error("YT DL ERROR - Downloading song {} resulted in unknown exception {}".format(str(song), str(e)))
                         self.email_util.send_exception(str(user), str(song), "YT DL ERROR - Downloading song {} resulted in unknown exception {}".format(str(song), str(e)))
+                        timeout = timeout + 1
+                        continue
 
                 except Exception as e:
 
@@ -1079,6 +1087,7 @@ class MusicBot(discord.Client):
                                 self.email_util.send_exception(str(user), str(song), "GENERIC ERROR - Failed to remove song {} from user's {} list".format(str(song), str(user)))
                             else:
                                 log.warn("GENERIC ERROR - SUCCESS to remove song {} from user's {} list".format(str(song), str(user)))
+                        timeout = timeout + 1
                         continue
 
                     else:
@@ -1125,6 +1134,7 @@ class MusicBot(discord.Client):
                         if 'info_json_url' not in str(e):
                             self.email_util.send_exception(str(user), str(song), "UNKNOWN EXTRACTION ERROR - Exception: {}".format(str(e)))
 
+                    timeout = timeout + 1
                     continue
                 except Exception as e:
                     log.error(str(e))
@@ -2352,7 +2362,7 @@ class MusicBot(discord.Client):
 
         # updating global playcount
         if global_song and not await self.autoplaylist.sqlfactory.song_update(global_song.url, global_song.title, global_song.play_count+1, global_song.volume, get_cur_dt_tm(), global_song.cret_dt_tm, global_song.url):
-            log.error('[ON_PLAYER_FINISHED_PLAYING] Failed to update song for song {}'.format(global_song))
+            log.error('[_ADD_ENTRY] Failed to update song for song {}'.format(global_song))
 
         return await player.playlist.add_entry(song_url=global_song.url if global_song else song_url, channel=meta.get('channel', None), author=meta.get('author', None), last_played=last_played)
 
@@ -2449,6 +2459,7 @@ class MusicBot(discord.Client):
             for author_id in user_songs_dict.keys():
                 member = self._get_user(author_id)
                 if member != None: #Unknown User
+                    log.debug('bro we got users !')
                     #messages.append(await self._embed_listhas(channel, member, peopleListSongs[author_id], title))
                     await self._embed_listhas(channel, member, user_songs_dict[author_id], title)
                     title = None
