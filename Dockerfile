@@ -7,7 +7,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
 	python-dev \
-	default-libmysqlclient-dev \
+	libmysqlclient-dev \
 	libopus0 \
 	ffmpeg
 RUN python3 -m pip install -r requirements.txt
