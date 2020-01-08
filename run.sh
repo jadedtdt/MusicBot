@@ -1,4 +1,5 @@
 #!/bin/bash
+export DOCKER_HOST=tcp://localhost:2375
 docker system prune -a -f
 bash build_docker_image.sh
 # export AWS_ACCESS_KEY_ID=$(aws --profile default configure get aws_access_key_id)
